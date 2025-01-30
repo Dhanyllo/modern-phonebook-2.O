@@ -1,0 +1,258 @@
+body
+{
+  margin: 0px; 
+  padding-top: 90px;
+  padding-left: 280px;
+  padding-right: 20px;
+}
+
+.header
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 59px;
+  position: fixed;
+  z-index: 100;
+  border: 1.2px solid rgb(192, 192, 192);
+  border-right-style: none;
+  border-left-style: none;
+  border-top-style: none;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  box-shadow: 5px 5px 10px rgba(0,0,0,0.1);
+  margin-left: 0px;
+  padding-top: 0px;
+}
+
+.search-input-container
+{
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  display: flex;
+  width: 120%;
+  margin-right: -1px;
+}
+
+.search-icon
+{
+  position: absolute;
+  flex: 1;
+  width: 50px;
+  height: 40px;
+  left: 20px;
+  top: 10px;
+  bottom: 10px;
+}
+
+.search-input-container input
+{
+  width: 100%;
+  font-size: 18px;
+  font-weight: normal;
+  text-indent: 65px;
+  padding-left: 20px;
+  border-style: none;
+  box-shadow: inset 1px 2px 3px rgba(0, 0, 0, 0.15);
+}
+
+.search-input-container input:focus {
+  outline: none; 
+  box-shadow: 0 2px 0 0 blue; 
+}
+
+
+.search-bar input::placeholder
+{
+  font-size: 15px;
+}
+
+
+.grel-icon
+{
+  display: flex;
+  align-items: left;
+  justify-content: left;
+  background-color: #3ca62a;
+  border-bottom-width: 0px;
+  border-top-width: 1px;
+  border-top-style:solid;
+  border-top-color: rgb(192, 192, 192);
+  padding-top: 10px;
+  width: 237px; 
+  flex-shrink: 0;
+  height: 100%;
+  padding-left: 20px;
+}
+
+.header-logo
+{
+  width: 40%;
+  height: 100%;
+}
+
+.search-bar
+{
+  display: flex;
+  flex-direction: row;
+  flex: 3;
+  height: 100%;
+  border-bottom-width: 1px;
+}
+
+
+.tools-wrap
+{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  padding-left: 30px;
+  column-gap: 23px;
+  flex: 0.7;
+  height: 100%;
+  box-shadow: inset 1px 2px 3px rgba(0, 0, 0, 0.15);
+  background-color: white;
+}
+
+.sidebar
+{
+  background-color: #3ca62a;
+  color: white;
+  border-top-width: 0px;
+  padding-top: 32px;
+  padding-left: 2px;
+  padding-right: 15px;
+  position: fixed;
+  z-index: 200;
+  width: 240px;
+  left: 0px;
+  top: 58px;
+  bottom: 0px;
+}
+
+.sidebar a
+{
+  font-size: 13px;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  column-gap: 12px;
+  height: 30px;
+  text-decoration: none;
+  border-width: 1px;
+  border-style: solid;
+  align-items: center;
+  margin-bottom: 5px;
+  padding-left: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-style: none;
+  font-weight: 500; 
+}
+
+.link-text
+{
+  font-size: medium;
+  font-weight: 100;
+}
+
+ .active
+{
+  background-color: green;
+  border-radius: 5px;
+}
+
+
+.sidebar a:hover
+{
+  cursor: pointer;
+  background-color: green;
+  border-radius: 5px;
+}
+
+.wrap
+{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding-left: 20px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  border-left-width: 2px;
+  border-left-color: grey;
+  border-left-style: solid;
+}
+
+.heart-icon
+{
+  color: red;
+  width: 25px;
+  height: 25px;
+}
+
+.contacts-icon
+{
+  width: 25px;
+  height: 25px;
+}
+
+.dark-light-mode
+{
+  width: 32px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.notifications-icon-container
+{
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.notifications-icon
+{
+  height: 34px;
+}
+
+.notifications-count
+{
+  position: absolute;
+  top: -2px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  font-family: Arial;
+  font-size: 12px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border-radius: 10px;
+}
+
+/* .tooltip
+{
+  font-family: Arial;
+  position: absolute;
+  background-color: gray;
+  color: white;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-radius: 2px;
+  font-size: 12px;
+  bottom: -30px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+  white-space: nowrap;
+} */
