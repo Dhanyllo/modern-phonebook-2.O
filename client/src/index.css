@@ -4,6 +4,7 @@ body
   padding-top: 90px;
   padding-left: 280px;
   padding-right: 20px;
+  background-color: rgb(248, 248, 248);
 }
 
 .header
@@ -59,7 +60,8 @@ body
   box-shadow: inset 1px 2px 3px rgba(0, 0, 0, 0.15);
 }
 
-.search-input-container input:focus {
+.search-input-container input:focus 
+{
   outline: none; 
   box-shadow: 0 2px 0 0 blue; 
 }
@@ -256,3 +258,92 @@ body
   pointer-events: none;
   white-space: nowrap;
 } */
+
+.card-grid
+{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  column-gap:16px;
+  row-gap:40px;
+  padding: 2px;
+}
+
+.card-image-wrap
+{
+  align-items: center;
+  margin-top: -7px;
+  margin-bottom: 15px;
+}
+
+.card-wrap
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: white;
+  border-radius: 5px;
+  border-style: none;
+  padding: 15px 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.view-link
+{
+  background-color: #3ca62a;
+  cursor: pointer;
+  border-style: none;
+  border-radius: 2px;
+  padding: 5px 6px;
+  text-decoration: none;
+  color: white;
+
+
+}
+
+.btn-layer
+{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-desc
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 5px;
+}
+
+.card-image
+{
+  /* width: 100%; */
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+  border-radius: 200px;
+  background-color: yellow;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+.card-image img
+{
+    object-fit: contain;
+}
+
+.heart-icon2
+{
+  color: red;
+  width: 20px;
+  height: 15px;
+}
+
+.alpha
+{
+  font-size: 40px;
+}
