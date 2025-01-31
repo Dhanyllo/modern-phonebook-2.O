@@ -1,5 +1,6 @@
 import React from 'react'
 import { MdLightMode } from "react-icons/md";
+import { MdNotificationsNone } from "react-icons/md";
 
 function Header() {
   return (
@@ -17,7 +18,7 @@ function Header() {
 
         <div className="tools-wrap">
             <div class="notifications-icon-container">
-              <img src="images/notifications.svg" class="notifications-icon" />
+              <MdNotificationsNone className='notifications-icon1'/>
               <div class="notifications-count">
                 3
               </div>
