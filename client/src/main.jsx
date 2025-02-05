@@ -5,6 +5,7 @@ import Header from './components/header';
 import Sidebar from './components/sidebar';
 import ContactCard from './components/ContactCard';
 import Header2 from './components/Header2';
+import DetailedCard from './components/DetailedCard';
 
 function App(){
 
@@ -18,7 +19,8 @@ function App(){
 
   return(
     <div>
-      <Header/>
+      <Header2/>
+      <DetailedCard/>  
       {/* <Sidebar/>
       <ContactCard/> */}
     </div>
