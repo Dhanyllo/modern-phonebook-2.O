@@ -1,9 +1,9 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import { FaHeart } from "react-icons/fa6";
 
 function ContactCard() {
  
-
   return (
     <main className='card-grid'>
       <div className='card-wrap'>
@@ -11,7 +11,7 @@ function ContactCard() {
           <div>
             <FaHeart className='heart-icon2' />
           </div>
-          <a href="#" className="view-link">View</a>
+          <Link to="/detail" className="view-link">View</Link>
         </div>
         <div className='card-image-wrap'>
           <div className='card-image'>
@@ -31,7 +31,7 @@ function ContactCard() {
           <div>
             <FaHeart className='heart-icon2' />
           </div>
-          <a href='' className='view-link'>View</a>
+          <Link to='/detail' className='view-link'>View</Link>
         </div>
         <div className='card-image-wrap'>
           <div className='card-image'>
@@ -51,7 +51,7 @@ function ContactCard() {
           <div>
             <FaHeart className='heart-icon2' />
           </div>
-          <a href='' className='view-link'>View</a>
+          <Link to='/detail' className='view-link'>View</Link>
         </div>
         <div className='card-image-wrap'>
           <div className='card-image'>
@@ -71,7 +71,7 @@ function ContactCard() {
           <div>
             <FaHeart className='heart-icon2' />
           </div>
-          <a href='' className='view-link'>View</a>
+          <Link to='/detail' className='view-link'>View</Link>
         </div>
         <div className='card-image-wrap'>
           <div className='card-image'>
@@ -91,7 +91,7 @@ function ContactCard() {
           <div>
             <FaHeart className='heart-icon2' />
           </div>
-          <a href='' className='view-link'>View</a>
+          <Link to='/detail' className='view-link'>View</Link>
         </div>
         <div className='card-image-wrap'>
           <div className='card-image'>
@@ -110,4 +110,4 @@ function ContactCard() {
   )
 }
 
-export default ContactCard
+export default ContactCard;

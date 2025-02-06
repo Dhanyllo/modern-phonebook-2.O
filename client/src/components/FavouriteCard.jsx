@@ -1,4 +1,6 @@
-import React from 'react'
+import React from 'react';
+import {Link} from "react-router-dom";
+import { FaHeart } from "react-icons/fa6";
 
 function FavouriteCard() {
   return (
@@ -8,7 +10,7 @@ function FavouriteCard() {
           <div>
             <FaHeart className='heart-icon2' />
           </div>
-          <a href="#" className="view-link">View</a>
+          <Link to="/detail" className="view-link">View</Link>
         </div>
         <div className='card-image-wrap'>
           <div className='card-image'>
@@ -28,7 +30,7 @@ function FavouriteCard() {
           <div>
             <FaHeart className='heart-icon2' />
           </div>
-          <a href="#" className="view-link">View</a>
+          <Link to="/detail" className="view-link">View</Link>
         </div>
         <div className='card-image-wrap'>
           <div className='card-image'>
@@ -48,7 +50,7 @@ function FavouriteCard() {
           <div>
             <FaHeart className='heart-icon2' />
           </div>
-          <a href="#" className="view-link">View</a>
+          <Link to="/detail" className="view-link">View</Link>
         </div>
         <div className='card-image-wrap'>
           <div className='card-image'>
@@ -68,7 +70,7 @@ function FavouriteCard() {
           <div>
             <FaHeart className='heart-icon2' />
           </div>
-          <a href="#" className="view-link">View</a>
+          <Link to="/detail" className="view-link">View</Link>
         </div>
         <div className='card-image-wrap'>
           <div className='card-image'>
@@ -88,7 +90,7 @@ function FavouriteCard() {
           <div>
             <FaHeart className='heart-icon2' />
           </div>
-          <a href="#" className="view-link">View</a>
+          <Link to="/detail" className="view-link">View</Link>
         </div>
         <div className='card-image-wrap'>
           <div className='card-image'>

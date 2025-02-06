@@ -1,6 +1,8 @@
 import React from 'react'
+import {Link} from "react-router-dom";
 import { MdLightMode } from "react-icons/md";
 import { MdNotificationsNone } from "react-icons/md";
+
 
 function Header2() {
   return (
@@ -11,8 +13,8 @@ function Header2() {
     
         <div className="header2-middle">
           <ul>
-            <a href="">All Contacts</a>
-            <a href="">Favourites</a>
+            <Link to="/">All Contacts</Link>
+            <Link to="/favourites">Favourites</Link>
           </ul>
         </div>
     
