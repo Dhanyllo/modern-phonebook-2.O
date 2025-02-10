@@ -8,7 +8,7 @@ function Header2() {
   return (
      <header className="header">
         <div className="grel-icon">
-          <img className="header-logo" src="./images/sifca.png" alt="" />
+          <img className="header-logo" src="/images/sifca.png" alt="" />
         </div>
     
         <div className="header2-middle">

@@ -1,18 +1,19 @@
 import React from 'react'
-import {Link} from "react-router-dom";
+import { Outlet } from 'react-router-dom';
 import { MdLightMode } from "react-icons/md";
 import { MdNotificationsNone } from "react-icons/md";
 
 function Header() {
   return (
+    <>
       <header className="header">
         <div className="grel-icon">
-          <img className="header-logo" src="./images/sifca.png" alt="" />
+          <img className="header-logo" src="/images/sifca.png" alt="" />
         </div>
 
         <div className="search-bar">
           <div className="search-input-container">
-            <img src="./images/search.png" alt="search-icon" className="search-icon" />
+            <img src="/images/search.png" alt="search-icon" className="search-icon" />
             <input type="text" className="search-bar-input" name="search" placeholder="Search..." />
           </div>
         </div>
@@ -30,6 +31,8 @@ function Header() {
           </div>
         </div>
       </header>
+      <Outlet/>
+      </>
   )
 }
 
