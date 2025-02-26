@@ -5,11 +5,17 @@ import { MdDeleteOutline } from "react-icons/md";
 import { FaHeart } from "react-icons/fa6";
 import { FaShareAlt } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
+import { useLocation } from 'react-router-dom';
 
-function DetailedCard() {
+function DetailedCard(props) { 
+  const location = useLocation(); 
+  const favouriteStyle = {
+    color: props.favourite_status === 1 ? "red" : "white"
+};
+
   return (
-    <main className='card-container-wrap'>
-      <Link to='#' className='back-arrow'>
+    <>
+      <Link to={location.state} className='back-arrow'>
         <IoIosArrowBack className='back'/>
         <div className='back-arrow-desc'>
           Back
@@ -27,7 +33,7 @@ function DetailedCard() {
                 <MdDeleteOutline  className='delete'/>
               </button>
               <button className='favourite-btn'>
-              <FaHeart className='fav-icon' /> 
+              <FaHeart style={favouriteStyle} className='fav-icon' /> 
               </button>
               <button className='share-btn'>
                 <FaShareAlt className='share'/>
@@ -36,7 +42,7 @@ function DetailedCard() {
           </div>
           <div className='desc'>
             <div className='person-name'>
-              Daniel Otchere
+              {`${props.first_name} ${props.other_names}`}
             </div>
             <div className='occupations'>
               <div className='occupation1'>#Lawyer</div>
@@ -50,7 +56,7 @@ function DetailedCard() {
                 Personal-number
               </div>
               <div className='number'>
-                034525235625
+                {props.phone_number}
               </div>
             </div>
             <hr />
@@ -59,7 +65,7 @@ function DetailedCard() {
                 Personal-email
               </div>
               <div className='email'>
-                daniel@example.com
+                {props.email}
               </div>
             </div>
             <hr />
@@ -68,7 +74,7 @@ function DetailedCard() {
                 Home
               </div>
               <div className='home-address'>
-                Accra, Ghana
+                {props.home_address}
               </div>
             </div>
           </div>
@@ -78,39 +84,39 @@ function DetailedCard() {
             Links
             <hr />
           </div>
-          <Link to="">
+          <Link to={`mailto:${props.email}`} target='_blank'>
             <img className='ref-link-image' style={{width:"55%",height:"55%",marginBottom:"-2px"}} src="/images/email.png" alt="" />
             <div className='link-desc'>Email</div>
           </Link>
-          <Link to="">
+          <Link to={props.twitter} target='_blank'>
             <img className='ref-link-image' style={{width:"52%",height:"54%"}} src="/images/twitter.png" alt="" />
             <div className='link-desc'>X</div>
           </Link>
-          <Link to="">
+          <Link to={props.instagram} target='_blank'>
             <img className='ref-link-image' style={{width:"60%",height:"60%"}} src="/images/instagram.png" alt="" />
             <div className='link-desc'>
               Instagram
             </div>
           </Link>
-          <Link to="">
+          <Link to={props.facebook} target='_blank'>
             <img className='ref-link-image' style={{width:"50%",height:"50%",marginBottom:"6px"}} src="/images/facebook.webp" alt="" />
             <div className='link-desc'>
               Facebook
             </div>
           </Link>
-          <Link to="">
+          <Link to={props.whatsapp} target='_blank'>
             <img className='ref-link-image' style={{width:"50%",height:"50%",marginBottom:"5px"}} src="/images/whatsapp.png" alt="" />
             <div className='link-desc'>Whatsapp</div>
           </Link>
-          <Link to="">
+          <Link to={props.linkedin} target='_blank'>
             <img className='ref-link-image' style={{width:"60%",height:"60%"}} src="/images/linkedin.png" alt="" />
             <div className='link-desc'>
               LinkedIn
             </div>
           </Link>
         </div>
-      </div>  
-    </main>
+      </div> 
+    </> 
   )
 }
 

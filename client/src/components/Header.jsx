@@ -2,8 +2,18 @@ import React from 'react'
 import { Outlet } from 'react-router-dom';
 import { MdLightMode } from "react-icons/md";
 import { MdNotificationsNone } from "react-icons/md";
+import { useSearchParams } from "react-router-dom";
+
 
 function Header() {
+  
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get("searchParams");
+
+  function HandleChange(event){
+    setSearchParams({ searchParams: event.target.value });
+  }
+
   return (
     <>
       <header className="header">
@@ -14,7 +24,7 @@ function Header() {
         <div className="search-bar">
           <div className="search-input-container">
             <img src="/images/search.png" alt="search-icon" className="search-icon" />
-            <input type="text" className="search-bar-input" name="search" placeholder="Search..." />
+            <input autoComplete='off' onChange={HandleChange} type="text" value={searchQuery} className="search-bar-input" name="search" placeholder="Search..." />
           </div>
         </div>
 

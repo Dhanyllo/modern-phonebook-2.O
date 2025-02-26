@@ -1,112 +1,42 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
 import { FaHeart } from "react-icons/fa6";
+import { useNavigation,Link,useLocation } from 'react-router-dom';
 
-function ContactCard() {
- 
+
+function ContactCard(props) {
+  const location = useLocation();
+  const Navigation = useNavigation();
+  const isNavigatingToCard = Navigation.location?.pathname === `/detail/${props.id}`
+  
+  const favouriteStyle = {
+    color: props.favouriteStatus === 1 ? "red" : "inherit"
+};
+
+  const firstLetter = props.firstName.charAt(0);
+
   return (
-    <main className='card-grid'>
       <div className='card-wrap'>
         <div className='btn-layer'>
           <div>
-            <FaHeart className='heart-icon2' />
+            <FaHeart style={favouriteStyle} className='heart-icon2' />
           </div>
-          <Link to="/detail" className="view-link">View</Link>
+          <Link aria-disabled={isNavigatingToCard} to={`/detail/${props.id}`} state={location.pathname} className="view-link">
+            {isNavigatingToCard ? "...." : "view" }
+          </Link>
         </div>
         <div className='card-image-wrap'>
           <div className='card-image'>
             <img src="" alt="" />
             <div className='alpha'>
-              D
+              {firstLetter}
             </div>
           </div>
         </div>
         <div className='card-desc'> 
-          <div>Daniel Otchere</div>
-          <div>user@example.com</div>
+          <div>{`${props.firstName} ${props.otherNames}`}</div>
+          <div>{props.phoneNumber}</div>
         </div>
       </div>
-      <div className='card-wrap'>
-        <div className='btn-layer'>
-          <div>
-            <FaHeart className='heart-icon2' />
-          </div>
-          <Link to='/detail' className='view-link'>View</Link>
-        </div>
-        <div className='card-image-wrap'>
-          <div className='card-image'>
-            <img src="" alt="" />
-            <div className='alpha'>
-              D
-            </div>
-          </div>
-        </div>
-        <div className='card-desc'> 
-          <div>Daniel Otchere</div>
-          <div>user@example.com</div>
-        </div>
-      </div>
-      <div className='card-wrap'>
-        <div className='btn-layer'>
-          <div>
-            <FaHeart className='heart-icon2' />
-          </div>
-          <Link to='/detail' className='view-link'>View</Link>
-        </div>
-        <div className='card-image-wrap'>
-          <div className='card-image'>
-            <img src="" alt="" />
-            <div className='alpha'>
-              D
-            </div>
-          </div>
-        </div>
-        <div className='card-desc'> 
-          <div>Daniel Otchere</div>
-          <div>user@example.com</div>
-        </div>
-      </div>
-      <div className='card-wrap'>
-        <div className='btn-layer'>
-          <div>
-            <FaHeart className='heart-icon2' />
-          </div>
-          <Link to='/detail' className='view-link'>View</Link>
-        </div>
-        <div className='card-image-wrap'>
-          <div className='card-image'>
-            <img src="" alt="" />
-            <div className='alpha'>
-              D
-            </div>
-          </div>
-        </div>
-        <div className='card-desc'> 
-          <div>Daniel Otchere</div>
-          <div>user@example.com</div>
-        </div>
-      </div>
-      <div className='card-wrap'>
-        <div className='btn-layer'>
-          <div>
-            <FaHeart className='heart-icon2' />
-          </div>
-          <Link to='/detail' className='view-link'>View</Link>
-        </div>
-        <div className='card-image-wrap'>
-          <div className='card-image'>
-            <img src="" alt="" />
-            <div className='alpha'>
-              D
-            </div>
-          </div>
-        </div>
-        <div className='card-desc'> 
-          <div>Daniel Otchere</div>
-          <div>user@example.com</div>
-        </div>
-      </div>
-    </main>
   )
 }
 

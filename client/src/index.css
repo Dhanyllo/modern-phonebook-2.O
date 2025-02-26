@@ -178,6 +178,13 @@ body
   font-weight: 100;
 }
 
+.link-text[aria-disabled=true]
+{
+  font-size: medium;
+  font-weight: 100;
+  opacity: 0.5;
+}
+
  .active
 {
   background-color: green;
@@ -208,7 +215,6 @@ body
 
 .heart-icon
 {
-  color: red;
   width: 25px;
   height: 25px;
 }
@@ -296,8 +302,9 @@ body
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   column-gap:16px;
-  row-gap:40px;
+  row-gap:20px;
   padding: 2px;
+  padding-bottom: 40px;
 }
 
 .card-image-wrap
@@ -317,6 +324,14 @@ body
   border-style: none;
   padding: 15px 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-wrap:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+  font-weight: 700;
 }
 
 .view-link
@@ -326,6 +341,25 @@ body
   border-style: none;
   border-radius: 2px;
   padding: 5px 6px;
+  text-decoration: none;
+  color: white;
+  transition: all 0.2s ease-in-out;
+}
+
+.view-link[aria-disabled=true],
+.view-link[aria-disabled=true]:hover
+{
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #3ca62a; 
+  opacity: 0.8;
+  cursor: pointer;
+  border-style: none;
+  border-radius: 2px;
+  width: 30px;
+  padding: 5pxS;
   text-decoration: none;
   color: white;
   transition: all 0.2s ease-in-out;
@@ -378,9 +412,9 @@ body
 
 .heart-icon2
 {
-  color: red;
   width: 20px;
   height: 15px;
+  cursor: pointer;
 }
 
 .alpha
@@ -414,6 +448,13 @@ ul a
 {
   text-decoration: none;
   color: white;
+}
+
+ul a[aria-disabled=true]
+{
+  text-decoration: none;
+  color: white;
+  opacity: 0.5;
 }
 
 ul a:hover
@@ -706,9 +747,9 @@ ul a:hover
 
 .fav-icon
 {
-  color: white;
   width: 20px;
   height: 20px;
+  cursor: pointer;
 }
 
 .desc
