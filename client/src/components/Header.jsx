@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef , useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { MdLightMode } from "react-icons/md";
 import { MdNotificationsNone } from "react-icons/md";
@@ -9,10 +9,31 @@ function Header() {
   
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("searchParams");
+  const inputRef = useRef(null)
 
   function HandleChange(event){
     setSearchParams({ searchParams: event.target.value });
   }
+
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.key === "/" && document.activeElement !== inputRef.current) {
+        event.preventDefault(); 
+        inputRef.current.focus();
+      }
+
+      else if (event.key === "Escape" && document.activeElement === inputRef.current) {
+        inputRef.current.blur();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <>
@@ -24,7 +45,14 @@ function Header() {
         <div className="search-bar">
           <div className="search-input-container">
             <img src="/images/search.png" alt="search-icon" className="search-icon" />
-            <input autoComplete='off' onChange={HandleChange} type="text" value={searchQuery} className="search-bar-input" name="search" placeholder="Search..." />
+            <input 
+              ref={inputRef} 
+              autoComplete='off' 
+              onChange={HandleChange} 
+              type="text" value={searchQuery} 
+              className="search-bar-input" 
+              name="search" 
+              placeholder="Type '&#65295;'  to search ...."/>
           </div>
         </div>
 
@@ -46,4 +74,4 @@ function Header() {
   )
 }
 
-export default Header
+export default Header;

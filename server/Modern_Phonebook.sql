@@ -104,5 +104,59 @@ CREATE TABLE occupations (
 -- TESTING THE DELETION WITH CASCADE
 DELETE FROM contact_profiles WHERE id = 15;
 
+SELECT *
+FROM 
+    contact_profiles
+LEFT JOIN 
+    media_handles ON contact_profiles.id = media_handles.contact_id;
+    
+    
+SELECT 
+contact_profiles.id AS contactID, 
+occupations.id AS occupationID,occupation
+FROM 
+contact_profiles 
+LEFT JOIN
+occupations ON contact_profiles.id = occupations.contact_id
+WHERE contact_profiles.id  = 1;
+ 
+ 
+ 
+SELECT 
+contact_profiles.id AS contactID, 
+occupations.id AS occupationID, 
+occupation 
+FROM contact_profiles LEFT JOIN occupations 
+ON contact_profiles.id = occupations.contact_id WHERE contact_profiles.id  = 1;
+    
+INSERT INTO occupations (occupation, contact_id) VALUES
+('civil engineer', 1);
+
+
+
+
+-- INSERT INTO contact_profiles (first_name, other_names, phone_number, email, home_address, favourite_status, image_url) VALUES
+-- ('John', 'Doe', 1111222233, 'john.d.duplicate@example.com', '999 Main St, NY', FALSE, 'profile15.jpg'),
+-- ('Jane', 'Smith', 2222333444, 'jane.s.duplicate@example.com', '888 Elm St, CA', TRUE, 'profile16.jpg'),
+-- ('Michael', 'Brown', 3333444555, 'michael.b@example.com', '777 Pine St, TX', FALSE, 'profile17.jpg'),
+-- ('Emily', 'Davis', 4444555666, 'emily.d.duplicate@example.com', '666 Oak St, FL', TRUE, 'profile18.jpg'),
+-- ('David', 'Wilson', 5555666777, 'david.w.duplicate@example.com', '555 Cedar St, WA', FALSE, 'profile19.jpg'),
+-- ('Sophia', 'Garcia', 6666777888, 'sophia.g@example.com', '444 Birch St, IL', TRUE, 'profile20.jpg'),
+-- ('Daniel', 'Anderson', 7777888999, 'daniel.a.duplicate@example.com', '333 Walnut St, GA', FALSE, 'profile21.jpg'),
+-- ('Olivia', 'Thomas', 8888999000, 'olivia.t.duplicate@example.com', '222 Spruce St, CO', TRUE, 'profile22.jpg'),
+-- ('Matthew', 'Taylor', 9999000111, 'matthew.t.duplicate@example.com', '111 Maple St, AZ', FALSE, 'profile23.jpg'),
+-- ('Ava', 'Hernandez', 1011121314, 'ava.h.duplicate@example.com', '010 Cherry St, NV', TRUE, 'profile24.jpg'),
+-- ('James', 'Moore', 1213141516, 'james.m.duplicate@example.com', '020 Willow St, OR', FALSE, 'profile25.jpg'),
+-- ('Isabella', 'White', 1314151617, 'isabella.w.duplicate@example.com', '030 Ash St, MI', TRUE, 'profile26.jpg'),
+-- ('William', 'Clark', 1415161718, 'william.c.duplicate@example.com', '040 Palm St, PA', FALSE, 'profile27.jpg'),
+-- ('Mia', 'Rodriguez', 1516171819, 'mia.r.duplicate@example.com', '050 Fir St, OH', TRUE, 'profile28.jpg'),
+-- ('Ethan', 'Lewis', 1617181920, 'ethan.l.duplicate@example.com', '060 Redwood St, NC', FALSE, 'profile29.jpg'),
+-- ('Noah', 'Walker', 1718192021, 'noah.w@example.com', '070 Beech St, TX', TRUE, 'profile30.jpg'),
+-- ('Emma', 'Martinez', 1819202122, 'emma.m@example.com', '080 Poplar St, FL', FALSE, 'profile31.jpg'),
+-- ('Liam', 'Harris', 1920212223, 'liam.h@example.com', '090 Cypress St, NY', TRUE, 'profile32.jpg'),
+-- ('Charlotte', 'Young', 2021222324, 'charlotte.y@example.com', '100 Sequoia St, WA', FALSE, 'profile33.jpg'),
+-- ('Benjamin', 'Allen', 2122232425, 'benjamin.a@example.com', '110 Magnolia St, CA', TRUE, 'profile34.jpg');
+
+
 
 

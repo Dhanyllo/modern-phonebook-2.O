@@ -1,12 +1,9 @@
 const express = require('express');
-const path = require('path');
 const app = express();
 const cors = require('cors');
 const dotenv = require('dotenv')
 dotenv.config();
 const DatabaseConnection = require('./config.js');
-const { error } = require('console');
-
 
 
 app.use(cors());
@@ -15,23 +12,61 @@ app.use(cors());
 db = DatabaseConnection();
 
 app.get('/',(req,res)=>{
-   db.query('SELECT id,first_name,other_names,phone_number,image_url,favourite_status FROM contact_profiles', (err, results) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 15;
+  const offset = (page - 1) * limit; 
+   
+  db.query('SELECT id,first_name,other_names,phone_number,image_url,favourite_status FROM contact_profiles LIMIT ? OFFSET ?',[limit, offset], (err, results) => {
     if (err) {
-      console.error("Database query error:", err); // Log error for debugging
+      console.error("Database query error:", err); 
       return res.status(500).json({ message: "Internal Server Error" });
     }
-    res.status(200).json(results);
+    
+    db.query(`SELECT COUNT(*) AS total FROM contact_profiles`, (err, countResult) => {
+      if (err) {
+        console.error("Error getting total count:", err);
+        return res.status(500).json({ message: "Internal Server Error" });
+      }
+      
+      const totalContacts = countResult[0].total;
+      const totalPages = Math.ceil(totalContacts / limit);
+
+      res.status(200).json({
+        data: results,  
+        totalPages: totalPages
+      });
+    });   
   })
-})
+});
+
+
 
 
 app.get('/favourites',(req,res)=>{
-  db.query('SELECT id,first_name,other_names,phone_number,image_url FROM contact_profiles WHERE favourite_status = True', (err, results) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 15;
+  const offset = (page - 1) * limit; 
+
+  db.query('SELECT id,first_name,other_names,phone_number,image_url FROM contact_profiles WHERE favourite_status = True LIMIT ? OFFSET ?',[limit,offset], (err, results) => {
    if (err) {
-     console.error("Database query error:", err); // Log error for debugging
+     console.error("Database query error:", err);
      return res.status(500).json({ message: "Internal Server Error" });
    }
-   res.status(200).json(results);
+  
+   db.query(`SELECT COUNT(*) AS total FROM contact_profiles WHERE favourite_status = True`, (err, countResult) => {
+    if (err) {
+      console.error("Error getting total count:", err);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+    
+    const totalContacts = countResult[0].total;
+    const totalPages = Math.ceil(totalContacts / limit);
+
+    res.status(200).json({
+      data: results,  
+      totalPages: totalPages
+    });
+  });
  })
 })
 
@@ -82,15 +117,27 @@ app.get('/detail/occupations/:id',(req,res)=>{
 })
 
 
-app.get("/search", (req, res) => {
-  const searchTerm = decodeURIComponent(req.query.searchParams ? req.query.searchParams.toLowerCase() : ""); 
+app.get("/search/home", (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 15
+  const offset = (page - 1) * limit; 
+  const searchTerm = decodeURIComponent(req.query.searchParams ? req.query.searchParams.toLowerCase() : "");
   console.log("Search Term:", searchTerm);
   
   const values = [
     `%${searchTerm}%`, `%${searchTerm}%`, 
     searchTerm, searchTerm,               
     `%${searchTerm}%`,                     
-    searchTerm                             
+    searchTerm,
+    limit,
+    offset                           
+  ];
+
+  const values2 = [
+    `%${searchTerm}%`, `%${searchTerm}%`, 
+    searchTerm, searchTerm,               
+    `%${searchTerm}%`,                     
+    searchTerm                           
   ];
 
   console.log("Query Values:", values);
@@ -103,7 +150,8 @@ app.get("/search", (req, res) => {
       OR SOUNDEX(LOWER(first_name)) = SOUNDEX(?) 
       OR SOUNDEX(LOWER(other_names)) = SOUNDEX(?) 
       OR LOWER(CONCAT(first_name, ' ', other_names)) LIKE ? 
-      OR SOUNDEX(LOWER(CONCAT(first_name, ' ', other_names))) = SOUNDEX(?);
+      OR SOUNDEX(LOWER(CONCAT(first_name, ' ', other_names))) = SOUNDEX(?)
+      LIMIT ? OFFSET ?;
   `;
 
   db.query(query, values, (err, results) => {
@@ -112,10 +160,106 @@ app.get("/search", (req, res) => {
       console.error("Database query error:", err);
       return res.status(500).json({ message: "Internal Server Error" });
     }
-    res.status(200).json(results);
+    
+    db.query(`SELECT COUNT(*) AS total FROM contact_profiles 
+    WHERE 
+      LOWER(first_name) LIKE ? 
+      OR LOWER(other_names) LIKE ? 
+      OR SOUNDEX(LOWER(first_name)) = SOUNDEX(?) 
+      OR SOUNDEX(LOWER(other_names)) = SOUNDEX(?) 
+      OR LOWER(CONCAT(first_name, ' ', other_names)) LIKE ? 
+      OR SOUNDEX(LOWER(CONCAT(first_name, ' ', other_names))) = SOUNDEX(?);
+  `, values2, (err, countResult) => {
+      if (err) {
+        console.error("Error getting total count:", err);
+        return res.status(500).json({ message: "Internal Server Error" });
+      }
+      
+      const totalContacts = countResult?.[0]?.total || 0;
+      const totalPages = Math.ceil(totalContacts / limit);
+
+      res.status(200).json({
+        data: results,  
+        totalPages: totalPages
+      });
+    });
   });
 });
 
+
+app.get("/search/favourites", (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 15;
+  const offset = (page - 1) * limit; 
+  const searchTerm = decodeURIComponent(req.query.searchParams ? req.query.searchParams.toLowerCase() : "");
+
+  console.log("Search Term:", searchTerm);
+  
+  const values = [
+    `%${searchTerm}%`, `%${searchTerm}%`, 
+    searchTerm, searchTerm,               
+    `%${searchTerm}%`,                     
+    searchTerm,
+    limit,
+    offset                           
+  ];
+
+  const values2 = [
+    `%${searchTerm}%`, `%${searchTerm}%`, 
+    searchTerm, searchTerm,               
+    `%${searchTerm}%`,                     
+    searchTerm                           
+  ];
+
+  console.log("Query Values:", values);
+
+  const query = `
+    SELECT * FROM contact_profiles 
+      WHERE favourite_status = True 
+      AND (
+            LOWER(first_name) LIKE ? 
+            OR LOWER(other_names) LIKE ? 
+            OR SOUNDEX(LOWER(first_name)) = SOUNDEX(?) 
+            OR SOUNDEX(LOWER(other_names)) = SOUNDEX(?) 
+            OR LOWER(CONCAT(first_name, ' ', other_names)) LIKE ? 
+            OR SOUNDEX(LOWER(CONCAT(first_name, ' ', other_names))) = SOUNDEX(?)
+      ) 
+      LIMIT ? OFFSET ?;
+  `;
+
+  db.query(query, values, (err, results) => {
+    if (err) {
+      console.log("Inside error");
+      console.error("Database query error:", err);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+    
+    db.query(`SELECT COUNT(*) AS total FROM contact_profiles 
+        WHERE favourite_status = True 
+        AND (
+          LOWER(first_name) LIKE ? 
+          OR LOWER(other_names) LIKE ? 
+          OR SOUNDEX(LOWER(first_name)) = SOUNDEX(?) 
+          OR SOUNDEX(LOWER(other_names)) = SOUNDEX(?) 
+          OR LOWER(CONCAT(first_name, ' ', other_names)) LIKE ? 
+          OR SOUNDEX(LOWER(CONCAT(first_name, ' ', other_names))) = SOUNDEX(?)
+        );
+`, values2, (err, countResult) => {
+      if (err) {
+        console.error("Error getting total count:", err);
+        return res.status(500).json({ message: "Internal Server Error" });
+      }
+      
+      const totalContacts = countResult?.[0]?.total || 0;
+      const totalPages = Math.ceil(totalContacts / limit);
+
+      res.status(200).json({
+        data: results,  
+        totalPages: totalPages
+      });
+    });
+  });
+});
 
 
 // app.get('/insert',(req,res)=>{
@@ -132,6 +276,7 @@ app.get("/search", (req, res) => {
 //   }
 // );
 // });
+
 
 
 // Start the server

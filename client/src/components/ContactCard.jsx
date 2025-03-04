@@ -1,6 +1,6 @@
 import React from 'react'
 import { FaHeart } from "react-icons/fa6";
-import { useNavigation,Link,useLocation } from 'react-router-dom';
+import { useNavigation,Link,useLocation,useSearchParams } from 'react-router-dom';
 
 
 function ContactCard(props) {
@@ -8,6 +8,7 @@ function ContactCard(props) {
   const Navigation = useNavigation();
   const isNavigatingToCard = Navigation.location?.pathname === `/detail/${props.id}`
   
+ 
   const favouriteStyle = {
     color: props.favouriteStatus === 1 ? "red" : "inherit"
 };
@@ -15,6 +16,7 @@ function ContactCard(props) {
   const firstLetter = props.firstName.charAt(0);
 
   return (
+    <>
       <div className='card-wrap'>
         <div className='btn-layer'>
           <div>
@@ -37,6 +39,7 @@ function ContactCard(props) {
           <div>{props.phoneNumber}</div>
         </div>
       </div>
+    </>
   )
 }
 
