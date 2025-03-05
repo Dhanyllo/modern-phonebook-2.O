@@ -7,6 +7,7 @@ const DatabaseConnection = require('./config.js');
 
 
 app.use(cors());
+app.use(express.json());
 
 
 db = DatabaseConnection();
@@ -47,7 +48,7 @@ app.get('/favourites',(req,res)=>{
   const limit = parseInt(req.query.limit) || 15;
   const offset = (page - 1) * limit; 
 
-  db.query('SELECT id,first_name,other_names,phone_number,image_url FROM contact_profiles WHERE favourite_status = True LIMIT ? OFFSET ?',[limit,offset], (err, results) => {
+  db.query('SELECT id,first_name,other_names,phone_number,image_url,favourite_status FROM contact_profiles WHERE favourite_status = True LIMIT ? OFFSET ?',[limit,offset], (err, results) => {
    if (err) {
      console.error("Database query error:", err);
      return res.status(500).json({ message: "Internal Server Error" });
@@ -122,7 +123,6 @@ app.get("/search/home", (req, res) => {
   const limit = parseInt(req.query.limit) || 15
   const offset = (page - 1) * limit; 
   const searchTerm = decodeURIComponent(req.query.searchParams ? req.query.searchParams.toLowerCase() : "");
-  console.log("Search Term:", searchTerm);
   
   const values = [
     `%${searchTerm}%`, `%${searchTerm}%`, 
@@ -140,8 +140,6 @@ app.get("/search/home", (req, res) => {
     searchTerm                           
   ];
 
-  console.log("Query Values:", values);
-
   const query = `
     SELECT * FROM contact_profiles 
     WHERE 
@@ -156,7 +154,6 @@ app.get("/search/home", (req, res) => {
 
   db.query(query, values, (err, results) => {
     if (err) {
-      console.log("Inside error");
       console.error("Database query error:", err);
       return res.status(500).json({ message: "Internal Server Error" });
     }
@@ -193,8 +190,6 @@ app.get("/search/favourites", (req, res) => {
   const offset = (page - 1) * limit; 
   const searchTerm = decodeURIComponent(req.query.searchParams ? req.query.searchParams.toLowerCase() : "");
 
-  console.log("Search Term:", searchTerm);
-  
   const values = [
     `%${searchTerm}%`, `%${searchTerm}%`, 
     searchTerm, searchTerm,               
@@ -210,8 +205,6 @@ app.get("/search/favourites", (req, res) => {
     `%${searchTerm}%`,                     
     searchTerm                           
   ];
-
-  console.log("Query Values:", values);
 
   const query = `
     SELECT * FROM contact_profiles 
@@ -229,7 +222,6 @@ app.get("/search/favourites", (req, res) => {
 
   db.query(query, values, (err, results) => {
     if (err) {
-      console.log("Inside error");
       console.error("Database query error:", err);
       return res.status(500).json({ message: "Internal Server Error" });
     }
@@ -262,21 +254,22 @@ app.get("/search/favourites", (req, res) => {
 });
 
 
-// app.get('/insert',(req,res)=>{
-//   const countryname = 'Canada';
-//   const population = 800000;
-  
-//   db.query('INSERT INTO countries (countryName,population) VALUES (?,?)',[countryname,population],(err,result)=>{
-//     if(err){
-//       console.log(err);
-//     } 
-//   else{
-//       res.send(result);
-//     }
-//   }
-// );
-// });
+app.patch("/update/:id", (req, res) => {
+  const { id } = req.params;
+  const { favourite_status } = req.body;
 
+  db.query(
+    "UPDATE contact_profiles SET favourite_status = ? WHERE id = ?",
+    [favourite_status, id],
+    (err, result) => {
+      if (err) {
+        console.error("Update error:", err);
+        return res.status(500).json({ message: "Database update failed" });
+      }
+      res.json({ message: "Update successful" });
+    }
+  );
+});
 
 
 // Start the server

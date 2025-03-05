@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaHeart } from "react-icons/fa6";
-import { useNavigation,Link,useLocation } from 'react-router-dom';
+import { useNavigation , Link , useLocation } from 'react-router-dom';
 
 function FavouriteCard(props) {
   const location = useLocation();
@@ -15,9 +15,9 @@ function FavouriteCard(props) {
   return (
       <div className='card-wrap'>
         <div className='btn-layer'>
-          <div>
+          <button className='fav-btn' onClick={() => props.onUpdate(props.id, !props.favouriteStatus)}>
             <FaHeart style={color} className='heart-icon2' />
-          </div>
+          </button>
           <Link aria-disabled={isNavigatingToCard} to={`/detail/${props.id}`} state={location.pathname} className="view-link">
             {isNavigatingToCard ? "...." : "view" }
           </Link>

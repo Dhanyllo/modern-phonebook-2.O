@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import FavouriteCard from '../components/FavouriteCard';
-import { useLoaderData, useSearchParams } from 'react-router-dom';
+import { useLoaderData, useSearchParams , useNavigate } from 'react-router-dom';
 
 export async function loader({request}) {
 
@@ -43,11 +43,32 @@ catch(err) {
 function Favourites()
 {
   const {favStatus,favourites,search} = useLoaderData();
-  console.log(favourites);
-  console.log(search);
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page")) || 1;
   const limit = 15;
+
+  async function updateFavouriteStatus(id, newStatus) {
+    try {
+      const response = await fetch(`http://localhost:3000/update/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ favourite_status: newStatus }),
+      });
+  
+      if (!response.ok) throw new Error("Failed to update status");
+  
+      return await response.json();
+    } catch (error) {
+      console.error("Update error:", error);
+    }
+  }
+
+  
+  async function handleUpdate(id, newStatus) {
+    await updateFavouriteStatus(id, newStatus);
+    navigate(0);
+  }
 
 
 const hasSearchTerm = Boolean(searchParams.get("searchParams"));
@@ -61,6 +82,7 @@ const Cards = hasSearchTerm && search.data?.length > 0
         phoneNumber={item.phone_number}
         imageURL={item.image_url}
         favouriteStatus={item.favourite_status}
+        onUpdate = {handleUpdate}
       />
     ))
   : favourites.data.map(item => (
@@ -72,6 +94,7 @@ const Cards = hasSearchTerm && search.data?.length > 0
         phoneNumber={item.phone_number}
         imageURL={item.image_url}
         favouriteStatus={item.favourite_status}
+        onUpdate = {handleUpdate}
       />
     ));
 

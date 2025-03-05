@@ -32,7 +32,7 @@ function DetailedCard(props) {
               <button className='delete-btn'>
                 <MdDeleteOutline  className='delete'/>
               </button>
-              <button className='favourite-btn'>
+              <button className='favourite-btn' onClick={() => props.onUpdate(props.contact_id, !props.favourite_status)}>
               <FaHeart style={favouriteStyle} className='fav-icon' /> 
               </button>
               <button className='share-btn'>

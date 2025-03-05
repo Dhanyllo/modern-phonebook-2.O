@@ -1,13 +1,10 @@
 import { useEffect } from 'react';
 import Header2 from '../components/Header2';
 import DetailedCard from '../components/DetailedCard'; 
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData , useNavigate } from 'react-router-dom';
 
 export async function loader({params:{id},request})
 {
-  // const url = new URL(request.url)
-  // const pathname = url.pathname;
-
   try{
     const [contactDataRes,occupationRes] = await Promise.all([
       fetch(`http://localhost:3000/detail/${id}`),
@@ -27,9 +24,14 @@ export async function loader({params:{id},request})
 
 
 
+
+
+
+
 function DetailPage()
 {
   const {contactDetails,occupations}= useLoaderData();
+  const navigate = useNavigate();
   
   useEffect(() => {
     document.body.classList.add("body2-style");
@@ -40,6 +42,27 @@ function DetailPage()
   }, []);
 
 
+  async function updateFavouriteStatus(id, newStatus) {
+    try {
+      const response = await fetch(`http://localhost:3000/update/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ favourite_status: newStatus }),
+      });
+  
+      if (!response.ok) throw new Error("Failed to update status");
+  
+      return await response.json();
+    } catch (error) {
+      console.error("Update error:", error);
+    }
+  }
+
+  async function handleUpdate(id, newStatus) {
+    await updateFavouriteStatus(id, newStatus);
+    navigate(0);
+  }
+  
 
 
   return(
@@ -49,7 +72,8 @@ function DetailPage()
         <DetailedCard
         key={contactDetails.id}
         {...contactDetails}
-        occupations = {occupations}/>
+        occupations = {occupations}
+        onUpdate = {handleUpdate}/>
       </main>
     </div>
   )
