@@ -15,7 +15,7 @@ function DetailedCard(props) {
 
   return (
     <>
-      <Link to={location.state} className='back-arrow'>
+      <Link to={location.state} className={props.darkMode ? "back-arrow-darkmode" : "back-arrow-lightmode"}>
         <IoIosArrowBack className='back'/>
         <div className='back-arrow-desc'>
           Back

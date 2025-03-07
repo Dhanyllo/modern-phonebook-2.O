@@ -1,4 +1,4 @@
-import { StrictMode} from 'react'
+import { StrictMode , useState , useEffect} from 'react'
 import {
     RouterProvider,
     createBrowserRouter, 
@@ -16,10 +16,34 @@ import NotFound from './pages/NotFound';
 
 function App()
 { 
+
+  function useDarkMode() {
+    const [darkMode, setDarkMode] = useState(() => {
+      return localStorage.getItem("darkMode") === "true";
+    });
+  
+    useEffect(() => {
+      // if (darkMode) {
+      //   document.documentElement.classList.add("dark-mode");
+      // } else {
+      //   document.documentElement.classList.remove("dark-mode");
+      // }
+      localStorage.setItem("darkMode", darkMode);
+    }, [darkMode]);
+  
+    return [darkMode, setDarkMode];
+  }
+
+  const [darkMode, setDarkMode] = useDarkMode();
+
+
+
+
+
   const router = createBrowserRouter(createRoutesFromElements(
     <>
       <Route errorElement={<Error/>}>
-        <Route element={<Header/>} >
+        <Route element={<Header darkMode={darkMode} setDarkMode={setDarkMode}/>} >
           <Route 
             path='/' 
             element={<Home/>} 

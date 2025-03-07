@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import ContactCard from '../components/ContactCard';
-import { useLoaderData, useSearchParams , useNavigate } from 'react-router-dom';
+import { useLoaderData, useSearchParams , useNavigate , useOutletContext } from 'react-router-dom';
 
 
 export async function loader({request}) {
@@ -42,7 +42,9 @@ catch(err) {
 
 
 function Home(){
+
   const {favStatus,contacts,search} = useLoaderData()
+  const darkMode = useOutletContext();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page")) || 1;
@@ -84,6 +86,7 @@ function Home(){
         imageURL = {item.image_url}
         favouriteStatus = {item.favourite_status}
         onUpdate = {handleUpdate}
+        darkMode = {darkMode}
       />
     )
   }) :  contacts.data.map(item => {
@@ -97,6 +100,7 @@ function Home(){
         imageURL = {item.image_url}
         favouriteStatus = {item.favourite_status}
         onUpdate = {handleUpdate}
+        darkMode = {darkMode}
       />
     )
   }) 
@@ -104,18 +108,22 @@ function Home(){
 
 
   useEffect(() => {
-    document.body.classList.add("body1-style");
+
+    const BodyBgStyle = darkMode ? "body1-style-darkmode" : "body1-style-lightmode"
+    document.body.classList.add(BodyBgStyle);
     
     return () => {
-      document.body.classList.remove("body1-style"); 
+      document.body.classList.remove(BodyBgStyle); 
     };
-  }, []);
+  }, [darkMode]);
   
 
 
   return(
     <>
-      <Sidebar favStatus={favStatus.exists_status}/>
+      <Sidebar darkMode = {darkMode} 
+        favStatus={favStatus.exists_status}
+      />
       <main className='main-container'>
         <section className='card-grid'>
           {Cards}
@@ -134,7 +142,7 @@ function Home(){
             }}>
             Prev
           </button>
-          <span style={{fontWeight:"bold"}}> 
+          <span className={darkMode ? "pageNumber-darkmode" : "pageNumber-lightmode"}> 
             Page {currentPage} of { search?.totalPages || contacts?.totalPages || 1}
           </span>
           <button 

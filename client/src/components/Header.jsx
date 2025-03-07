@@ -1,12 +1,12 @@
-import React, { useRef , useEffect } from 'react';
+import React, { useRef , useEffect , useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { MdLightMode } from "react-icons/md";
 import { MdNotificationsNone } from "react-icons/md";
 import { useSearchParams } from "react-router-dom";
+import { IoIosSearch } from "react-icons/io";
 
 
-function Header() {
-  
+function Header(props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("searchParams");
   const inputRef = useRef(null)
@@ -14,7 +14,6 @@ function Header() {
   function HandleChange(event){
     setSearchParams({ searchParams: event.target.value });
   }
-
 
   useEffect(() => {
     function handleKeyDown(event) {
@@ -38,38 +37,44 @@ function Header() {
   return (
     <>
       <header className="header">
-        <div className="grel-icon">
-          <img className="header-logo" src="/images/sifca.png" alt="" />
+        <div  className={props.darkMode ? "grel-icon-darkmode" : "grel-icon-lightmode"}>
+          {
+            props.darkMode ? <img className="header-logo" src="/images/GREL2.webp" alt="" /> : 
+            <img className="header-logo" src="/images/sifca.png" alt="" />
+          } 
         </div>
 
         <div className="search-bar">
           <div className="search-input-container">
-            <img src="/images/search.png" alt="search-icon" className="search-icon" />
+          <IoIosSearch className= {props.darkMode ? "search-icon-darkmode" : "search-icon-lightmode"} />
             <input 
               ref={inputRef} 
               autoComplete='off' 
               onChange={HandleChange} 
               type="text" value={searchQuery} 
-              className="search-bar-input" 
+              className= {props.darkMode ? "search-bar-input-darkmode" : "search-bar-input-lightmode"} 
               name="search" 
               placeholder="Type '&#65295;'  to search ...."/>
           </div>
         </div>
 
-        <div className="tools-wrap">
+        <div className= {props.darkMode ? "tools-wrap-darkmode" : "tools-wrap-lightmode"}>
             <div class="notifications-icon-container">
-              <MdNotificationsNone className='notifications-icon1'/>
+              <MdNotificationsNone className= {props.darkMode ? "notifications-icon1-darkmode" : "notifications-icon1-lightmode"} />
               <div class="notifications-count">
                 3
               </div>
             </div>
 
           <div className="wrap">
-            <MdLightMode className='dark-light-mode' />
+            <MdLightMode 
+              onClick={() => props.setDarkMode((prev) => !prev)} 
+              className={props.darkMode ? "darkmode" : "lightmode"} 
+            />
           </div>
         </div>
       </header>
-      <Outlet/>
+      <Outlet context={props.darkMode}/>
       </>
   )
 }

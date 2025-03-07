@@ -13,7 +13,7 @@ function FavouriteCard(props) {
   }
 
   return (
-      <div className='card-wrap'>
+      <div className={props.darkMode ? "card-wrap-darkmode" : "card-wrap-lightmode"}>
         <div className='btn-layer'>
           <button className='fav-btn' onClick={() => props.onUpdate(props.id, !props.favouriteStatus)}>
             <FaHeart style={color} className='heart-icon2' />
