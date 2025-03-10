@@ -10,8 +10,9 @@ import { useLocation } from 'react-router-dom';
 function DetailedCard(props) { 
   const location = useLocation(); 
   const favouriteStyle = {
-    color: props.favourite_status === 1 ? "red" : "white"
+  color: props.favourite_status === 1 ? "red" : "white"
 };
+console.log(props);
 
   return (
     <>
@@ -32,7 +33,7 @@ function DetailedCard(props) {
               <button className='delete-btn'>
                 <MdDeleteOutline  className='delete'/>
               </button>
-              <button className='favourite-btn' onClick={() => props.onUpdate(props.contact_id, !props.favourite_status)}>
+              <button className='favourite-btn' onClick={() => props.onUpdate(props.id, !props.favourite_status)}>
               <FaHeart style={favouriteStyle} className='fav-icon' /> 
               </button>
               <button className='share-btn'>

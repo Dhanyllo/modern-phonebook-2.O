@@ -1,6 +1,6 @@
 import React from 'react'
 import { FaHeart } from "react-icons/fa6";
-import { useNavigation , Link ,useLocation } from 'react-router-dom';
+import { useNavigation , Link , useLocation } from 'react-router-dom';
 
 
 function ContactCard(props) {
@@ -8,7 +8,8 @@ function ContactCard(props) {
   const Navigation = useNavigation();
   const isNavigatingToCard = Navigation.location?.pathname === `/detail/${props.id}`
   console.log(props);
-  let color;
+  
+let color;
 
 if (props.favouriteStatus === 0 && props.darkMode) {
   color = "white";
