@@ -14,7 +14,19 @@ function DetailedCard(props) {
 };
 console.log(props);
 
+
+const occupations = props.occupations.map((item, index, array) => {
   return (
+    <>
+      <div className="occupation1">{`#${item.occupation}`}</div>
+      {index !== array.length - 1 && <div className="vertical-line"></div>}
+    </>
+  );
+});
+
+
+
+return (
     <>
       <Link to={location.state} className={props.darkMode ? "back-arrow-darkmode" : "back-arrow-lightmode"}>
         <IoIosArrowBack className='back'/>
@@ -46,9 +58,12 @@ console.log(props);
               {`${props.first_name} ${props.other_names}`}
             </div>
             <div className='occupations'>
-              <div className='occupation1'>#Lawyer</div>
-              <div class="vertical-line"></div>
-              <div className='occupation2'>#Doctor</div>
+              {/* <div className='occupation1'>#Lawyer</div>
+              <div className="vertical-line"></div> */}
+              {/* <div className='occupation2'>#Doctor</div> */}
+              
+              {occupations}
+
             </div>
           </div>
           <div className='credentials'>  
@@ -121,4 +136,4 @@ console.log(props);
   )
 }
 
-export default DetailedCard
+export default DetailedCard;

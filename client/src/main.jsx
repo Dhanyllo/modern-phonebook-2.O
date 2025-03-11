@@ -23,11 +23,6 @@ function App()
     });
   
     useEffect(() => {
-      // if (darkMode) {
-      //   document.documentElement.classList.add("dark-mode");
-      // } else {
-      //   document.documentElement.classList.remove("dark-mode");
-      // }
       localStorage.setItem("darkMode", darkMode);
     }, [darkMode]);
   
@@ -35,9 +30,6 @@ function App()
   }
 
   const [darkMode, setDarkMode] = useDarkMode();
-
-
-
 
 
   const router = createBrowserRouter(createRoutesFromElements(

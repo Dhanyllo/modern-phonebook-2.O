@@ -8,9 +8,11 @@ import { IoIosSearch } from "react-icons/io";
 
 function Header(props) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [notificationToggle, setNotificationToggle] = useState(false);
   const searchQuery = searchParams.get("searchParams");
   const inputRef = useRef(null)
-
+  
+  
   function HandleChange(event){
     setSearchParams({ searchParams: event.target.value });
   }
@@ -33,6 +35,7 @@ function Header(props) {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
 
   return (
     <>
@@ -60,9 +63,11 @@ function Header(props) {
 
         <div className= {props.darkMode ? "tools-wrap-darkmode" : "tools-wrap-lightmode"}>
             <div class="notifications-icon-container">
-              <MdNotificationsNone className= {props.darkMode ? "notifications-icon1-darkmode" : "notifications-icon1-lightmode"} />
+              <MdNotificationsNone onClick={() => setNotificationToggle((prev) => !prev)} 
+                className= {props.darkMode ? "notifications-icon1-darkmode" : "notifications-icon1-lightmode"} 
+              />
               <div class="notifications-count">
-                3
+                0
               </div>
             </div>
 
@@ -71,6 +76,11 @@ function Header(props) {
               onClick={() => props.setDarkMode((prev) => !prev)} 
               className={props.darkMode ? "darkmode" : "lightmode"} 
             />
+          </div>
+        </div>
+        <div className={ notificationToggle ? "notification-container":"notification-container-disabled"}>
+          <div className='notification-field'>
+            COMING SOON
           </div>
         </div>
       </header>
