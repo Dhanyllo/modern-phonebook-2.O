@@ -9,6 +9,10 @@ import {
 } from "react-router-dom";
 
 export async function loader({ request }) {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  console.log(apiUrl);
+  console.log(apiUrl);
+  console.log(apiUrl);
   const url = new URL(request.url);
   const query = url.searchParams.get("searchParams") || "";
   const page = url.searchParams.get("page") || "1";
@@ -19,12 +23,10 @@ export async function loader({ request }) {
 
   try {
     const [favStatusRes, contactsRes, searchRes] = await Promise.all([
-      fetch("http://localhost:3000/favstatus"),
+      fetch(`${apiUrl}/favstatus`),
+      fetch(`${apiUrl}?page=${encodedPageNumber}&limit=${encodePageLimit}`),
       fetch(
-        `http://localhost:3000?page=${encodedPageNumber}&limit=${encodePageLimit}`
-      ),
-      fetch(
-        `http://localhost:3000/search/home?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`
+        `${apiUrl}/search/home?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`
       ),
     ]);
 
