@@ -14,7 +14,7 @@ pipeline {
 
     stage('Build Frontend Image') {
       steps {
-        dir('./client/Dockerfile') {
+        dir('client') {
           sh 'docker build -t ${FRONT_IMAGE}:latest .'
         }
       }
@@ -22,7 +22,7 @@ pipeline {
 
     stage('Build Backend Image') {
       steps {
-        dir('./server/Dockerfile') {
+        dir('server') {
           sh 'docker build -t ${BACK_IMAGE}:latest .'
         }
       }
