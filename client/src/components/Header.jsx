@@ -42,7 +42,7 @@ function Header(props) {
       <header className="header">
         <div className={props.darkMode ? "icon-darkmode" : "icon-lightmode"}>
           <img className="header-logo" src="/images/logo.png" alt="" />
-          <div className="logo-title">MPhone 2.O</div>
+          <div className="logo-title">Mfhone 2.O</div>
         </div>
 
         <div className="search-bar">
