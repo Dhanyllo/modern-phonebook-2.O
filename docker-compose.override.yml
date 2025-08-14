@@ -6,6 +6,8 @@ services:
       - "3000:3000"
     env_file:
       - ./server/.env
+    volumes:
+      - ./server:/app
     restart: always
     depends_on: []
 
@@ -14,9 +16,14 @@ services:
     container_name: myapp-frontend
     ports:
       - "5173:80"
+    volumes:
+      - ./client:/app
     stdin_open: true
     tty: true
     depends_on:
       - backend
     environment:
       NODE_ENV: production
+
+volumes:
+  mysql-data: {}

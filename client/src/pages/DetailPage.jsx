@@ -4,11 +4,16 @@ import DetailedCard from "../components/DetailedCard";
 import { useLoaderData, useNavigate } from "react-router-dom";
 
 export async function loader({ params: { id }, request }) {
-  const apiUrl = import.meta.env.VITE_API_URL;
+  // const apiUrl = import.meta.env.VITE_API_URL;
   try {
+    // const [contactDataRes, occupationRes] = await Promise.all([
+    //   fetch(`${apiUrl}/detail/${id}`),
+    //   fetch(`${apiUrl}/detail/occupations/${id}`),
+    // ]);
+
     const [contactDataRes, occupationRes] = await Promise.all([
-      fetch(`${apiUrl}/detail/${id}`),
-      fetch(`${apiUrl}/detail/occupations/${id}`),
+      fetch(`http://localhost:3000/detail/${id}`),
+      fetch(`http://localhost:3000/detail/occupations/${id}`),
     ]);
 
     const [contactDetails, occupations] = await Promise.all([
