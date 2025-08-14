@@ -21,12 +21,23 @@ export async function loader({ request }) {
   const encodedPageNumber = encodeURIComponent(page);
   const encodePageLimit = encodeURIComponent(limit);
 
+  // try {
+  //   const [favStatusRes, contactsRes, searchRes] = await Promise.all([
+  //     fetch(`${apiUrl}/favstatus`),
+  //     fetch(`${apiUrl}?page=${encodedPageNumber}&limit=${encodePageLimit}`),
+  //     fetch(
+  //       `${apiUrl}/search/home?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`
+  //     ),
+  //   ]);
+
   try {
     const [favStatusRes, contactsRes, searchRes] = await Promise.all([
-      fetch(`${apiUrl}/favstatus`),
-      fetch(`${apiUrl}?page=${encodedPageNumber}&limit=${encodePageLimit}`),
+      fetch(`http://localhost:3000/favstatus`),
       fetch(
-        `${apiUrl}/search/home?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`
+        `http://localhost:3000?page=${encodedPageNumber}&limit=${encodePageLimit}`
+      ),
+      fetch(
+        `http://localhost:3000/search/home?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`
       ),
     ]);
 

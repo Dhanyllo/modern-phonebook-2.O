@@ -1,15 +1,17 @@
 services:
   jenkins:
-    image: jenkins/jenkins:lts
-    container_name: jenkins
+    build:
+      context: .
+      dockerfile: Dockerfile.jenkins
+    container_name: jenkins-compose
     user: root
+    privileged: true
     ports:
       - "8080:8080"
       - "50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
-      - /usr/local/bin/docker:/usr/local/bin/docker
       - ./your-app-root:/workspace
 
 volumes:
