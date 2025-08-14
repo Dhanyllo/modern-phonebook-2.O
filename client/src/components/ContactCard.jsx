@@ -1,4 +1,3 @@
-import React from "react";
 import { FaHeart } from "react-icons/fa6";
 import { useNavigation, Link, useLocation } from "react-router-dom";
 
