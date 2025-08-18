@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 
 export async function loader({ request }) {
-  // const apiUrl = import.meta.env.VITE_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
   const url = new URL(request.url);
   const query = url.searchParams.get("searchParams") || "";
   const page = url.searchParams.get("page") || "1";
@@ -19,23 +19,13 @@ export async function loader({ request }) {
   const encodePageLimit = encodeURIComponent(limit);
 
   try {
-    // const [favStatusRes, favouritesRes, searchRes] = await Promise.all([
-    //   fetch(`${apiUrl}/favstatus`),
-    //   fetch(
-    //     `${apiUrl}/favourites?page=${encodedPageNumber}&limit=${encodePageLimit}`
-    //   ),
-    //   fetch(
-    //     `${apiUrl}/search/favourites?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`
-    //   ),
-    // ]);
-
     const [favStatusRes, favouritesRes, searchRes] = await Promise.all([
-      fetch("http://localhost:3000/favstatus"),
+      fetch(`${apiUrl}/favstatus`),
       fetch(
-        `http://localhost:3000/favourites?page=${encodedPageNumber}&limit=${encodePageLimit}`
+        `${apiUrl}/favourites?page=${encodedPageNumber}&limit=${encodePageLimit}`
       ),
       fetch(
-        `http://localhost:3000/search/favourites?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`
+        `${apiUrl}/search/favourites?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`
       ),
     ]);
 

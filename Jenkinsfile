@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     stages {
-      
         stage('Inject Secrets & Deploy') {
             steps {
                 withCredentials([
@@ -10,13 +9,11 @@ pipeline {
                     string(credentialsId: 'mysql_user', variable: 'mysql_user'),
                     string(credentialsId: 'mysql_database', variable: 'mysql_database'),
                     string(credentialsId: 'mysql_password', variable: 'mysql_password'),
-                    string(credentialsId: 'PORT', variable: 'PORT')
-                ]) 
-                
-                {
+                    string(credentialsId: 'PORT', variable: 'PORT'),
+                    string(credentialsId: 'VITE_API_URL', variable: 'VITE_API_URL')
+                ]) {
                     echo "Creating .env file for backend..."
-                    dir('server') 
-                  {
+                    dir('server') {
                         sh """
                         cat <<EOF > .env
                         mysql_host=${mysql_host}
@@ -26,7 +23,16 @@ pipeline {
                         PORT=${PORT}
                         EOF
                         """
-                  }
+                    }
+
+                    echo "Creating .env file for frontend..."
+                    dir('client') {
+                        sh """
+                        cat <<EOF > .env
+                        VITE_BACKEND_URL=${VITE_API_URL}
+                        EOF
+                        """
+                    }
 
                     echo "Stopping old containers..."
                     sh 'docker-compose -f docker-compose.yml down --remove-orphans'

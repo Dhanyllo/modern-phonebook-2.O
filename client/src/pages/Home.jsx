@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 
 export async function loader({ request }) {
-  // const apiUrl = import.meta.env.VITE_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
   const url = new URL(request.url);
   const query = url.searchParams.get("searchParams") || "";
   const page = url.searchParams.get("page") || "1";
@@ -18,23 +18,12 @@ export async function loader({ request }) {
   const encodedPageNumber = encodeURIComponent(page);
   const encodePageLimit = encodeURIComponent(limit);
 
-  // try {
-  //   const [favStatusRes, contactsRes, searchRes] = await Promise.all([
-  //     fetch(`${apiUrl}/favstatus`),
-  //     fetch(`${apiUrl}?page=${encodedPageNumber}&limit=${encodePageLimit}`),
-  //     fetch(
-  //       `${apiUrl}/search/home?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`
-  //     ),
-  //   ]);
-
   try {
     const [favStatusRes, contactsRes, searchRes] = await Promise.all([
-      fetch(`http://localhost:3000/favstatus`),
+      fetch(`${apiUrl}/favstatus`),
+      fetch(`${apiUrl}?page=${encodedPageNumber}&limit=${encodePageLimit}`),
       fetch(
-        `http://localhost:3000?page=${encodedPageNumber}&limit=${encodePageLimit}`
-      ),
-      fetch(
-        `http://localhost:3000/search/home?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`
+        `${apiUrl}/search/home?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`
       ),
     ]);
 
@@ -43,6 +32,7 @@ export async function loader({ request }) {
       contactsRes.json(),
       searchRes.json(),
     ]);
+
     return { favStatus, contacts, search };
   } catch (err) {
     console.error("Error fetching data:", err);
