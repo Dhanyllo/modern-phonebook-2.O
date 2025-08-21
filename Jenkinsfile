@@ -33,7 +33,7 @@ pipeline {
                     dir('client') {
                         sh """
                         cat <<EOF > .env
-                        VITE_BACKEND_URL=${VITE_API_URL}
+                        VITE_API_URL=${VITE_API_URL}
                         EOF
                         """
                     }
