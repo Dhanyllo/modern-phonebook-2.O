@@ -22,6 +22,8 @@ services:
     tty: true
     depends_on:
       - backend
+    env_file:
+      - ./client/.env.development
     environment:
       NODE_ENV: production
 

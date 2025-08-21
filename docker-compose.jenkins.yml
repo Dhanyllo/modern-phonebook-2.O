@@ -1,27 +1,3 @@
-# services:
-#   jenkins:
-#     build:
-#       context: .
-#       dockerfile: Dockerfile.jenkins
-#     container_name: jenkins-compose
-#     user: root
-#     privileged: true
-#     ports:
-#       - "8080:8080"
-#       - "50000:50000"
-#     volumes:
-#       - jenkins_home:/var/jenkins_home
-#       - /var/run/docker.sock:/var/run/docker.sock
-#       - ./your-app-root:/workspace
-#     logging:
-#       driver: "json-file"
-#       options:
-#         max-size: "10m"
-#         max-file: "3"
-
-# volumes:
-#   jenkins_home:
-
 services:
   jenkins:
     build:
