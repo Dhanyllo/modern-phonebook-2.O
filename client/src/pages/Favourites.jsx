@@ -55,6 +55,7 @@ function Favourites() {
 
   async function updateFavouriteStatus(id, newStatus) {
     try {
+      console.log(apiUrl);
       const response = await fetch(`http://${apiUrl}/update/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -71,7 +72,7 @@ function Favourites() {
 
   async function handleUpdate(id, newStatus) {
     await updateFavouriteStatus(id, newStatus);
-    navigate(0);
+    // navigate(0);
   }
 
   const hasSearchTerm = Boolean(searchParams.get("searchParams"));
