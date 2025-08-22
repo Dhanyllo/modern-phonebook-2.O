@@ -4,7 +4,7 @@ import DetailedCard from "../components/DetailedCard";
 import { useLoaderData, useNavigate } from "react-router-dom";
 
 export async function loader({ params: { id }, request }) {
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL || "/api";
   try {
     const [contactDataRes, occupationRes] = await Promise.all([
       fetch(`${apiUrl}/detail/${id}`),
