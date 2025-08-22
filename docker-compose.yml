@@ -13,7 +13,7 @@ services:
     build: ./client
     container_name: myapp-frontend
     ports:
-      - "5173:80"
+      - "80:80"
     stdin_open: true
     tty: true
     depends_on:
