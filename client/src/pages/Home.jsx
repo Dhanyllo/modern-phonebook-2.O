@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 
 export async function loader({ request }) {
-  const apiUrl = import.meta.env.VITE_API_URL || "/api";
+  const apiUrl = import.meta.env.VITE_API_URL;
   const url = new URL(request.url);
   const query = url.searchParams.get("searchParams") || "";
   const page = url.searchParams.get("page") || "1";
@@ -54,8 +54,7 @@ function Home() {
 
   async function updateFavouriteStatus(id, newStatus) {
     try {
-      console.log(apiUrl);
-      const response = await fetch(`http://${apiUrl}/update/${id}`, {
+      const response = await fetch(`${apiUrl}/update/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ favourite_status: newStatus }),
