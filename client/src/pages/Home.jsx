@@ -33,7 +33,7 @@ export async function loader({ request }) {
       searchRes.json(),
     ]);
 
-    return { favStatus, contacts, search };
+    return { favStatus, contacts, search, apiUrl };
   } catch (err) {
     console.error("Error fetching data:", err);
     throw {
@@ -45,7 +45,7 @@ export async function loader({ request }) {
 }
 
 function Home() {
-  const { favStatus, contacts, search } = useLoaderData();
+  const { favStatus, contacts, search, apiUrl } = useLoaderData();
   const darkMode = useOutletContext();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -54,6 +54,7 @@ function Home() {
 
   async function updateFavouriteStatus(id, newStatus) {
     try {
+      console.log(apiUrl);
       const response = await fetch(`http://${apiUrl}/update/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },

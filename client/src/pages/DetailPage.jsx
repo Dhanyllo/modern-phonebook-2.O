@@ -15,7 +15,7 @@ export async function loader({ params: { id }, request }) {
       contactDataRes.json(),
       occupationRes.json(),
     ]);
-    return { contactDetails, occupations };
+    return { contactDetails, occupations, apiUrl };
   } catch (err) {
     throw {
       error: err,
@@ -24,7 +24,7 @@ export async function loader({ params: { id }, request }) {
 }
 
 function DetailPage(props) {
-  const { contactDetails, occupations } = useLoaderData();
+  const { contactDetails, occupations, apiUrl } = useLoaderData();
   const navigate = useNavigate();
 
   useEffect(() => {

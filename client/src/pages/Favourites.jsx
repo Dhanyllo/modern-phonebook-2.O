@@ -34,7 +34,7 @@ export async function loader({ request }) {
       favouritesRes.json(),
       searchRes.json(),
     ]);
-    return { favStatus, favourites, search };
+    return { favStatus, favourites, search, apiUrl };
   } catch (err) {
     console.error("Error fetching data:", err);
     throw {
@@ -46,7 +46,7 @@ export async function loader({ request }) {
 }
 
 function Favourites() {
-  const { favStatus, favourites, search } = useLoaderData();
+  const { favStatus, favourites, search, apiUrl } = useLoaderData();
   const darkMode = useOutletContext();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
