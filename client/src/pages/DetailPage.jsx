@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Header2 from "../components/Header2";
 import DetailedCard from "../components/DetailedCard";
 import { useLoaderData, useNavigate } from "react-router-dom";
 
 export async function loader({ params: { id }, request }) {
-  const apiUrl = import.meta.env.VITE_API_URL || "/api";
+  const apiUrl = import.meta.env.VITE_API_URL;
   try {
     const [contactDataRes, occupationRes] = await Promise.all([
       fetch(`${apiUrl}/detail/${id}`),
@@ -40,7 +40,7 @@ function DetailPage(props) {
 
   async function updateFavouriteStatus(id, newStatus) {
     try {
-      const response = await fetch(`http://localhost:3000/update/${id}`, {
+      const response = await fetch(`http://${apiUrl}/update/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ favourite_status: newStatus }),
