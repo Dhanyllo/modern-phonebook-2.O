@@ -23,6 +23,8 @@
 #     environment:
 #       NODE_ENV: production
 
+version: "3.9"
+
 services:
   backend:
     build: ./server
@@ -37,6 +39,7 @@ services:
     build: ./client
     container_name: myapp-frontend
     volumes:
+      - frontend-html:/usr/share/nginx/html
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
     ports:
@@ -54,6 +57,7 @@ services:
     image: certbot/certbot
     container_name: certbot
     volumes:
+      - frontend-html:/usr/share/nginx/html
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
     entrypoint: >
@@ -62,5 +66,6 @@ services:
       sleep 12h & wait $${!}; done"
 
 volumes:
+  frontend-html:
   certbot-etc:
   certbot-var:
