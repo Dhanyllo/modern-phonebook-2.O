@@ -1,3 +1,28 @@
+# services:
+#   backend:
+#     build: ./server
+#     container_name: myapp-backend
+#     ports:
+#       - "3000:3000"
+#     env_file:
+#       - ./server/.env
+#     restart: always
+#     depends_on: []
+
+#   frontend:
+#     build: ./client
+#     container_name: myapp-frontend
+#     ports:
+#       - "80:80"
+#     stdin_open: true
+#     tty: true
+#     depends_on:
+#       - backend
+#     env_file:
+#       - ./client/.env
+#     environment:
+#       NODE_ENV: production
+
 services:
   backend:
     build: ./server
@@ -7,18 +32,37 @@ services:
     env_file:
       - ./server/.env
     restart: always
-    depends_on: []
 
   frontend:
     build: ./client
     container_name: myapp-frontend
+    volumes:
+      - ./client/nginx.conf:/etc/nginx/conf.d/default.conf
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
     ports:
       - "80:80"
-    stdin_open: true
-    tty: true
+      - "443:443"
     depends_on:
       - backend
     env_file:
       - ./client/.env
     environment:
       NODE_ENV: production
+    restart: always
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - ./client/nginx.conf:/etc/nginx/conf.d/default.conf
+    entrypoint: >
+      sh -c "trap exit TERM; while :; do
+      certbot renew --webroot -w /usr/share/nginx/html;
+      sleep 12h & wait $${!}; done"
+
+volumes:
+  certbot-etc:
+  certbot-var:
