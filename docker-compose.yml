@@ -36,6 +36,9 @@ services:
   frontend:
     build: ./client
     container_name: myapp-frontend
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
     ports:
       - "80:80"
       - "443:443"
