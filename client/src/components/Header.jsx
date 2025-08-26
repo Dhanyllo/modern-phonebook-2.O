@@ -11,8 +11,6 @@ function Header(props) {
   const searchQuery = searchParams.get("searchParams");
   const inputRef = useRef(null);
 
-  console.log(props.darkMode);
-
   function HandleChange(event) {
     setSearchParams({ searchParams: event.target.value });
   }

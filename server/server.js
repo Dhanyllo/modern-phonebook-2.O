@@ -310,7 +310,7 @@ app.patch("/update/:id", (req, res) => {
         console.error("Update error:", err);
         return res.status(500).json({ message: "Database update failed" });
       }
-      res.json({ message: "Update successful" });
+      res.json({ message: "Updated successful" });
     }
   );
 });

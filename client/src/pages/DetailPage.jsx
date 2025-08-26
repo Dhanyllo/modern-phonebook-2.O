@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Header2 from "../components/Header2";
 import DetailedCard from "../components/DetailedCard";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useLoaderData, useRevalidator } from "react-router-dom";
 
 export async function loader({ params: { id }, request }) {
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -15,17 +15,16 @@ export async function loader({ params: { id }, request }) {
       contactDataRes.json(),
       occupationRes.json(),
     ]);
+
     return { contactDetails, occupations, apiUrl };
   } catch (err) {
-    throw {
-      error: err,
-    };
+    throw { error: err };
   }
 }
 
 function DetailPage(props) {
   const { contactDetails, occupations, apiUrl } = useLoaderData();
-  const navigate = useNavigate();
+  const revalidator = useRevalidator();
 
   useEffect(() => {
     const BodyBgStyle = props.darkMode
@@ -56,7 +55,7 @@ function DetailPage(props) {
 
   async function handleUpdate(id, newStatus) {
     await updateFavouriteStatus(id, newStatus);
-    navigate(0);
+    revalidator.revalidate();
   }
 
   return (

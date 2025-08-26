@@ -9,9 +9,9 @@ function ContactCard(props) {
 
   let color;
 
-  if (props.favouriteStatus === 0 && props.darkMode) {
+  if (!props.favouriteStatus && props.darkMode) {
     color = "white";
-  } else if (props.favouriteStatus === 0 && props.darkMode === false) {
+  } else if (!props.favouriteStatus && !props.darkMode) {
     color = "inherit";
   } else {
     color = "red";
@@ -21,14 +21,7 @@ function ContactCard(props) {
     color: color,
   };
 
-  // const favouriteStyle = {
-  //   color:
-  //     props.favourite_status === 0
-  //       ? props.darkMode
-  //         ? "white"
-  //         : "inherit"
-  //       : "red",
-  // };
+  console.log(color);
 
   const firstLetter = props.firstName.charAt(0);
 

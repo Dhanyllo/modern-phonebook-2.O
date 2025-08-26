@@ -4,8 +4,8 @@ import ContactCard from "../components/ContactCard";
 import {
   useLoaderData,
   useSearchParams,
-  useNavigate,
   useOutletContext,
+  useRevalidator,
 } from "react-router-dom";
 
 export async function loader({ request }) {
@@ -47,8 +47,9 @@ export async function loader({ request }) {
 function Home() {
   const { favStatus, contacts, search, apiUrl } = useLoaderData();
   const darkMode = useOutletContext();
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const revalidator = useRevalidator();
+
   const currentPage = parseInt(searchParams.get("page")) || 1;
   const limit = 15;
 
@@ -70,42 +71,33 @@ function Home() {
 
   async function handleUpdate(id, newStatus) {
     await updateFavouriteStatus(id, newStatus);
-    navigate(0);
+    revalidator.revalidate();
   }
 
   const hasSearchTerm = Boolean(searchParams.get("searchParams"));
-  const Cards =
-    hasSearchTerm && search.data?.length > 0
-      ? search.data.map((item) => {
-          return (
-            <ContactCard
-              key={item.id}
-              id={item.id}
-              firstName={item.first_name}
-              otherNames={item.other_names}
-              phoneNumber={item.phone_number}
-              imageURL={item.image_url}
-              favouriteStatus={item.favourite_status}
-              onUpdate={handleUpdate}
-              darkMode={darkMode}
-            />
-          );
-        })
-      : contacts.data.map((item) => {
-          return (
-            <ContactCard
-              key={item.id}
-              id={item.id}
-              firstName={item.first_name}
-              otherNames={item.other_names}
-              phoneNumber={item.phone_number}
-              imageURL={item.image_url}
-              favouriteStatus={item.favourite_status}
-              onUpdate={handleUpdate}
-              darkMode={darkMode}
-            />
-          );
-        });
+  const results = hasSearchTerm ? search?.data : contacts?.data;
+  const totalPages = hasSearchTerm ? search?.totalPages : contacts?.totalPages;
+
+  let Cards;
+  if (results && results.length > 0) {
+    Cards = results.map((item) => (
+      <ContactCard
+        key={item.id}
+        id={item.id}
+        firstName={item.first_name}
+        otherNames={item.other_names}
+        phoneNumber={item.phone_number}
+        imageURL={item.image_url}
+        favouriteStatus={item.favourite_status}
+        onUpdate={handleUpdate}
+        darkMode={darkMode}
+      />
+    ));
+  } else if (!hasSearchTerm) {
+    Cards = <p className="empty-directory-container">No data added.</p>;
+  } else {
+    Cards = null;
+  }
 
   useEffect(() => {
     const BodyBgStyle = darkMode
@@ -123,44 +115,48 @@ function Home() {
       <Sidebar darkMode={darkMode} favStatus={favStatus.exists_status} />
       <main className="main-container">
         <section className="card-grid">{Cards}</section>
-        <div className="pageNav">
-          <button
-            className="previous"
-            aria-disabled={currentPage === 1}
-            onClick={() => {
-              setSearchParams((prevParams) => {
-                const newParams = new URLSearchParams(prevParams);
-                newParams.set("page", currentPage - 1);
-                newParams.set("limit", limit);
-                return newParams;
-              });
-            }}
-          >
-            Prev
-          </button>
-          <span
-            className={
-              darkMode ? "pageNumber-darkmode" : "pageNumber-lightmode"
-            }
-          >
-            Page {currentPage} of{" "}
-            {search?.totalPages || contacts?.totalPages || 1}
-          </span>
-          <button
-            className="next"
-            aria-disabled={currentPage === search.totalPages}
-            onClick={() => {
-              setSearchParams((prevParams) => {
-                const newParams = new URLSearchParams(prevParams);
-                newParams.set("page", currentPage + 1);
-                newParams.set("limit", limit);
-                return newParams;
-              });
-            }}
-          >
-            Next
-          </button>
-        </div>
+
+        {results && results.length > 0 && (
+          <div className="pageNav">
+            <button
+              className="previous"
+              aria-disabled={currentPage === 1}
+              onClick={() => {
+                setSearchParams((prevParams) => {
+                  const newParams = new URLSearchParams(prevParams);
+                  newParams.set("page", currentPage - 1);
+                  newParams.set("limit", limit);
+                  return newParams;
+                });
+              }}
+            >
+              Prev
+            </button>
+
+            <span
+              className={
+                darkMode ? "pageNumber-darkmode" : "pageNumber-lightmode"
+              }
+            >
+              Page {currentPage} of {totalPages || 1}
+            </span>
+
+            <button
+              className="next"
+              aria-disabled={currentPage === totalPages || totalPages === 0}
+              onClick={() => {
+                setSearchParams((prevParams) => {
+                  const newParams = new URLSearchParams(prevParams);
+                  newParams.set("page", currentPage + 1);
+                  newParams.set("limit", limit);
+                  return newParams;
+                });
+              }}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </main>
     </>
   );

@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteOutline } from "react-icons/md";
@@ -10,7 +9,7 @@ import { useLocation } from "react-router-dom";
 function DetailedCard(props) {
   const location = useLocation();
   const favouriteStyle = {
-    color: props.favourite_status === 1 ? "red" : "white",
+    color: props.favourite_status ? "red" : "white",
   };
 
   const occupations = props.occupations.map((item, index, array) => {
@@ -65,13 +64,7 @@ function DetailedCard(props) {
             <div className="person-name">
               {`${props.first_name} ${props.other_names}`}
             </div>
-            <div className="occupations">
-              {/* <div className='occupation1'>#Lawyer</div>
-              <div className="vertical-line"></div> */}
-              {/* <div className='occupation2'>#Doctor</div> */}
-
-              {occupations}
-            </div>
+            <div className="occupations">{occupations}</div>
           </div>
           <div className="credentials">
             <div className="number-detail">
