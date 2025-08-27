@@ -99,7 +99,17 @@ function Favourites() {
       />
     ));
   } else if (!hasSearchTerm) {
-    Cards = <p className="empty-directory-container">No data added.</p>;
+    Cards = (
+      <p
+        className={
+          darkMode
+            ? "empty-directory-container-darkmode"
+            : "empty-directory-container-lightmode"
+        }
+      >
+        No favourites yet.
+      </p>
+    );
   } else {
     Cards = null;
   }

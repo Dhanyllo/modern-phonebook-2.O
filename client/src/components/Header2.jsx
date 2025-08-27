@@ -7,6 +7,7 @@ import { useNavigation } from "react-router-dom";
 function Header2(props) {
   console.log(props);
   const Navigation = useNavigation();
+  const [notificationToggle, setNotificationToggle] = useState(false);
   const isNavigatingToAllContacts = Navigation.location?.pathname === "/";
   const isNavigatingToFavourites =
     Navigation.location?.pathname === "/favourites";
@@ -41,7 +42,10 @@ function Header2(props) {
         }
       >
         <div class="notifications-icon-container">
-          <MdNotificationsNone className="notifications-icon2" />
+          <MdNotificationsNone
+            onClick={() => setNotificationToggle((prev) => !prev)}
+            className="notifications-icon2"
+          />
           <div class="notifications-count">3</div>
         </div>
 
@@ -51,6 +55,15 @@ function Header2(props) {
             className="darkmode2"
           />
         </div>
+      </div>
+      <div
+        className={
+          notificationToggle
+            ? "notification-container"
+            : "notification-container-disabled"
+        }
+      >
+        <div className="notification-field">COMING SOON</div>
       </div>
     </header>
   );

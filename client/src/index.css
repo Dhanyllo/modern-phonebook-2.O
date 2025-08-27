@@ -548,12 +548,21 @@ body {
   color: black;
 }
 
-.empty-directory-container {
+.empty-directory-container-lightmode {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 900px;
   font-weight: 500;
+}
+
+.empty-directory-container-darkmode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 900px;
+  font-weight: 500;
+  color: white;
 }
 
 .card-image {
@@ -882,6 +891,8 @@ ul a:hover {
 
 .occupations {
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-direction: row;
   column-gap: 5px;
 }

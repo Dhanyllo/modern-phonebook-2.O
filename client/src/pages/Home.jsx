@@ -94,7 +94,17 @@ function Home() {
       />
     ));
   } else if (!hasSearchTerm) {
-    Cards = <p className="empty-directory-container">No data added.</p>;
+    Cards = (
+      <p
+        className={
+          darkMode
+            ? "empty-directory-container-darkmode"
+            : "empty-directory-container-lightmode"
+        }
+      >
+        No contacts added.
+      </p>
+    );
   } else {
     Cards = null;
   }
