@@ -1,0 +1,269 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 2000;
+}
+
+.modalOverlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mainContainer {
+  background: white;
+  height: 550px;
+  width: 50%;
+  transform: translateY(-30px);
+  max-width: 1000px;
+  border-radius: 8px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transition: all 0.3s ease;
+  padding-bottom: 50px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 38px;
+  overflow-y: scroll;
+}
+
+.modalOverlay.show .mainContainer {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.btnContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  margin-bottom: 10px;
+  margin-right: 5px;
+}
+
+.modalClose {
+  position: absolute;
+  top: 35px;
+  right: 0px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.modalClose svg {
+  transition: transform 0.3s ease, fill 0.3s ease;
+  fill: red;
+}
+
+.modalClose svg:hover {
+  transform: rotate(360deg);
+  fill: red;
+}
+
+.imgIcon {
+  height: 80px;
+  width: 80px;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  background-color: #3ca62a;
+  border-style: solid;
+  border-color: white;
+  border-width: 2px;
+  border-radius: 80px;
+}
+
+.title {
+  margin-bottom: 20px;
+}
+
+.text1 {
+  color: #25324b;
+  font-size: 25px;
+  font-weight: 700;
+}
+.text2 {
+  color: #25324b;
+  font-size: 25px;
+  font-weight: 700;
+}
+.text3 {
+  font-weight: thin;
+  color: #515b6f;
+}
+.text4 {
+  color: #202430;
+  font-weight: 700;
+}
+.text5 {
+  color: #a8adb7;
+}
+.text6 {
+  color: #7c8493;
+}
+.text7 {
+  /* color: #25324b; */
+  font-weight: 700;
+  color: red;
+}
+
+.imgSideText {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+
+.headerContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 20px;
+}
+
+.companyLogo {
+  height: 80px;
+  width: 70px;
+}
+
+.formLayer1 {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+
+textarea {
+  height: 100px;
+  text-indent: 5px;
+  padding-top: 2px;
+  resize: none;
+  border-radius: 0px;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+textarea::placeholder {
+  padding-top: 5px;
+}
+
+.textareaIcons {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  column-gap: 10px;
+  padding-left: 10px;
+  height: 30px;
+  border-style: solid;
+  border-color: gray;
+  border-top-width: 0px;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+  border-right-width: 1px;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  margin-top: -5px;
+  padding: 2px 5px;
+}
+
+.textareaIcons button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 25px;
+}
+.textareaIcons button:hover {
+  background-color: rgba(232, 231, 231, 0.5);
+}
+
+.additionalSection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cvSide {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cvStyle {
+  width: 200px;
+  white-space: nowrap;
+  text-align: center;
+  margin-right: 4px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  column-gap: 5px;
+  border-width: 2px;
+  border-style: dashed;
+  border-color: #4640de;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 15px 15px;
+}
+.cvStyle:hover {
+  background-color: rgb(231, 231, 231);
+}
+
+.fileBtn {
+  display: none;
+}
+
+.formButton {
+  background-color: #4640de;
+  padding: 10px 5px;
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  color: white;
+  margin-bottom: 20px;
+  border-radius: 2px;
+}
+
+.privacyStatement {
+  text-decoration: none;
+  color: #4640de;
+}
+
+.layer1 {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+}
+.layer1 input {
+  height: 30px;
+  text-indent: 5px;
+}
+
+.layer2 {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+}
+.layer2 input {
+  height: 30px;
+  text-indent: 5px;
+}
+
+label {
+  font-weight: 700;
+  color: #515b6f;
+}

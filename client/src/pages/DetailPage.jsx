@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Header2 from "../components/Header2";
 import DetailedCard from "../components/DetailedCard";
 import { useLoaderData, useRevalidator } from "react-router-dom";
+import UpdateFormModal from "../components/UpdateFormModal/UpdateFormModal";
 
 export async function loader({ params: { id }, request }) {
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -24,6 +25,8 @@ export async function loader({ params: { id }, request }) {
 
 function DetailPage(props) {
   const { contactDetails, occupations, apiUrl } = useLoaderData();
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const handleCloseProductModal = () => setIsProductModalOpen(false);
   const revalidator = useRevalidator();
 
   useEffect(() => {
@@ -68,8 +71,14 @@ function DetailPage(props) {
           occupations={occupations}
           onUpdate={handleUpdate}
           darkMode={props.darkMode}
+          setIsProductModalOpen={setIsProductModalOpen}
         />
       </main>
+      <UpdateFormModal
+        isProductModalOpen={isProductModalOpen}
+        handleCloseProductModal={handleCloseProductModal}
+        darkMode={props.darkMode}
+      />
     </div>
   );
 }

@@ -4,12 +4,20 @@ import { MdLightMode } from "react-icons/md";
 import { MdNotificationsNone } from "react-icons/md";
 import { useSearchParams } from "react-router-dom";
 import { IoIosSearch } from "react-icons/io";
+import { MdAddCircle } from "react-icons/md";
+import { FaRegUserCircle } from "react-icons/fa";
 
 function Header(props) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [profileToggle, setProfileToggle] = useState(false);
   const [notificationToggle, setNotificationToggle] = useState(false);
   const searchQuery = searchParams.get("searchParams");
   const inputRef = useRef(null);
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const handleCloseProductModal = () => setIsProductModalOpen(false);
+  const handleProductOpenModal = () => {
+    setIsProductModalOpen(true);
+  };
 
   function HandleChange(event) {
     setSearchParams({ searchParams: event.target.value });
@@ -74,9 +82,22 @@ function Header(props) {
             props.darkMode ? "tools-wrap-darkmode" : "tools-wrap-lightmode"
           }
         >
+          <div className="profile">
+            <FaRegUserCircle
+              onMouseEnter={() => setProfileToggle(true)}
+              onMouseLeave={() => setProfileToggle(false)}
+              className={
+                props.darkMode
+                  ? "profile-icon-darkmode"
+                  : "profile-icon-lightmode"
+              }
+            />
+          </div>
+
           <div class="notifications-icon-container">
             <MdNotificationsNone
-              onClick={() => setNotificationToggle((prev) => !prev)}
+              onMouseEnter={() => setNotificationToggle(true)}
+              onMouseLeave={() => setNotificationToggle(false)}
               className={
                 props.darkMode
                   ? "notifications-icon1-darkmode"
@@ -92,6 +113,22 @@ function Header(props) {
               className={props.darkMode ? "darkmode" : "lightmode"}
             />
           </div>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              handleProductOpenModal();
+            }}
+            className="add-contact-btn"
+          >
+            <MdAddCircle
+              className={
+                props.darkMode
+                  ? "add-btn-icon-darkmode"
+                  : "add-btn-icon-lightmode"
+              }
+              size={32}
+            />
+          </button>
         </div>
         <div
           className={
@@ -99,11 +136,29 @@ function Header(props) {
               ? "notification-container"
               : "notification-container-disabled"
           }
+          onMouseEnter={() => setNotificationToggle(true)}
+          onMouseLeave={() => setNotificationToggle(false)}
         >
-          <div className="notification-field">COMING SOON</div>
+          <div className="notification-field">NOTIFICATIONS COMING SOON</div>
+        </div>
+        <div
+          className={
+            profileToggle ? "profile-container" : "profile-container-disabled"
+          }
+          onMouseEnter={() => setProfileToggle(true)}
+          onMouseLeave={() => setProfileToggle(false)}
+        >
+          <div className="profile-field-layer1">COMING SOON</div>
         </div>
       </header>
-      <Outlet context={props.darkMode} />
+
+      <Outlet
+        context={{
+          darkMode: props.darkMode,
+          isProductModalOpen,
+          handleCloseProductModal,
+        }}
+      />
     </>
   );
 }

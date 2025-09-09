@@ -13,6 +13,8 @@ import DetailPage, { loader as detailLoader } from "./pages/DetailPage";
 import Header from "./components/Header";
 import Error from "./pages/Error";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login/Login";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 
 function App() {
   function useDarkMode() {
@@ -49,6 +51,20 @@ function App() {
               <DetailPage darkMode={darkMode} setDarkMode={setDarkMode} />
             }
             loader={detailLoader}
+          />
+
+          <Route
+            path="/login"
+            element={<Login darkMode={darkMode} setDarkMode={setDarkMode} />}
+            // loader={detailLoader}
+          />
+
+          <Route
+            path="/forgotPassword"
+            element={
+              <ForgotPassword darkMode={darkMode} setDarkMode={setDarkMode} />
+            }
+            // loader={detailLoader}
           />
           <Route path="*" element={<NotFound />} />
         </Route>

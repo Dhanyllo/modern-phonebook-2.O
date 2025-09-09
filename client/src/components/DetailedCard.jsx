@@ -12,6 +12,10 @@ function DetailedCard(props) {
     color: props.favourite_status ? "red" : "white",
   };
 
+  const handleProductOpenModal = () => {
+    props.setIsProductModalOpen(true);
+  };
+
   const occupations = props.occupations.map((item, index, array) => {
     return (
       <>
@@ -41,7 +45,13 @@ function DetailedCard(props) {
               alt="profile-image"
             />
             <div className="detail-btn">
-              <button className="edit-btn">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleProductOpenModal();
+                }}
+                className="edit-btn"
+              >
                 <CiEdit className="edit" />
               </button>
               <button className="delete-btn">

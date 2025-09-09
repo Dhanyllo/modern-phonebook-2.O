@@ -229,6 +229,7 @@ body {
   align-items: center;
   justify-content: left;
   padding-left: 30px;
+  padding-right: 30px;
   column-gap: 23px;
   flex: 0.7;
   height: 100%;
@@ -242,11 +243,90 @@ body {
   align-items: center;
   justify-content: left;
   padding-left: 30px;
+  padding-right: 30px;
   column-gap: 23px;
   flex: 0.7;
   height: 100%;
   box-shadow: inset 1px 2px 3px rgba(0, 0, 0, 0.15);
   background-color: white;
+}
+
+.profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-icon-lightmode {
+  width: 30px;
+  height: 30px;
+  cursor: "pointer";
+  color: black;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.profile-icon-lightmode:hover {
+  opacity: 0.7;
+}
+
+.profile-icon-darkmode {
+  width: 30px;
+  height: 30px;
+  cursor: "pointer";
+  color: white;
+  transition: all 0.1s ease-in-out;
+}
+
+.profile-icon-darkmode:hover {
+  color: black;
+}
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  width: 260px;
+  height: 400px;
+  background-color: rgb(248, 248, 248);
+  top: 35px;
+  right: 20px;
+  /* border-style: solid; */
+  border-width: 1px;
+  border-radius: 10px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 8px;
+  margin-top: 20px;
+  scroll-behavior: smooth;
+}
+
+.profile-container::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 31px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid rgb(248, 248, 248);
+}
+
+.profile-container-disabled {
+  display: none;
+}
+
+.profile-field-layer1 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  row-gap: 8px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .sidebar-darkmode {
@@ -377,6 +457,7 @@ body {
   width: 35px;
   height: 32px;
   color: white;
+  transition: all 0.1s ease-in-out;
 }
 
 .notifications-icon1-darkmode:hover {
@@ -387,6 +468,7 @@ body {
   width: 35px;
   height: 32px;
   color: black;
+  transition: opacity 0.1s ease-in-out;
 }
 
 .notifications-icon1-lightmode:hover {
@@ -1095,6 +1177,43 @@ ul a:hover {
   padding-bottom: 60px;
 }
 
+.add-contact-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: inherit;
+  cursor: pointer;
+}
+
+.add-btn-icon-darkmode {
+  color: white;
+  transition: all 0.1s ease-in-out;
+}
+
+.add-btn-icon-darkmode:hover {
+  color: red;
+  opacity: 0.9;
+}
+
+.add-btn-icon-darkmode:active {
+  color: red;
+  opacity: 0.7;
+}
+
+.add-btn-icon-lightmode {
+  color: red;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.add-btn-icon-lightmode:hover {
+  opacity: 0.7;
+}
+
+.add-btn-icon-lightmode:active {
+  opacity: 0.8;
+}
+
 .pageNumber-lightmode {
   font-weight: bold;
   color: black;
@@ -1114,17 +1233,28 @@ ul a:hover {
   width: 260px;
   height: 400px;
   background-color: rgb(248, 248, 248);
-  top: 50px;
+  top: 35px;
   right: 20px;
-  border-style: solid;
+  /* border-style: solid; */
   border-width: 1px;
   border-radius: 10px;
-  overflow: auto;
   padding-top: 7px;
   padding-bottom: 7px;
   padding-left: 8px;
   margin-top: 20px;
   scroll-behavior: smooth;
+}
+
+.notification-container::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 87px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid rgb(248, 248, 248);
 }
 
 .notification-container-disabled {

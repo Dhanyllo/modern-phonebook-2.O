@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import FavouriteCard from "../components/FavouriteCard";
+import UpdateFormModal from "../components/UpdateFormModal/UpdateFormModal";
 import {
   useLoaderData,
   useSearchParams,
@@ -50,7 +51,8 @@ export async function loader({ request }) {
 
 function Favourites() {
   const { favStatus, favourites, search, apiUrl } = useLoaderData();
-  const darkMode = useOutletContext();
+  const { darkMode, isProductModalOpen, handleCloseProductModal } =
+    useOutletContext();
   const [searchParams, setSearchParams] = useSearchParams();
   const revalidator = useRevalidator();
 
@@ -171,6 +173,11 @@ function Favourites() {
             </button>
           </div>
         )}
+        <UpdateFormModal
+          isProductModalOpen={isProductModalOpen}
+          handleCloseProductModal={handleCloseProductModal}
+          darkMode={darkMode}
+        />
       </main>
     </>
   );

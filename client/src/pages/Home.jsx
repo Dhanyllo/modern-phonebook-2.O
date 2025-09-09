@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import ContactCard from "../components/ContactCard";
+import UpdateFormModal from "../components/UpdateFormModal/UpdateFormModal";
 import {
   useLoaderData,
   useSearchParams,
@@ -46,7 +47,8 @@ export async function loader({ request }) {
 
 function Home() {
   const { favStatus, contacts, search, apiUrl } = useLoaderData();
-  const darkMode = useOutletContext();
+  const { darkMode, isProductModalOpen, handleCloseProductModal } =
+    useOutletContext();
   const [searchParams, setSearchParams] = useSearchParams();
   const revalidator = useRevalidator();
 
@@ -167,6 +169,11 @@ function Home() {
             </button>
           </div>
         )}
+        <UpdateFormModal
+          isProductModalOpen={isProductModalOpen}
+          handleCloseProductModal={handleCloseProductModal}
+          darkMode={darkMode}
+        />
       </main>
     </>
   );
