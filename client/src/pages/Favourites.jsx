@@ -23,12 +23,23 @@ export async function loader({ request }) {
 
   try {
     const [favStatusRes, favouritesRes, searchRes] = await Promise.all([
-      fetch(`${apiUrl}/favstatus`),
+      fetch(`${apiUrl}/favstatus`, {
+        method: "GET",
+        credentials: "include",
+      }),
       fetch(
-        `${apiUrl}/favourites?page=${encodedPageNumber}&limit=${encodePageLimit}`
+        `${apiUrl}/favourites?page=${encodedPageNumber}&limit=${encodePageLimit}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
       ),
       fetch(
-        `${apiUrl}/search/favourites?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`
+        `${apiUrl}/search/favourites?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
       ),
     ]);
 
@@ -65,6 +76,7 @@ function Favourites() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ favourite_status: newStatus }),
+        credentials: "include", // ✅ important for auth cookies
       });
 
       if (!response.ok) throw new Error("Failed to update status");

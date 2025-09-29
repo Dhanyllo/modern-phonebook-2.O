@@ -1,6 +1,4 @@
 body {
-  margin-top: 20px;
-  padding-left: 10px;
   font-family: "Open Sans", "Roboto", Arial, Helvetica, sans-serif, "SimSun";
 }
 
@@ -1102,6 +1100,8 @@ ul a:hover {
 }
 
 .card-container-wrap {
+  /* margin-top: 380px; */
+  padding-bottom: 40px;
   display: flex;
   flex-direction: column;
   row-gap: 10px;
@@ -1175,6 +1175,7 @@ ul a:hover {
 
 .main-container {
   padding-bottom: 60px;
+  /* margin-top: 240px; */
 }
 
 .add-contact-btn {

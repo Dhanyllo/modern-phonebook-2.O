@@ -8,8 +8,14 @@ export async function loader({ params: { id }, request }) {
   const apiUrl = import.meta.env.VITE_API_URL;
   try {
     const [contactDataRes, occupationRes] = await Promise.all([
-      fetch(`${apiUrl}/detail/${id}`),
-      fetch(`${apiUrl}/detail/occupations/${id}`),
+      fetch(`${apiUrl}/detail/${id}`, {
+        method: "GET",
+        credentials: "include",
+      }),
+      fetch(`${apiUrl}/detail/occupations/${id}`, {
+        method: "GET",
+        credentials: "include",
+      }),
     ]);
 
     const [contactDetails, occupations] = await Promise.all([
@@ -46,6 +52,7 @@ function DetailPage(props) {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ favourite_status: newStatus }),
+        credentials: "include", // ensure cookies/session included
       });
 
       if (!response.ok) throw new Error("Failed to update status");

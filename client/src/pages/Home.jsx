@@ -8,9 +8,26 @@ import {
   useOutletContext,
   useRevalidator,
 } from "react-router-dom";
+import { redirect } from "react-router-dom";
 
 export async function loader({ request }) {
   const apiUrl = import.meta.env.VITE_API_URL;
+
+  // 🔑 Always include credentials for auth check
+  const authRes = await fetch(`${apiUrl}/auth/check`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!authRes.ok) {
+    return redirect("/login");
+  }
+
+  const authData = await authRes.json();
+  if (!authData.authenticated) {
+    return redirect("/login");
+  }
+
   const url = new URL(request.url);
   const query = url.searchParams.get("searchParams") || "";
   const page = url.searchParams.get("page") || "1";
@@ -20,11 +37,15 @@ export async function loader({ request }) {
   const encodePageLimit = encodeURIComponent(limit);
 
   try {
+    // 🔑 Added credentials: "include" here too
     const [favStatusRes, contactsRes, searchRes] = await Promise.all([
-      fetch(`${apiUrl}/favstatus`),
-      fetch(`${apiUrl}?page=${encodedPageNumber}&limit=${encodePageLimit}`),
+      fetch(`${apiUrl}/favstatus`, { credentials: "include" }),
+      fetch(`${apiUrl}?page=${encodedPageNumber}&limit=${encodePageLimit}`, {
+        credentials: "include",
+      }),
       fetch(
-        `${apiUrl}/search/home?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`
+        `${apiUrl}/search/home?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`,
+        { credentials: "include" }
       ),
     ]);
 
@@ -57,10 +78,12 @@ function Home() {
 
   async function updateFavouriteStatus(id, newStatus) {
     try {
+      // 🔑 Include credentials for PATCH request
       const response = await fetch(`${apiUrl}/update/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ favourite_status: newStatus }),
+        credentials: "include",
       });
 
       if (!response.ok) throw new Error("Failed to update status");

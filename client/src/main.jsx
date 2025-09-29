@@ -15,6 +15,13 @@ import Error from "./pages/Error";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login/Login";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
+import Register, { action as registerAction } from "./pages/Register/Register";
+import OtpForm, { otpAction } from "./pages/OtpForm/OtpForm";
+import ProfilePage, { profileAction } from "./pages/ProfilePage/ProfilePage";
+import ChangePassword, {
+  changePasswordAction,
+} from "./pages/ChangePassword/ChangePassword";
 
 function App() {
   function useDarkMode() {
@@ -57,6 +64,40 @@ function App() {
             path="/login"
             element={<Login darkMode={darkMode} setDarkMode={setDarkMode} />}
             // loader={detailLoader}
+          />
+
+          <Route
+            path="/register"
+            element={<Register />}
+            action={registerAction}
+          />
+
+          <Route
+            path="/profile"
+            element={<ProfilePage />}
+            action={profileAction}
+          />
+
+          <Route
+            path="/verify-otp"
+            element={<OtpForm />}
+            // action={otpAction}
+          />
+
+          <Route
+            path="/resetPassword"
+            element={
+              <ResetPassword darkMode={darkMode} setDarkMode={setDarkMode} />
+            }
+            // loader={detailLoader}
+          />
+
+          <Route
+            path="/change-password"
+            element={
+              <ChangePassword darkMode={darkMode} setDarkMode={setDarkMode} />
+            }
+            action={changePasswordAction}
           />
 
           <Route

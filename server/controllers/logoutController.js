@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 db = DatabaseConnection();
 
 const logout = async (req, res) => {
+  console.log("inside the logout function");
   try {
     const refreshToken = req.cookies.refresh_token;
 
@@ -42,13 +43,15 @@ const logout = async (req, res) => {
     res.clearCookie("access_token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
+      // path: "/",
     });
 
     res.clearCookie("refresh_token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
+      // path: "/",
     });
 
     res.json({ success: true, message: "Logged out" });
