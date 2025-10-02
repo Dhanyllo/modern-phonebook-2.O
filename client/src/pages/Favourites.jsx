@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import FavouriteCard from "../components/FavouriteCard";
 import UpdateFormModal from "../components/UpdateFormModal/UpdateFormModal";
@@ -69,6 +69,10 @@ function Favourites() {
   const [searchParams, setSearchParams] = useSearchParams();
   const revalidator = useRevalidator();
 
+  // Central modal manager
+  const [activeModal, setActiveModal] = useState(null); // "detail" | "update" | null
+  const [selectedContact, setSelectedContact] = useState("");
+
   const currentPage = parseInt(searchParams.get("page")) || 1;
   const limit = 15;
 
@@ -112,6 +116,10 @@ function Favourites() {
         favouriteStatus={item.favourite_status}
         onUpdate={handleUpdate}
         darkMode={darkMode}
+        onViewClick={() => {
+          setSelectedContact(item.id);
+          setActiveModal("detail");
+        }}
       />
     ));
   } else if (!hasSearchTerm) {
@@ -187,13 +195,29 @@ function Favourites() {
             </button>
           </div>
         )}
+
         <CreateContactModal
           isProductModalOpen={isProductModalOpen}
           handleCloseProductModal={handleCloseProductModal}
           darkMode={darkMode}
         />
 
-        <DetailCardModal darkMode={darkMode} />
+        {activeModal === "detail" && (
+          <DetailCardModal
+            contactId={selectedContact}
+            darkMode={darkMode}
+            onClose={() => setActiveModal(null)}
+            onEdit={() => setActiveModal("update")}
+          />
+        )}
+
+        {activeModal === "update" && (
+          <UpdateFormModal
+            contactId={selectedContact}
+            closeModal={() => setActiveModal(null)}
+            backToDetail={() => setActiveModal("detail")}
+          />
+        )}
       </main>
     </>
   );

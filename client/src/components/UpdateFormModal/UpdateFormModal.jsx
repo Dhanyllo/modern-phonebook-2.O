@@ -1,8 +1,9 @@
 import ReactDOM from "react-dom";
 import styles from "./UpdateFormModal.module.css";
 import { RiCloseLine } from "react-icons/ri";
+import { MdOutlineKeyboardBackspace } from "react-icons/md";
 
-function UpdateFormModal({ closeModal }) {
+function UpdateFormModal({ closeModal, backToDetail }) {
   return ReactDOM.createPortal(
     <div
       className={`${styles.modalOverlay} ${styles.show}`}
@@ -14,9 +15,18 @@ function UpdateFormModal({ closeModal }) {
       >
         <div className={styles.btnContainer}>
           <button
+            className={styles.backBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              backToDetail();
+            }}
+          >
+            <MdOutlineKeyboardBackspace size={28} />
+          </button>
+          <button
             className={styles.modalClose}
             onClick={(e) => {
-              e.preventDefault();
+              e.stopPropagation();
               closeModal();
             }}
           >

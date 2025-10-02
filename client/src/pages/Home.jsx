@@ -223,6 +223,7 @@ function Home() {
           <UpdateFormModal
             contactId={selectedContact}
             closeModal={() => setActiveModal(null)}
+            backToDetail={() => setActiveModal("detail")}
           />
         )}
       </main>
