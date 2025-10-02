@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar";
 import ContactCard from "../components/ContactCard";
 import UpdateFormModal from "../components/UpdateFormModal/UpdateFormModal";
 import DetailCardModal from "../components/DetailCardModal/DetailCardModal";
+import DeleteConfirmModal from "../components/DeleteConfirmModal/DeleteConfirmModal";
 import {
   useLoaderData,
   useSearchParams,
@@ -11,6 +12,7 @@ import {
 } from "react-router-dom";
 import { redirect } from "react-router-dom";
 import CreateContactModal from "../components/CreateContactModal/CreateContactModal";
+import { AnimatePresence } from "framer-motion";
 
 export async function loader({ request }) {
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -75,7 +77,7 @@ function Home() {
     useOutletContext();
 
   // 🔹 Central modal manager
-  const [activeModal, setActiveModal] = useState(null); // "detail" | "update" | null
+  const [activeModal, setActiveModal] = useState(null); // "detail" | "update" | "delete" |null
   const [selectedContact, setSelectedContact] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const revalidator = useRevalidator();
@@ -209,23 +211,35 @@ function Home() {
           darkMode={darkMode}
         />
 
-        {activeModal === "detail" && (
-          <DetailCardModal
-            contactId={selectedContact}
-            darkMode={darkMode}
-            onClose={() => setActiveModal(null)}
-            onEdit={() => setActiveModal("update")}
-            // onDelete={() => setActiveModal("delete")}
-          />
-        )}
+        <AnimatePresence>
+          {activeModal === "detail" && (
+            <DetailCardModal
+              contactId={selectedContact}
+              darkMode={darkMode}
+              onClose={() => setActiveModal(null)}
+              onEdit={() => setActiveModal("update")}
+              onDelete={() => setActiveModal("delete")}
+            />
+          )}
 
-        {activeModal === "update" && (
-          <UpdateFormModal
-            contactId={selectedContact}
-            closeModal={() => setActiveModal(null)}
-            backToDetail={() => setActiveModal("detail")}
-          />
-        )}
+          {activeModal === "update" && (
+            <UpdateFormModal
+              contactId={selectedContact}
+              closeModal={() => setActiveModal(null)}
+              backToDetail={() => setActiveModal("detail")}
+            />
+          )}
+
+          {activeModal === "delete" && (
+            <DeleteConfirmModal
+              contactId={selectedContact}
+              closeModal={() => setActiveModal(null)}
+              onConfirm={() => setActiveModal(null)}
+              backToDetail={() => setActiveModal("detail")}
+              activeModal={activeModal}
+            />
+          )}
+        </AnimatePresence>
       </main>
     </>
   );

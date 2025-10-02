@@ -1,17 +1,42 @@
 import ReactDOM from "react-dom";
+import { motion } from "framer-motion";
 import styles from "./UpdateFormModal.module.css";
 import { RiCloseLine } from "react-icons/ri";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
 
 function UpdateFormModal({ closeModal, backToDetail }) {
+  const modalVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: 20 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: { duration: 0.3, ease: "easeOut" },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.95,
+      y: 20,
+      transition: { duration: 0.3, ease: "easeIn" },
+    },
+  };
+
   return ReactDOM.createPortal(
-    <div
-      className={`${styles.modalOverlay} ${styles.show}`}
+    <motion.div
+      className={styles.modalOverlay}
       onClick={closeModal}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
     >
-      <div
+      <motion.div
         className={styles.mainContainer}
         onClick={(e) => e.stopPropagation()}
+        variants={modalVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
       >
         <div className={styles.btnContainer}>
           <button
@@ -216,8 +241,8 @@ function UpdateFormModal({ closeModal, backToDetail }) {
             Create Contact
           </button>
         </form>
-      </div>
-    </div>,
+      </motion.div>
+    </motion.div>,
     document.getElementById("modal-root")
   );
 }

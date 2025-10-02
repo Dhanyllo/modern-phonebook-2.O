@@ -10,6 +10,8 @@ import {
   useRevalidator,
 } from "react-router-dom";
 import CreateContactModal from "../components/CreateContactModal/CreateContactModal";
+import DeleteConfirmModal from "../components/DeleteConfirmModal/DeleteConfirmModal";
+import { AnimatePresence, motion } from "framer-motion";
 
 export async function loader({ request }) {
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -70,8 +72,23 @@ function Favourites() {
   const revalidator = useRevalidator();
 
   // Central modal manager
-  const [activeModal, setActiveModal] = useState(null); // "detail" | "update" | null
+  const [activeModal, setActiveModal] = useState(null); // "detail" | "update" | "delete" |null
   const [selectedContact, setSelectedContact] = useState("");
+  const modalVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: 20 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: { duration: 0.3, ease: "easeOut" },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.95,
+      y: 20,
+      transition: { duration: 0.2, ease: "easeIn" },
+    },
+  };
 
   const currentPage = parseInt(searchParams.get("page")) || 1;
   const limit = 15;
@@ -202,22 +219,50 @@ function Favourites() {
           darkMode={darkMode}
         />
 
-        {activeModal === "detail" && (
-          <DetailCardModal
-            contactId={selectedContact}
-            darkMode={darkMode}
-            onClose={() => setActiveModal(null)}
-            onEdit={() => setActiveModal("update")}
-          />
-        )}
+        <AnimatePresence mode="wait">
+          {activeModal === "detail" && (
+            <motion.div
+              key="detailModal"
+              variants={modalVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
+              <DetailCardModal
+                contactId={selectedContact}
+                darkMode={darkMode}
+                onClose={() => setActiveModal(null)}
+                onEdit={() => setActiveModal("update")}
+                onDelete={() => setActiveModal("delete")}
+              />
+            </motion.div>
+          )}
 
-        {activeModal === "update" && (
-          <UpdateFormModal
-            contactId={selectedContact}
-            closeModal={() => setActiveModal(null)}
-            backToDetail={() => setActiveModal("detail")}
-          />
-        )}
+          {activeModal === "update" && (
+            <motion.div
+              key="updateModal"
+              variants={modalVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
+              <UpdateFormModal
+                contactId={selectedContact}
+                closeModal={() => setActiveModal(null)}
+                backToDetail={() => setActiveModal("detail")}
+              />
+            </motion.div>
+          )}
+          {activeModal === "delete" && (
+            <DeleteConfirmModal
+              contactId={selectedContact}
+              closeModal={() => setActiveModal(null)}
+              onConfirm={() => setActiveModal(null)}
+              backToDetail={() => setActiveModal("detail")}
+              activeModal={activeModal}
+            />
+          )}
+        </AnimatePresence>
       </main>
     </>
   );

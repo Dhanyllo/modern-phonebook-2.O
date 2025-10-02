@@ -8,11 +8,5 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
   z-index: 2000;
 }
-
-/* .modalOverlay.show {
-  opacity: 1;
-  visibility: visible;
-} */

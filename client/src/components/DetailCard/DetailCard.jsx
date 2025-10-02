@@ -6,6 +6,7 @@ import { FaShareAlt, FaFacebookF } from "react-icons/fa";
 import { LiaPhoneVolumeSolid } from "react-icons/lia";
 import { LuMessageSquareText } from "react-icons/lu";
 import { RiCloseLine } from "react-icons/ri";
+import { motion } from "framer-motion";
 
 import {
   SiX,
@@ -18,6 +19,28 @@ import {
 import styles from "./DetailCard.module.css";
 
 function DetailCard(props) {
+  const modalVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: 20 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: { duration: 0.2, ease: "easeOut" },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.95,
+      y: 20,
+      transition: { duration: 0.4, ease: "easeIn" },
+    },
+  };
+
+  // const modalVariants = {
+  //   hidden: { opacity: 0, y: -200 },
+  //   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  //   exit: { opacity: 0, y: 200, transition: { duration: 0.4 } },
+  // };
+
   const favouriteStyle = {
     color: props.favourite_status ? "red" : "white",
   };
@@ -32,7 +55,13 @@ function DetailCard(props) {
   ));
 
   return (
-    <div className={styles.cardContainer}>
+    <motion.div
+      className={styles.cardContainer}
+      variants={modalVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+    >
       <div className={styles.cardContent}>
         <div className={styles.detailedCardImageContainer}>
           <img
@@ -57,7 +86,7 @@ function DetailCard(props) {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                props.onDelete?.(props.id);
+                props.handleDelete();
               }}
               className={styles.deleteBtn}
             >
@@ -123,7 +152,6 @@ function DetailCard(props) {
           </div>
         </div>
       </div>
-
       <div className={styles.socialLinks}>
         <a
           className={styles.emailLink}
@@ -174,7 +202,6 @@ function DetailCard(props) {
           <SiLinkedin className={styles.linkedinIcon} />
         </a>
       </div>
-
       <button className={styles.modalClose}>
         <RiCloseLine
           size={24}
@@ -184,7 +211,7 @@ function DetailCard(props) {
           }}
         />
       </button>
-    </div>
+    </motion.div>
   );
 }
 

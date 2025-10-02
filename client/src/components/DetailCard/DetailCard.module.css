@@ -47,7 +47,6 @@
 
 .cardContainer {
   box-sizing: border-box;
-  opacity: 1;
   background: white;
   width: 50%;
   max-width: 400px;
@@ -59,7 +58,7 @@
 .cardContent {
   box-sizing: border-box;
   width: 100%;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
   padding: 2px 2px 80px 2px;
   border-radius: 8px;
   height: 100%;
