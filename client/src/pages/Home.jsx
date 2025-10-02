@@ -77,7 +77,7 @@ function Home() {
     useOutletContext();
 
   // 🔹 Central modal manager
-  const [activeModal, setActiveModal] = useState(null); // "detail" | "update" | "delete" |null
+  const [activeModal, setActiveModal] = useState(null); // "detail" | "update" | "delete" |"logout"|null
   const [selectedContact, setSelectedContact] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const revalidator = useRevalidator();
@@ -232,10 +232,17 @@ function Home() {
 
           {activeModal === "delete" && (
             <DeleteConfirmModal
-              contactId={selectedContact}
               closeModal={() => setActiveModal(null)}
               onConfirm={() => setActiveModal(null)}
               backToDetail={() => setActiveModal("detail")}
+              activeModal={activeModal}
+            />
+          )}
+
+          {activeModal === "logout" && (
+            <LogoutConfirmModal
+              closeModal={() => setActiveModal(null)}
+              onConfirm={() => setActiveModal(null)}
               activeModal={activeModal}
             />
           )}

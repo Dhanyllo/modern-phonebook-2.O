@@ -72,7 +72,7 @@ function Favourites() {
   const revalidator = useRevalidator();
 
   // Central modal manager
-  const [activeModal, setActiveModal] = useState(null); // "detail" | "update" | "delete" |null
+  const [activeModal, setActiveModal] = useState(null); // "detail" | "update" | "delete" |"logout"|null
   const [selectedContact, setSelectedContact] = useState("");
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.95, y: 20 },
