@@ -1,12 +1,17 @@
-import ReactDOM from "react-dom";
-import styles from "./UpdateFormModal.module.css";
+import styles from "./CreateContactModal.module.css";
 import { RiCloseLine } from "react-icons/ri";
 
-function UpdateFormModal({ closeModal }) {
-  return ReactDOM.createPortal(
+const CreateContactModal = ({
+  isProductModalOpen,
+  handleCloseProductModal,
+  darkmode,
+}) => {
+  return (
     <div
-      className={`${styles.modalOverlay} ${styles.show}`}
-      onClick={closeModal}
+      className={`${styles.modalOverlay} ${
+        isProductModalOpen ? styles.show : ""
+      }`}
+      onClick={handleCloseProductModal}
     >
       <div
         className={styles.mainContainer}
@@ -15,10 +20,7 @@ function UpdateFormModal({ closeModal }) {
         <div className={styles.btnContainer}>
           <button
             className={styles.modalClose}
-            onClick={(e) => {
-              e.preventDefault();
-              closeModal();
-            }}
+            onClick={handleCloseProductModal}
           >
             <RiCloseLine size={24} />
           </button>
@@ -44,11 +46,11 @@ function UpdateFormModal({ closeModal }) {
         <hr />
 
         <div className={styles.title}>
-          <div className={styles.text1}>Update this Contact</div>
+          <div className={styles.text1}>Create Your Contact</div>
           <br />
           <div className={styles.text6}>
-            The following are required fields to create or update a contact and
-            will only be shared with Mphone
+            The following are required fields to create a contact and will only
+            be shared with Mphone
           </div>
         </div>
 
@@ -207,9 +209,8 @@ function UpdateFormModal({ closeModal }) {
           </button>
         </form>
       </div>
-    </div>,
-    document.getElementById("modal-root")
+    </div>
   );
-}
+};
 
-export default UpdateFormModal;
+export default CreateContactModal;

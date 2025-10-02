@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Header2 from "../components/Header2";
-import DetailedCard from "../components/DetailedCard";
+import DetailCard from "../components/DetailCard/DetailCard";
 import { useLoaderData, useRevalidator } from "react-router-dom";
 import UpdateFormModal from "../components/UpdateFormModal/UpdateFormModal";
 
@@ -72,7 +72,7 @@ function DetailPage(props) {
     <div>
       <Header2 darkMode={props.darkMode} setDarkMode={props.setDarkMode} />
       <main className="card-container-wrap">
-        <DetailedCard
+        <DetailCard
           key={contactDetails.id}
           {...contactDetails}
           occupations={occupations}

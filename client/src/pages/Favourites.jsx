@@ -2,12 +2,14 @@ import { useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import FavouriteCard from "../components/FavouriteCard";
 import UpdateFormModal from "../components/UpdateFormModal/UpdateFormModal";
+import DetailCardModal from "../components/DetailCardModal/DetailCardModal";
 import {
   useLoaderData,
   useSearchParams,
   useOutletContext,
   useRevalidator,
 } from "react-router-dom";
+import CreateContactModal from "../components/CreateContactModal/CreateContactModal";
 
 export async function loader({ request }) {
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -76,7 +78,7 @@ function Favourites() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ favourite_status: newStatus }),
-        credentials: "include", // ✅ important for auth cookies
+        credentials: "include",
       });
 
       if (!response.ok) throw new Error("Failed to update status");
@@ -185,11 +187,13 @@ function Favourites() {
             </button>
           </div>
         )}
-        <UpdateFormModal
+        <CreateContactModal
           isProductModalOpen={isProductModalOpen}
           handleCloseProductModal={handleCloseProductModal}
           darkMode={darkMode}
         />
+
+        <DetailCardModal darkMode={darkMode} />
       </main>
     </>
   );
