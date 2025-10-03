@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form } from "react-router-dom";
 import OtpInput from "../../components/OtpInput/OtpInput";
 import styles from "./OtpForm.module.css";
@@ -14,11 +14,29 @@ export const otpAction = async ({ request }) => {
   return null; // could also return redirect("/success")
 };
 
+const RESEND_DELAY = 60;
+
 const OtpForm = () => {
   const [otpValue, setOtpValue] = useState("");
+  const [timeLeft, setTimeLeft] = useState(0);
 
   const handleOtpChange = (value) => {
     setOtpValue(value);
+  };
+
+  useEffect(() => {
+    let timer;
+    if (timeLeft > 0) {
+      timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [timeLeft]);
+
+  const handleResend = async () => {
+    // await fetch('/api/resend-otp', { method: 'POST' });
+
+    console.log("OTP resent!");
+    setTimeLeft(RESEND_DELAY);
   };
 
   return (
@@ -38,6 +56,21 @@ const OtpForm = () => {
             Verify
           </button>
         </Form>
+
+        <p className={styles.resendText}>
+          Didn’t receive the code?{" "}
+          {timeLeft > 0 ? (
+            <span className={styles.timer}>Resend in {timeLeft}s</span>
+          ) : (
+            <button
+              type="button"
+              className={styles.resendBtn}
+              onClick={handleResend}
+            >
+              Resend OTP
+            </button>
+          )}
+        </p>
       </div>
     </div>
   );

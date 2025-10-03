@@ -52,3 +52,63 @@
 .button:hover {
   background-color: #1e40af;
 }
+
+.resendContainer {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.resendText {
+  margin: 0;
+}
+
+.resendLink {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+  transition: color 0.2s ease;
+}
+
+.resendLink:hover {
+  color: #1e40af;
+  text-decoration: underline;
+}
+
+.resendStatus {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #2563eb;
+}
+
+.resendText {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.resendBtn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.resendBtn:hover {
+  color: #1e40af;
+}
+
+.timer {
+  font-weight: 600;
+  color: #888;
+  padding: 0px 6px;
+}
