@@ -41,7 +41,7 @@ function DetailCardModal({ darkMode, contactId, onClose, onEdit, onDelete }) {
       transition={{ duration: 0.25 }}
     >
       {loading ? (
-        <div className={styles.loading}>Loading...</div>
+        <div className={styles.spinner}></div>
       ) : detailData ? (
         <DetailCard
           key={detailData.contactDetails.id}
