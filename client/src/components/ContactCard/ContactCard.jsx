@@ -1,0 +1,59 @@
+import { FaHeart } from "react-icons/fa6";
+import styles from "./ContactCard.module.css";
+
+function ContactCard({
+  firstName,
+  otherNames,
+  phoneNumber,
+  favouriteStatus,
+  darkMode,
+  id,
+  onUpdate,
+  onViewClick,
+}) {
+  const firstLetter = firstName.charAt(0);
+
+  let color;
+  if (!favouriteStatus && darkMode) {
+    color = "white";
+  } else if (!favouriteStatus && !darkMode) {
+    color = "inherit";
+  } else {
+    color = "red";
+  }
+
+  const favouriteStyle = { color };
+
+  return (
+    <div
+      className={darkMode ? styles.cardWrapDarkmode : styles.cardWrapLightmode}
+    >
+      <div className={styles.btnLayer}>
+        <button
+          className={styles.favBtn}
+          onClick={() => onUpdate(id, !favouriteStatus)}
+        >
+          <FaHeart style={favouriteStyle} className={styles.heartIcon} />
+        </button>
+
+        <button onClick={onViewClick} className={styles.viewLink}>
+          View
+        </button>
+      </div>
+
+      <div className={styles.cardImageWrap}>
+        <div className={styles.cardImage}>
+          <img src="" alt="" />
+          <div className={styles.alpha}>{firstLetter}</div>
+        </div>
+      </div>
+
+      <div className={styles.cardDesc}>
+        <div>{`${firstName} ${otherNames}`}</div>
+        <div>{phoneNumber}</div>
+      </div>
+    </div>
+  );
+}
+
+export default ContactCard;

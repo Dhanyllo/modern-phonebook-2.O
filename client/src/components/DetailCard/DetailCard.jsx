@@ -96,7 +96,7 @@ function DetailCard(props) {
             <button
               className={styles.favouriteBtn}
               onClick={() =>
-                props.onUpdate?.(props.id, !props.favourite_status)
+                props.handleUpdateFavourite(props.id, !props.favourite_status)
               }
             >
               <FaHeart style={favouriteStyle} className={styles.favIcon} />

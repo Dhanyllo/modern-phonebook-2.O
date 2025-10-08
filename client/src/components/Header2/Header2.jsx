@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { MdLightMode } from "react-icons/md";
 import { MdNotificationsNone } from "react-icons/md";
 import { useNavigation } from "react-router-dom";
+import styles from "./Header2.module.css";
 
 function Header2(props) {
   console.log(props);

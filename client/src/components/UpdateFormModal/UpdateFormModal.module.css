@@ -130,53 +130,6 @@
   row-gap: 5px;
 }
 
-textarea {
-  height: 100px;
-  text-indent: 5px;
-  padding-top: 2px;
-  resize: none;
-  border-radius: 0px;
-  border-top-left-radius: 2px;
-  border-top-right-radius: 2px;
-}
-textarea::placeholder {
-  padding-top: 5px;
-}
-
-.textareaIcons {
-  display: flex;
-  flex-direction: row;
-  justify-content: left;
-  align-items: center;
-  column-gap: 10px;
-  padding-left: 10px;
-  height: 30px;
-  border-style: solid;
-  border-color: gray;
-  border-top-width: 0px;
-  border-bottom-width: 1px;
-  border-left-width: 1px;
-  border-right-width: 1px;
-  border-bottom-left-radius: 2px;
-  border-bottom-right-radius: 2px;
-  margin-top: -5px;
-  padding: 2px 5px;
-}
-
-.textareaIcons button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-  padding: 5px;
-  border-radius: 25px;
-}
-.textareaIcons button:hover {
-  background-color: rgba(232, 231, 231, 0.5);
-}
-
 .additionalSection {
   display: flex;
   flex-direction: row;
@@ -237,9 +190,25 @@ textarea::placeholder {
   flex-direction: column;
   row-gap: 20px;
 }
+
 .layer1 input {
-  height: 30px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  height: 20px;
   text-indent: 5px;
+  border: 1.5px solid #ccc;
+  border-radius: 3px;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: none;
+}
+
+.layer1 input:focus {
+  outline: none;
+  border: 2px solid #2684ff;
+  border-radius: 5px;
 }
 
 .layer2 {
@@ -247,12 +216,116 @@ textarea::placeholder {
   flex-direction: column;
   row-gap: 20px;
 }
+
 .layer2 input {
-  height: 30px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  height: 20px;
   text-indent: 5px;
+  border: 1.5px solid #ccc;
+  border-radius: 3px;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: none;
+}
+
+.layer2 input:focus {
+  outline: none;
+  border: 2px solid #2684ff;
+  border-radius: 5px;
 }
 
 label {
   font-weight: 700;
   color: #515b6f;
+}
+
+.phoneContainer {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #ccc;
+  border-radius: 3px;
+  width: 100%;
+}
+
+.phoneContainer:focus-within {
+  border: 2px solid #2684ff;
+  border-radius: 5px;
+}
+
+.phoneContainer :global(.react-international-phone-country-selector-button) {
+  border-left-style: none;
+  border-top-style: none;
+  border-bottom-style: none;
+  border-radius: 3 !important;
+  padding: 0 0.5rem;
+}
+
+.phoneInput {
+  flex: 1;
+  border: none !important;
+  border-radius: 3 !important;
+}
+
+.phoneInput:focus {
+  outline: none;
+}
+
+.selectValue {
+  background-color: #e0f7fa;
+  border-radius: 8px;
+}
+
+.selectValueLabel {
+  color: #007b83;
+  font-weight: 500;
+}
+
+.selectValueRemove {
+  color: #007b83;
+  cursor: pointer;
+}
+
+.previewContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.2rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+}
+
+.previewContainer:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.previewImage {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.fileInfo {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.fileInfo strong {
+  font-weight: 600;
+  color: #222;
+}
+
+.fileInfo span {
+  font-size: 0.8rem;
+  color: #666;
 }

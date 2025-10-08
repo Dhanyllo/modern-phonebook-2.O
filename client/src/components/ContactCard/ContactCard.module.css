@@ -1,0 +1,149 @@
+.cardWrapDarkmode {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgb(176, 176, 176);
+  border-radius: 5px;
+  border-style: none;
+  padding: 15px 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cardWrapDarkmode:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 15px 40px rgba(0, 255, 150, 0.2),
+    0 4px 10px rgba(0, 255, 150, 0.3);
+  background: linear-gradient(
+    to top,
+    rgba(0, 255, 150, 0.2),
+    rgba(0, 0, 0, 0.1)
+  );
+  border: 1px solid rgba(0, 255, 150, 0.3);
+  font-weight: 700;
+}
+
+.cardWrapDarkmode:hover .cardDesc {
+  color: white;
+}
+
+.cardWrapLightmode {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: white;
+  border-radius: 5px;
+  border-style: none;
+  padding: 15px 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cardWrapLightmode:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+  font-weight: 700;
+}
+
+.btnLayer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.favBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: inherit;
+  border: none;
+  cursor: pointer;
+}
+
+.heartIcon {
+  width: 20px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.viewLink {
+  all: unset;
+  display: inline-block;
+  background-color: #3ca62a;
+  cursor: pointer;
+  border-radius: 2px;
+  padding: 5px 6px;
+  text-decoration: none;
+  color: white;
+  font: inherit;
+  text-align: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.viewLink[aria-disabled="true"],
+.viewLink[aria-disabled="true"]:hover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #3ca62a;
+  opacity: 0.8;
+  cursor: pointer;
+  border-style: none;
+  border-radius: 2px;
+  width: 30px;
+  padding: 5px;
+  text-decoration: none;
+  color: white;
+  transition: all 0.2s ease-in-out;
+}
+
+.viewLink:hover {
+  color: black;
+}
+
+.viewLink:active {
+  opacity: 0.8;
+}
+
+.cardImageWrap {
+  align-items: center;
+  margin-top: -7px;
+  margin-bottom: 15px;
+}
+
+.cardImage {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+  border-radius: 200px;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+.cardImage img {
+  object-fit: contain;
+}
+
+.alpha {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  border-radius: 35px;
+  background-color: yellow;
+  font-size: 40px;
+}
+
+.cardDesc {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 5px;
+  color: black;
+}

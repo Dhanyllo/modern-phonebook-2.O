@@ -2,22 +2,21 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const verifyJWT = (req, res, next) => {
-  console.log("inside the verifier");
-
-  // Get access token from cookie
   const token = req.cookies?.access_token;
   if (!token) {
-    return res.sendStatus(401); // Unauthorized
+    return res
+      .status(401)
+      .json({ authenticated: false, message: "No token provided" });
   }
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      return res.sendStatus(403);
+      return res
+        .status(403)
+        .json({ authenticated: false, message: "Invalid or expired token" });
     }
 
-    // Attach decoded data to request
     req.user = { id: decoded.id, email: decoded.email };
-
     console.log("done verifying");
     next();
   });

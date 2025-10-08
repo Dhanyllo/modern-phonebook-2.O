@@ -1,0 +1,84 @@
+.sidebarDarkmode {
+  box-sizing: border-box;
+  background-color: black;
+  color: white;
+  border-top-width: 0px;
+  padding-top: 32px;
+  padding-left: 2px;
+  padding-right: 15px;
+  position: fixed;
+  z-index: 200;
+  width: 257px;
+  left: 0px;
+  top: 57px;
+  bottom: 0px;
+}
+
+.sidebarLightmode {
+  box-sizing: border-box;
+  background-color: #3ca62a;
+  color: white;
+  border-top-width: 0px;
+  padding-top: 32px;
+  padding-left: 2px;
+  padding-right: 15px;
+  position: fixed;
+  z-index: 200;
+  width: 257px;
+  left: 0px;
+  top: 57px;
+  bottom: 0px;
+}
+
+.sidebarDarkmode a,
+.sidebarLightmode a {
+  font-size: 13px;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  column-gap: 12px;
+  height: 30px;
+  text-decoration: none;
+  border-width: 1px;
+  border-style: solid;
+  align-items: center;
+  margin-bottom: 5px;
+  padding-left: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-style: none;
+  font-weight: 500;
+}
+
+.linkText {
+  font-size: medium;
+  font-weight: 100;
+}
+
+.linkText[aria-disabled="true"] {
+  font-size: medium;
+  font-weight: 100;
+  opacity: 0.5;
+}
+
+.active {
+  background-color: green;
+  border-radius: 5px;
+}
+
+.sidebarDarkmode a:hover,
+.sidebarLightmode a:hover {
+  cursor: pointer;
+  background-color: green;
+  border-radius: 5px;
+}
+
+.contactsIcon {
+  width: 25px;
+  height: 25px;
+}
+
+.heartIcon {
+  width: 25px;
+  height: 25px;
+}

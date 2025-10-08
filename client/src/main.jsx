@@ -7,10 +7,14 @@ import {
 } from "react-router-dom";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import Home, { loader as homeloader } from "./pages/Home";
-import Favourites, { loader as favouritesLoader } from "./pages/Favourites";
-import DetailPage, { loader as detailLoader } from "./pages/DetailPage";
-import Header from "./components/Header";
+import Home, { loader as homeloader } from "./pages/Home/Home";
+import Favourites, {
+  loader as favouritesLoader,
+} from "./pages/Favourites/Favourites";
+import DetailPage, {
+  loader as detailLoader,
+} from "./pages/DetailPage/DetailPage";
+import Header from "./components/Header/Header";
 import Error from "./pages/Error";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login/Login";

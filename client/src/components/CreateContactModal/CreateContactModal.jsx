@@ -1,26 +1,90 @@
+import { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
+import { motion } from "framer-motion";
 import styles from "./CreateContactModal.module.css";
 import { RiCloseLine } from "react-icons/ri";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
+import CreatableSelect from "react-select/creatable";
 
-const CreateContactModal = ({
-  isProductModalOpen,
-  handleCloseProductModal,
-  darkmode,
-}) => {
-  return (
-    <div
-      className={`${styles.modalOverlay} ${
-        isProductModalOpen ? styles.show : ""
-      }`}
-      onClick={handleCloseProductModal}
+// export async function action({ request }) {
+//   const formData = await request.formData();
+//   const occupationsString = formData.get("occupations");
+//   const occupations = occupationsString ? occupationsString.split(",") : [];
+
+//   console.log("Occupations:", occupations);
+
+//   return null;
+// }
+
+function CreateContactModal({ setHeaderActiveModal }) {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    setSelectedFile(file);
+  };
+
+  useEffect(() => {
+    if (!selectedFile) return;
+
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreviewUrl(objectUrl);
+
+    return () => {
+      URL.revokeObjectURL(objectUrl); // Cleanup old preview when file changes or component unmounts
+    };
+  }, [selectedFile]);
+
+  const modalVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: 20 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: { duration: 0.3, ease: "easeOut" },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.95,
+      y: 20,
+      transition: { duration: 0.3, ease: "easeIn" },
+    },
+  };
+
+  const [occupations, setOccupations] = useState([]);
+
+  const handleChange = (selected) => {
+    setOccupations(selected || []);
+  };
+
+  return ReactDOM.createPortal(
+    <motion.div
+      className={styles.modalOverlay}
+      onClick={(e) => {
+        e.stopPropagation();
+        setHeaderActiveModal("null");
+      }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
     >
-      <div
+      <motion.div
         className={styles.mainContainer}
         onClick={(e) => e.stopPropagation()}
+        variants={modalVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
       >
         <div className={styles.btnContainer}>
           <button
             className={styles.modalClose}
-            onClick={handleCloseProductModal}
+            onClick={(e) => {
+              e.stopPropagation();
+              setHeaderActiveModal("null");
+            }}
           >
             <RiCloseLine size={24} />
           </button>
@@ -46,7 +110,7 @@ const CreateContactModal = ({
         <hr />
 
         <div className={styles.title}>
-          <div className={styles.text1}>Create Your Contact</div>
+          <div className={styles.text1}>Update this Contact</div>
           <br />
           <div className={styles.text6}>
             The following are required fields to create a contact and will only
@@ -77,12 +141,15 @@ const CreateContactModal = ({
             </div>
 
             <div className={styles.formLayer1}>
-              <label htmlFor="phone_number">Phone number</label>
-              <input
-                placeholder="Enter your number"
-                type="tel"
-                name="phone_number"
+              <label htmlFor="phone_number" className={styles.phoneLabel}>
+                Phone Number
+              </label>
+              <PhoneInput
                 id="phone_number"
+                defaultCountry="gh"
+                inputClassName={styles.phoneInput}
+                className={styles.phoneContainer}
+                placeholder="Enter your phone number"
               />
             </div>
 
@@ -107,14 +174,36 @@ const CreateContactModal = ({
             </div>
 
             <div className={styles.formLayer1}>
-              <label htmlFor="occupation">
+              <label htmlFor="occupations" className={styles.label}>
                 Current or Previous job title (Optional)
               </label>
+
+              <CreatableSelect
+                id="occupations"
+                isMulti
+                isClearable
+                placeholder="Type and press Enter..."
+                onChange={handleChange}
+                styles={{
+                  control: (base, state) => ({
+                    ...base,
+                    borderRadius: 3,
+                    border: state.isFocused
+                      ? "2px solid #2684ff" // When focused
+                      : "1.5px solid #ccc", // Default border
+                    fontSize: "0.95rem",
+                    boxShadow: "none",
+                    "&:hover": {
+                      borderColor: "none",
+                    },
+                  }),
+                }}
+              />
+
               <input
-                placeholder="What's your current or previous job title"
-                type="text"
-                name="occupation"
-                id="occupation"
+                type="hidden"
+                name="occupations"
+                value={occupations.map((occ) => occ.value).join(",")}
               />
             </div>
           </div>
@@ -197,8 +286,23 @@ const CreateContactModal = ({
               name="cvFile"
               id="CV"
               accept=".jpg,.jpeg,.png,.webp"
+              onChange={handleFileChange}
             />
           </div>
+          {selectedFile && (
+            <div className={styles.previewContainer}>
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className={styles.previewImage}
+              />
+              <div className={styles.fileInfo}>
+                <strong>{selectedFile.name}</strong>
+                <span>{(selectedFile.size / 1024).toFixed(1)} KB</span>
+                {/* <span>{(selectedFile.size / (1024 * 1024)).toFixed(2)} MB</span> */}
+              </div>
+            </div>
+          )}
 
           <br />
           <hr />
@@ -208,9 +312,10 @@ const CreateContactModal = ({
             Create Contact
           </button>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>,
+    document.getElementById("modal-root")
   );
-};
+}
 
 export default CreateContactModal;

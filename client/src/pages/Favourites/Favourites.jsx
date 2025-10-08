@@ -1,20 +1,28 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
-import FavouriteCard from "../components/FavouriteCard";
-import UpdateFormModal from "../components/UpdateFormModal/UpdateFormModal";
-import DetailCardModal from "../components/DetailCardModal/DetailCardModal";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import ContactCard from "../../components/ContactCard/ContactCard";
+import UpdateFormModal from "../../components/UpdateFormModal/UpdateFormModal";
+import DetailCardModal from "../../components/DetailCardModal/DetailCardModal";
+import LogoutConfirmModal from "../../components/LogoutConfirmModal/LogoutConfirmModal";
 import {
   useLoaderData,
   useSearchParams,
   useOutletContext,
   useRevalidator,
 } from "react-router-dom";
-import CreateContactModal from "../components/CreateContactModal/CreateContactModal";
-import DeleteConfirmModal from "../components/DeleteConfirmModal/DeleteConfirmModal";
+import { checkAuth } from "../../utils";
+import { redirect } from "react-router-dom";
+import CreateContactModal from "../../components/CreateContactModal/CreateContactModal";
+import DeleteConfirmModal from "../../components/DeleteConfirmModal/DeleteConfirmModal";
 import { AnimatePresence, motion } from "framer-motion";
+import styles from "./Favourites.module.css";
 
 export async function loader({ request }) {
   const apiUrl = import.meta.env.VITE_API_URL;
+  const authData = await checkAuth(apiUrl);
+  if (authData.redirectToLogin) {
+    return redirect("/login");
+  }
   const url = new URL(request.url);
 
   const query = url.searchParams.get("searchParams") || "";
@@ -66,7 +74,7 @@ export async function loader({ request }) {
 
 function Favourites() {
   const { favStatus, favourites, search, apiUrl } = useLoaderData();
-  const { darkMode, isProductModalOpen, handleCloseProductModal } =
+  const { darkMode, headerActiveModal, setHeaderActiveModal } =
     useOutletContext();
   const [searchParams, setSearchParams] = useSearchParams();
   const revalidator = useRevalidator();
@@ -123,7 +131,7 @@ function Favourites() {
   let Cards;
   if (results && results.length > 0) {
     Cards = results.map((item) => (
-      <FavouriteCard
+      <ContactCard
         key={item.id}
         id={item.id}
         firstName={item.first_name}
@@ -144,8 +152,8 @@ function Favourites() {
       <p
         className={
           darkMode
-            ? "empty-directory-container-darkmode"
-            : "empty-directory-container-lightmode"
+            ? styles.emptyDirectoryContainerDarkmode
+            : styles.emptyDirectoryContainerLightmode
         }
       >
         No favourites yet.
@@ -168,13 +176,13 @@ function Favourites() {
   return (
     <>
       <Sidebar darkMode={darkMode} favStatus={favStatus.exists_status} />
-      <main className="main-container">
-        <section className="card-grid">{Cards}</section>
+      <main className={styles.mainContainer}>
+        <section className={styles.cardGrid}>{Cards}</section>
 
         {results && results.length > 0 && (
-          <div className="pageNav">
+          <div className={styles.pageNav}>
             <button
-              className="previous"
+              className={styles.previous}
               aria-disabled={currentPage === 1}
               onClick={() => {
                 setSearchParams((prevParams) => {
@@ -190,14 +198,16 @@ function Favourites() {
 
             <span
               className={
-                darkMode ? "pageNumber-darkmode" : "pageNumber-lightmode"
+                darkMode
+                  ? styles.pageNumberDarkmode
+                  : styles.pageNumberLightmode
               }
             >
               Page {currentPage} of {totalPages || 1}
             </span>
 
             <button
-              className="next"
+              className={styles.next}
               aria-disabled={currentPage === totalPages || totalPages === 0}
               onClick={() => {
                 setSearchParams((prevParams) => {
@@ -213,53 +223,47 @@ function Favourites() {
           </div>
         )}
 
-        <CreateContactModal
-          isProductModalOpen={isProductModalOpen}
-          handleCloseProductModal={handleCloseProductModal}
-          darkMode={darkMode}
-        />
-
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           {activeModal === "detail" && (
-            <motion.div
-              key="detailModal"
-              variants={modalVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-            >
-              <DetailCardModal
-                contactId={selectedContact}
-                darkMode={darkMode}
-                onClose={() => setActiveModal(null)}
-                onEdit={() => setActiveModal("update")}
-                onDelete={() => setActiveModal("delete")}
-              />
-            </motion.div>
+            <DetailCardModal
+              contactId={selectedContact}
+              darkMode={darkMode}
+              onClose={() => setActiveModal(null)}
+              onEdit={() => setActiveModal("update")}
+              onDelete={() => setActiveModal("delete")}
+            />
           )}
 
           {activeModal === "update" && (
-            <motion.div
-              key="updateModal"
-              variants={modalVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-            >
-              <UpdateFormModal
-                contactId={selectedContact}
-                closeModal={() => setActiveModal(null)}
-                backToDetail={() => setActiveModal("detail")}
-              />
-            </motion.div>
+            <UpdateFormModal
+              contactId={selectedContact}
+              closeModal={() => setActiveModal(null)}
+              backToDetail={() => setActiveModal("detail")}
+            />
           )}
+
           {activeModal === "delete" && (
             <DeleteConfirmModal
-              contactId={selectedContact}
               closeModal={() => setActiveModal(null)}
               onConfirm={() => setActiveModal(null)}
               backToDetail={() => setActiveModal("detail")}
               activeModal={activeModal}
+            />
+          )}
+
+          {headerActiveModal === "logout" && (
+            <LogoutConfirmModal
+              closeModal={() => setHeaderActiveModal(null)}
+              onConfirm={() => setHeaderActiveModal(null)}
+              onLogout={() => setHeaderActiveModal("logout")}
+              headerActiveModal={headerActiveModal}
+            />
+          )}
+
+          {headerActiveModal === "create" && (
+            <CreateContactModal
+              setHeaderActiveModal={setHeaderActiveModal}
+              darkMode={darkMode}
             />
           )}
         </AnimatePresence>

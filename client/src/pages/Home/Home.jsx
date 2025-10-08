@@ -1,38 +1,29 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
-import ContactCard from "../components/ContactCard";
-import UpdateFormModal from "../components/UpdateFormModal/UpdateFormModal";
-import DetailCardModal from "../components/DetailCardModal/DetailCardModal";
-import DeleteConfirmModal from "../components/DeleteConfirmModal/DeleteConfirmModal";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import ContactCard from "../../components/ContactCard/ContactCard";
+import UpdateFormModal from "../../components/UpdateFormModal/UpdateFormModal";
+import DetailCardModal from "../../components/DetailCardModal/DetailCardModal";
+import DeleteConfirmModal from "../../components/DeleteConfirmModal/DeleteConfirmModal";
+import LogoutConfirmModal from "../../components/LogoutConfirmModal/LogoutConfirmModal";
 import {
   useLoaderData,
   useSearchParams,
   useOutletContext,
   useRevalidator,
 } from "react-router-dom";
+import { checkAuth } from "../../utils";
 import { redirect } from "react-router-dom";
-import CreateContactModal from "../components/CreateContactModal/CreateContactModal";
+import CreateContactModal from "../../components/CreateContactModal/CreateContactModal";
 import { AnimatePresence } from "framer-motion";
+import styles from "./Home.module.css";
 
 export async function loader({ request }) {
   const apiUrl = import.meta.env.VITE_API_URL;
-
-  // 1. 🔑 Check authentication
-  const authRes = await fetch(`${apiUrl}/auth/check`, {
-    method: "GET",
-    credentials: "include",
-  });
-
-  if (!authRes.ok) {
+  const authData = await checkAuth(apiUrl);
+  if (authData.redirectToLogin) {
     return redirect("/login");
   }
 
-  const authData = await authRes.json();
-  if (!authData.authenticated) {
-    return redirect("/login");
-  }
-
-  // 2. Extract query params
   const url = new URL(request.url);
   const query = url.searchParams.get("searchParams") || "";
   const page = url.searchParams.get("page") || "1";
@@ -73,7 +64,7 @@ export async function loader({ request }) {
 
 function Home() {
   const { favStatus, contacts, search, apiUrl } = useLoaderData();
-  const { darkMode, isProductModalOpen, handleCloseProductModal } =
+  const { darkMode, headerActiveModal, setHeaderActiveModal } =
     useOutletContext();
 
   // 🔹 Central modal manager
@@ -135,8 +126,8 @@ function Home() {
       <p
         className={
           darkMode
-            ? "empty-directory-container-darkmode"
-            : "empty-directory-container-lightmode"
+            ? styles.emptyDirectoryContainerDarkmode
+            : styles.emptyDirectoryContainerLightmode
         }
       >
         No contacts added.
@@ -160,13 +151,13 @@ function Home() {
   return (
     <>
       <Sidebar darkMode={darkMode} favStatus={favStatus.exists_status} />
-      <main className="main-container">
-        <section className="card-grid">{Cards}</section>
+      <main className={styles.mainContainer}>
+        <section className={styles.cardGrid}>{Cards}</section>
 
         {results && results.length > 0 && (
-          <div className="pageNav">
+          <div className={styles.pageNav}>
             <button
-              className="previous"
+              className={styles.previous}
               aria-disabled={currentPage === 1}
               onClick={() => {
                 setSearchParams((prevParams) => {
@@ -182,14 +173,16 @@ function Home() {
 
             <span
               className={
-                darkMode ? "pageNumber-darkmode" : "pageNumber-lightmode"
+                darkMode
+                  ? styles.pageNumberDarkmode
+                  : styles.pageNumberLightmode
               }
             >
               Page {currentPage} of {totalPages || 1}
             </span>
 
             <button
-              className="next"
+              className={styles.next}
               aria-disabled={currentPage === totalPages || totalPages === 0}
               onClick={() => {
                 setSearchParams((prevParams) => {
@@ -204,12 +197,6 @@ function Home() {
             </button>
           </div>
         )}
-
-        <CreateContactModal
-          isProductModalOpen={isProductModalOpen}
-          handleCloseProductModal={handleCloseProductModal}
-          darkMode={darkMode}
-        />
 
         <AnimatePresence>
           {activeModal === "detail" && (
@@ -239,11 +226,19 @@ function Home() {
             />
           )}
 
-          {activeModal === "logout" && (
+          {headerActiveModal === "logout" && (
             <LogoutConfirmModal
-              closeModal={() => setActiveModal(null)}
-              onConfirm={() => setActiveModal(null)}
-              activeModal={activeModal}
+              closeModal={() => setHeaderActiveModal(null)}
+              onConfirm={() => setHeaderActiveModal(null)}
+              onLogout={() => setHeaderActiveModal("logout")}
+              headerActiveModal={headerActiveModal}
+            />
+          )}
+
+          {headerActiveModal === "create" && (
+            <CreateContactModal
+              setHeaderActiveModal={setHeaderActiveModal}
+              darkMode={darkMode}
             />
           )}
         </AnimatePresence>

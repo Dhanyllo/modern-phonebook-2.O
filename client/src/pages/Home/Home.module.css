@@ -1,0 +1,90 @@
+.mainContainer {
+  padding-bottom: 60px;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  column-gap: 16px;
+  row-gap: 20px;
+  padding: 2px;
+  padding-bottom: 40px;
+}
+
+.pageNav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 35px;
+  padding: 0px 20px;
+}
+
+.next {
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px 30px;
+  background-color: #3ca62a;
+  color: white;
+  cursor: pointer;
+}
+
+.next:hover {
+  opacity: 0.9;
+}
+
+.next:active {
+  opacity: 0.7;
+}
+
+.next[aria-disabled="true"] {
+  visibility: hidden;
+}
+
+.previous {
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px 30px;
+  background-color: orange;
+  color: black;
+  cursor: pointer;
+}
+
+.previous:hover {
+  opacity: 0.9;
+}
+
+.previous:active {
+  opacity: 0.7;
+}
+
+.previous[aria-disabled="true"] {
+  visibility: hidden;
+}
+
+.pageNumberLightmode {
+  font-weight: bold;
+  color: black;
+}
+
+.pageNumberDarkmode {
+  font-weight: bold;
+  color: white;
+}
+
+.emptyDirectoryContainerLightmode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 900px;
+  font-weight: 500;
+}
+
+.emptyDirectoryContainerDarkmode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 900px;
+  font-weight: 500;
+  color: white;
+}

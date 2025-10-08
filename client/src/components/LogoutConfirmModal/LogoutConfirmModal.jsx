@@ -19,9 +19,9 @@ const modalVariants = {
   },
 };
 
-const LogoutConfirmModal = ({ activeModal, closeModal, onConfirm }) => {
+const LogoutConfirmModal = ({ headerActiveModal, closeModal, onConfirm }) => {
   useEffect(() => {
-    if (activeModal === "logout") {
+    if (headerActiveModal === "logout") {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
@@ -30,7 +30,7 @@ const LogoutConfirmModal = ({ activeModal, closeModal, onConfirm }) => {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [activeModal]);
+  }, [headerActiveModal]);
 
   return ReactDOM.createPortal(
     <div

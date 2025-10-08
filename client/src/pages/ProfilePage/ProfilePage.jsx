@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Form } from "react-router-dom";
+import { Form, useNavigate } from "react-router-dom";
 import styles from "./ProfilePage.module.css";
+import { IoIosArrowBack } from "react-icons/io";
 
 export const profileAction = async ({ request }) => {
   const formData = await request.formData();
@@ -8,7 +9,7 @@ export const profileAction = async ({ request }) => {
   const firstName = formData.get("firstName");
   const otherNames = formData.get("otherNames");
   const email = formData.get("email");
-  const picture = formData.get("picture"); // file input
+  const picture = formData.get("picture");
 
   console.log("Updated Profile:", {
     firstName,
@@ -25,8 +26,9 @@ export const profileAction = async ({ request }) => {
 };
 
 const ProfilePage = () => {
-  const [preview, setPreview] = useState("https://via.placeholder.com/120");
+  const [preview, setPreview] = useState("/images/profile.jpg");
   const [file, setFile] = useState(null);
+  const navigate = useNavigate();
 
   const handlePictureChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -35,7 +37,11 @@ const ProfilePage = () => {
     }
   };
 
-  // 👇 Generate and clean up the object URL
+  const handleRemovePicture = () => {
+    setFile(null);
+    setPreview("/images/profile.jpg");
+  };
+
   useEffect(() => {
     if (!file) return;
 
@@ -43,75 +49,101 @@ const ProfilePage = () => {
     setPreview(objectUrl);
 
     return () => {
-      URL.revokeObjectURL(objectUrl); // cleanup
+      URL.revokeObjectURL(objectUrl);
     };
   }, [file]);
 
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <h2 className={styles.title}>Profile</h2>
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          className={styles.backButton}
+        >
+          <IoIosArrowBack />
+          <div>Back</div>
+        </button>
+
+        <div className={styles.title}>Profile</div>
 
         <Form
           method="post"
           encType="multipart/form-data"
           className={styles.form}
         >
-          {/* Profile Picture */}
           <div className={styles.pictureWrapper}>
-            <img src={preview} alt="Profile" className={styles.picture} />
-            <label className={styles.pictureLabel}>
-              Change Picture
-              <input
-                type="file"
-                name="picture"
-                accept="image/*"
-                onChange={handlePictureChange}
-                className={styles.fileInput}
-              />
-            </label>
+            <div className={styles.pictureContainer}>
+              <img src={preview} alt="Profile" className={styles.picture} />
+            </div>
+
+            <div className={styles.pictureActions}>
+              <label className={styles.pictureLabel}>
+                Change Picture
+                <input
+                  type="file"
+                  name="picture"
+                  accept="image/*"
+                  onChange={handlePictureChange}
+                  className={styles.fileInput}
+                />
+              </label>
+
+              <button
+                type="button"
+                onClick={handleRemovePicture}
+                className={styles.removeButton}
+              >
+                Remove
+              </button>
+            </div>
           </div>
 
-          {/* First Name */}
-          <div className={styles.formGroup}>
-            <label htmlFor="firstName">First Name</label>
+          <div className={styles.field}>
+            <label htmlFor="firstName" className={styles.label}>
+              First Name
+            </label>
             <input
               type="text"
               id="firstName"
               name="firstName"
               defaultValue="John"
               required
+              className={styles.input}
             />
           </div>
 
-          {/* Other Names */}
-          <div className={styles.formGroup}>
-            <label htmlFor="otherNames">Other Names</label>
+          <div className={styles.field}>
+            <label htmlFor="otherNames" className={styles.label}>
+              Other Names
+            </label>
             <input
               type="text"
               id="otherNames"
               name="otherNames"
               defaultValue="Doe"
+              className={styles.input}
             />
           </div>
 
-          {/* Email */}
-          <div className={styles.formGroup}>
-            <label htmlFor="email">Email</label>
+          <div className={styles.field}>
+            <label htmlFor="email" className={styles.label}>
+              Email
+            </label>
             <input
               type="email"
               id="email"
               name="email"
               defaultValue="john.doe@example.com"
               required
+              className={styles.input}
             />
             <span className={styles.pendingNote}>
               Changing email will require verification
             </span>
           </div>
 
-          {/* Save Button */}
-          <button type="submit" className={styles.button}>
+          <button type="submit" className={styles.submitButton}>
             Save Changes
           </button>
         </Form>

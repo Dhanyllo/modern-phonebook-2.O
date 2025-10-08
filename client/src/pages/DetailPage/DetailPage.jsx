@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import Header2 from "../components/Header2";
-import DetailCard from "../components/DetailCard/DetailCard";
+import Header2 from "../../components/Header2/Header2";
+import DetailCard from "../../components/DetailCard/DetailCard";
 import { useLoaderData, useRevalidator } from "react-router-dom";
-import UpdateFormModal from "../components/UpdateFormModal/UpdateFormModal";
+import UpdateFormModal from "../../components/UpdateFormModal/UpdateFormModal";
 
 export async function loader({ params: { id }, request }) {
   const apiUrl = import.meta.env.VITE_API_URL;
