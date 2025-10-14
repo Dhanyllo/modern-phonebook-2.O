@@ -7,7 +7,6 @@ import { LiaPhoneVolumeSolid } from "react-icons/lia";
 import { LuMessageSquareText } from "react-icons/lu";
 import { RiCloseLine } from "react-icons/ri";
 import { motion } from "framer-motion";
-
 import {
   SiX,
   SiInstagram,
@@ -15,7 +14,6 @@ import {
   SiWhatsapp,
   SiGmail,
 } from "react-icons/si";
-
 import styles from "./DetailCard.module.css";
 
 function DetailCard(props) {
@@ -34,12 +32,6 @@ function DetailCard(props) {
       transition: { duration: 0.4, ease: "easeIn" },
     },
   };
-
-  // const modalVariants = {
-  //   hidden: { opacity: 0, y: -200 },
-  //   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-  //   exit: { opacity: 0, y: 200, transition: { duration: 0.4 } },
-  // };
 
   const favouriteStyle = {
     color: props.favourite_status ? "red" : "white",
@@ -61,6 +53,7 @@ function DetailCard(props) {
       initial="hidden"
       animate="visible"
       exit="exit"
+      onClick={(e) => e.stopPropagation()}
     >
       <div className={styles.cardContent}>
         <div className={styles.detailedCardImageContainer}>
@@ -95,9 +88,10 @@ function DetailCard(props) {
 
             <button
               className={styles.favouriteBtn}
-              onClick={() =>
-                props.handleUpdateFavourite(props.id, !props.favourite_status)
-              }
+              onClick={(e) => {
+                e.stopPropagation();
+                props.handleUpdateFavourite(props.id, !props.favourite_status);
+              }}
             >
               <FaHeart style={favouriteStyle} className={styles.favIcon} />
             </button>
@@ -152,6 +146,7 @@ function DetailCard(props) {
           </div>
         </div>
       </div>
+
       <div className={styles.socialLinks}>
         <a
           className={styles.emailLink}
@@ -161,6 +156,7 @@ function DetailCard(props) {
         >
           <SiGmail className={styles.emailIcon} />
         </a>
+
         <a
           className={styles.twitterLink}
           href={props.twitter}
@@ -169,6 +165,7 @@ function DetailCard(props) {
         >
           <SiX className={styles.twitterIcon} />
         </a>
+
         <a
           className={styles.instagramLink}
           href={props.instagram}
@@ -177,6 +174,7 @@ function DetailCard(props) {
         >
           <SiInstagram className={styles.instagramIcon} />
         </a>
+
         <a
           className={styles.facebookLink}
           href={props.facebook}
@@ -185,6 +183,7 @@ function DetailCard(props) {
         >
           <FaFacebookF className={styles.facebookIcon} />
         </a>
+
         <a
           className={styles.whatsappLink}
           href={props.whatsapp}
@@ -193,6 +192,7 @@ function DetailCard(props) {
         >
           <SiWhatsapp className={styles.whatsappIcon} />
         </a>
+
         <a
           className={styles.linkedinLink}
           href={props.linkedin}
@@ -202,6 +202,7 @@ function DetailCard(props) {
           <SiLinkedin className={styles.linkedinIcon} />
         </a>
       </div>
+
       <button className={styles.modalClose}>
         <RiCloseLine
           size={24}

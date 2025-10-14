@@ -5,18 +5,51 @@ import UpdateFormModal from "../../components/UpdateFormModal/UpdateFormModal";
 import DetailCardModal from "../../components/DetailCardModal/DetailCardModal";
 import DeleteConfirmModal from "../../components/DeleteConfirmModal/DeleteConfirmModal";
 import LogoutConfirmModal from "../../components/LogoutConfirmModal/LogoutConfirmModal";
+import CreateContactModal from "../../components/CreateContactModal/CreateContactModal";
 import {
-  useLoaderData,
   useSearchParams,
   useOutletContext,
-  useRevalidator,
+  useLoaderData,
+  redirect,
 } from "react-router-dom";
-import { checkAuth } from "../../utils";
-import { redirect } from "react-router-dom";
-import CreateContactModal from "../../components/CreateContactModal/CreateContactModal";
 import { AnimatePresence } from "framer-motion";
+import {
+  QueryClient,
+  useQuery,
+  useQueryClient,
+  dehydrate,
+  HydrationBoundary,
+} from "@tanstack/react-query";
+import { checkAuth } from "../../utils";
 import styles from "./Home.module.css";
 
+// ==============================
+// Data fetching helpers
+// ==============================
+async function fetchFavStatus(apiUrl) {
+  const res = await fetch(`${apiUrl}/favstatus`, { credentials: "include" });
+  return res.json();
+}
+
+async function fetchContacts(apiUrl, page, limit) {
+  const res = await fetch(`${apiUrl}?page=${page}&limit=${limit}`, {
+    credentials: "include",
+  });
+  return res.json();
+}
+
+async function fetchSearchResults(apiUrl, searchTerm, page, limit) {
+  const encodedSearchTerm = encodeURIComponent(searchTerm);
+  const res = await fetch(
+    `${apiUrl}/search/home?searchParams=${encodedSearchTerm}&page=${page}&limit=${limit}`,
+    { credentials: "include" }
+  );
+  return res.json();
+}
+
+// ==============================
+// Loader with React Query hydration
+// ==============================
 export async function loader({ request }) {
   const apiUrl = import.meta.env.VITE_API_URL;
   const authData = await checkAuth(apiUrl);
@@ -25,57 +58,77 @@ export async function loader({ request }) {
   }
 
   const url = new URL(request.url);
-  const query = url.searchParams.get("searchParams") || "";
-  const page = url.searchParams.get("page") || "1";
-  const limit = url.searchParams.get("limit") || "15";
+  const searchTerm = url.searchParams.get("searchParams") || "";
+  const page = parseInt(url.searchParams.get("page") || "1");
+  const limit = parseInt(url.searchParams.get("limit") || "15");
 
-  const encodedSearchTerm = encodeURIComponent(query);
-  const encodedPageNumber = encodeURIComponent(page);
-  const encodePageLimit = encodeURIComponent(limit);
+  const queryClient = new QueryClient();
 
-  try {
-    const [favStatusRes, contactsRes, searchRes] = await Promise.all([
-      fetch(`${apiUrl}/favstatus`, { credentials: "include" }),
-      fetch(`${apiUrl}?page=${encodedPageNumber}&limit=${encodePageLimit}`, {
-        credentials: "include",
-      }),
-      fetch(
-        `${apiUrl}/search/home?searchParams=${encodedSearchTerm}&page=${encodedPageNumber}&limit=${encodePageLimit}`,
-        { credentials: "include" }
-      ),
-    ]);
+  // Prefetch all data before hydration
+  await queryClient.prefetchQuery({
+    queryKey: ["favStatus"],
+    queryFn: () => fetchFavStatus(apiUrl),
+  });
 
-    const [favStatus, contacts, search] = await Promise.all([
-      favStatusRes.json(),
-      contactsRes.json(),
-      searchRes.json(),
-    ]);
-
-    return { favStatus, contacts, search, apiUrl };
-  } catch (err) {
-    console.error("Error fetching data:", err);
-    throw {
-      message: "Failed to fetch data",
-      statusText: err.message,
-      status: 500,
-    };
+  if (searchTerm) {
+    await queryClient.prefetchQuery({
+      queryKey: ["search", searchTerm, page, limit],
+      queryFn: () => fetchSearchResults(apiUrl, searchTerm, page, limit),
+    });
+  } else {
+    await queryClient.prefetchQuery({
+      queryKey: ["contacts", page, limit],
+      queryFn: () => fetchContacts(apiUrl, page, limit),
+    });
   }
+
+  return {
+    dehydratedState: dehydrate(queryClient),
+    apiUrl,
+  };
 }
 
+// ==============================
+// Home component (hydrated + unified)
+// ==============================
 function Home() {
-  const { favStatus, contacts, search, apiUrl } = useLoaderData();
+  const { dehydratedState, apiUrl } = useLoaderData();
   const { darkMode, headerActiveModal, setHeaderActiveModal } =
     useOutletContext();
 
-  // 🔹 Central modal manager
-  const [activeModal, setActiveModal] = useState(null); // "detail" | "update" | "delete" |"logout"|null
+  const [activeModal, setActiveModal] = useState(null);
   const [selectedContact, setSelectedContact] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
-  const revalidator = useRevalidator();
+  const queryClient = useQueryClient();
 
   const currentPage = parseInt(searchParams.get("page")) || 1;
   const limit = 15;
+  const searchTerm = searchParams.get("searchParams") || "";
+  const hasSearchTerm = Boolean(searchTerm);
 
+  // ==============================
+  // Data fetching with hydration
+  // ==============================
+  const { data: favStatus } = useQuery({
+    queryKey: ["favStatus"],
+    queryFn: () => fetchFavStatus(apiUrl),
+  });
+
+  const { data: contacts } = useQuery({
+    queryKey: ["contacts", currentPage, limit],
+    queryFn: () => fetchContacts(apiUrl, currentPage, limit),
+    enabled: !hasSearchTerm,
+  });
+
+  const { data: search } = useQuery({
+    queryKey: ["search", searchTerm, currentPage, limit],
+    queryFn: () => fetchSearchResults(apiUrl, searchTerm, currentPage, limit),
+    enabled: hasSearchTerm,
+  });
+
+  // ==============================
+  // Update favourite logic
+  // ==============================
   async function updateFavouriteStatus(id, newStatus) {
     try {
       const response = await fetch(`${apiUrl}/update/${id}`, {
@@ -84,9 +137,7 @@ function Home() {
         body: JSON.stringify({ favourite_status: newStatus }),
         credentials: "include",
       });
-
       if (!response.ok) throw new Error("Failed to update status");
-
       return await response.json();
     } catch (error) {
       console.error("Update error:", error);
@@ -95,10 +146,14 @@ function Home() {
 
   async function handleUpdate(id, newStatus) {
     await updateFavouriteStatus(id, newStatus);
-    revalidator.revalidate();
+    queryClient.invalidateQueries(["contacts"]);
+    queryClient.invalidateQueries(["search"]);
+    queryClient.invalidateQueries(["favStatus"]);
   }
 
-  const hasSearchTerm = Boolean(searchParams.get("searchParams"));
+  // ==============================
+  // Contacts rendering
+  // ==============================
   const results = hasSearchTerm ? search?.data : contacts?.data;
   const totalPages = hasSearchTerm ? search?.totalPages : contacts?.totalPages;
 
@@ -121,7 +176,7 @@ function Home() {
         }}
       />
     ));
-  } else if (!hasSearchTerm) {
+  } else if (!hasSearchTerm && results < 0) {
     Cards = (
       <p
         className={
@@ -137,113 +192,121 @@ function Home() {
     Cards = null;
   }
 
+  // ==============================
+  // Body background effect
+  // ==============================
   useEffect(() => {
     const BodyBgStyle = darkMode
       ? "body1-style-darkmode"
       : "body1-style-lightmode";
     document.body.classList.add(BodyBgStyle);
-
     return () => {
       document.body.classList.remove(BodyBgStyle);
     };
   }, [darkMode]);
 
+  // ==============================
+  // Render (hydrated)
+  // ==============================
   return (
-    <>
-      <Sidebar darkMode={darkMode} favStatus={favStatus.exists_status} />
-      <main className={styles.mainContainer}>
-        <section className={styles.cardGrid}>{Cards}</section>
+    <HydrationBoundary state={dehydratedState}>
+      <>
+        <Sidebar darkMode={darkMode} favStatus={favStatus?.exists_status} />
+        <main className={styles.mainContainer}>
+          <section className={styles.cardGrid}>{Cards}</section>
 
-        {results && results.length > 0 && (
-          <div className={styles.pageNav}>
-            <button
-              className={styles.previous}
-              aria-disabled={currentPage === 1}
-              onClick={() => {
-                setSearchParams((prevParams) => {
-                  const newParams = new URLSearchParams(prevParams);
-                  newParams.set("page", currentPage - 1);
-                  newParams.set("limit", limit);
-                  return newParams;
-                });
-              }}
-            >
-              Prev
-            </button>
+          {results && results.length > 0 && (
+            <div className={styles.pageNav}>
+              <button
+                className={styles.previous}
+                aria-disabled={currentPage === 1}
+                onClick={() => {
+                  setSearchParams((prevParams) => {
+                    const newParams = new URLSearchParams(prevParams);
+                    newParams.set("page", currentPage - 1);
+                    newParams.set("limit", limit);
+                    return newParams;
+                  });
+                }}
+              >
+                Prev
+              </button>
 
-            <span
-              className={
-                darkMode
-                  ? styles.pageNumberDarkmode
-                  : styles.pageNumberLightmode
-              }
-            >
-              Page {currentPage} of {totalPages || 1}
-            </span>
+              <span
+                className={
+                  darkMode
+                    ? styles.pageNumberDarkmode
+                    : styles.pageNumberLightmode
+                }
+              >
+                Page {currentPage} of {totalPages || 1}
+              </span>
 
-            <button
-              className={styles.next}
-              aria-disabled={currentPage === totalPages || totalPages === 0}
-              onClick={() => {
-                setSearchParams((prevParams) => {
-                  const newParams = new URLSearchParams(prevParams);
-                  newParams.set("page", currentPage + 1);
-                  newParams.set("limit", limit);
-                  return newParams;
-                });
-              }}
-            >
-              Next
-            </button>
-          </div>
-        )}
-
-        <AnimatePresence>
-          {activeModal === "detail" && (
-            <DetailCardModal
-              contactId={selectedContact}
-              darkMode={darkMode}
-              onClose={() => setActiveModal(null)}
-              onEdit={() => setActiveModal("update")}
-              onDelete={() => setActiveModal("delete")}
-            />
+              <button
+                className={styles.next}
+                aria-disabled={currentPage === totalPages || totalPages === 0}
+                onClick={() => {
+                  setSearchParams((prevParams) => {
+                    const newParams = new URLSearchParams(prevParams);
+                    newParams.set("page", currentPage + 1);
+                    newParams.set("limit", limit);
+                    return newParams;
+                  });
+                }}
+              >
+                Next
+              </button>
+            </div>
           )}
 
-          {activeModal === "update" && (
-            <UpdateFormModal
-              contactId={selectedContact}
-              closeModal={() => setActiveModal(null)}
-              backToDetail={() => setActiveModal("detail")}
-            />
-          )}
+          {/* ==================== Modals ==================== */}
+          <AnimatePresence>
+            {activeModal === "detail" && (
+              <DetailCardModal
+                contactId={selectedContact}
+                darkMode={darkMode}
+                onClose={() => setActiveModal(null)}
+                onEdit={() => setActiveModal("update")}
+                onDelete={() => setActiveModal("delete")}
+              />
+            )}
 
-          {activeModal === "delete" && (
-            <DeleteConfirmModal
-              closeModal={() => setActiveModal(null)}
-              onConfirm={() => setActiveModal(null)}
-              backToDetail={() => setActiveModal("detail")}
-              activeModal={activeModal}
-            />
-          )}
+            {activeModal === "update" && (
+              <UpdateFormModal
+                contactId={selectedContact}
+                closeModal={() => setActiveModal(null)}
+                backToDetail={() => setActiveModal("detail")}
+              />
+            )}
 
-          {headerActiveModal === "logout" && (
-            <LogoutConfirmModal
-              closeModal={() => setHeaderActiveModal(null)}
-              onConfirm={() => setHeaderActiveModal(null)}
-              onLogout={() => setHeaderActiveModal("logout")}
-              headerActiveModal={headerActiveModal}
-            />
-          )}
+            {activeModal === "delete" && (
+              <DeleteConfirmModal
+                closeModal={() => setActiveModal(null)}
+                onConfirm={() => setActiveModal(null)}
+                backToDetail={() => setActiveModal("detail")}
+                activeModal={activeModal}
+              />
+            )}
 
-          {headerActiveModal === "create" && (
-            <CreateContactModal
-              setHeaderActiveModal={setHeaderActiveModal}
-              darkMode={darkMode}
-            />
-          )}
-        </AnimatePresence>
-      </main>
-    </>
+            {headerActiveModal === "logout" && (
+              <LogoutConfirmModal
+                closeModal={() => setHeaderActiveModal(null)}
+                onConfirm={() => setHeaderActiveModal(null)}
+                onLogout={() => setHeaderActiveModal("logout")}
+                headerActiveModal={headerActiveModal}
+              />
+            )}
+
+            {headerActiveModal === "create" && (
+              <CreateContactModal
+                setHeaderActiveModal={setHeaderActiveModal}
+                darkMode={darkMode}
+              />
+            )}
+          </AnimatePresence>
+        </main>
+      </>
+    </HydrationBoundary>
   );
 }
 

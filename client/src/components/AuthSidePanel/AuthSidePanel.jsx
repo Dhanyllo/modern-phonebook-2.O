@@ -1,127 +1,107 @@
-import { useEffect, useRef } from "react";
 import styles from "./AuthSidePanel.module.css";
 
-const testimonials = [
-  {
-    name: "Alice",
-    role: "Volunteer",
-    quote:
-      "This app helped me connect with amazing people through food sharing!",
-  },
-  {
-    name: "James",
-    role: "Community Member",
-    quote: "Reducing food waste has never been this easy.",
-  },
-  {
-    name: "Sophia",
-    role: "Donor",
-    quote:
-      "I love how simple it is to share extra meals with those who need them.",
-  },
-  {
-    name: "Daniel",
-    role: "Organizer",
-    quote: "SnapDish brings people together for a great cause.",
-  },
-];
-
 const AuthSidePanel = () => {
-  const listRef = useRef(null);
-
-  useEffect(() => {
-    if (!listRef.current) return;
-    const el = listRef.current;
-    // duplicate content for infinite scroll
-    el.innerHTML += el.innerHTML;
-  }, []);
+  const testimonials = [
+    {
+      text: "This app completely transformed how I manage my contacts. Everything’s organized and accessible in seconds.",
+      author: "— Alex Johnson, Sales Lead",
+    },
+    {
+      text: "Clean, simple, and efficient. I’ve cut my client follow-up time in half.",
+      author: "— Priya Desai, Consultant",
+    },
+    {
+      text: "Exactly what I needed to keep personal and business contacts in one place. Highly recommend!",
+      author: "— Michael Osei, Entrepreneur",
+    },
+    {
+      text: "The smart tagging and search features make it effortless to find anyone I need instantly.",
+      author: "— Sarah Mensah, Project Manager",
+    },
+    {
+      text: "Syncs beautifully across all my devices. I never lose track of important client details anymore.",
+      author: "— Daniel Kim, Marketing Specialist",
+    },
+    {
+      text: "I used to juggle multiple spreadsheets. Now everything’s streamlined and visually clean.",
+      author: "— Lucy Zhang, Operations Coordinator",
+    },
+    {
+      text: "Love how intuitive it feels. The interface makes managing hundreds of contacts surprisingly fun.",
+      author: "— Fatima Bello, Product Designer",
+    },
+    {
+      text: "Security and privacy were my top concerns. This platform delivers both with confidence.",
+      author: "— Anita Boateng, HR Consultant",
+    },
+    {
+      text: "It’s simple enough for daily use but powerful enough to handle large professional networks.",
+      author: "— Julia Carter, Business Analyst",
+    },
+    {
+      text: "Sharing contacts securely between team members has made collaboration seamless.",
+      author: "— Rebecca Yeboah, Team Lead",
+    },
+    {
+      text: "From onboarding to everyday use, everything about this app feels thoughtfully designed.",
+      author: "— Henry Park, Startup Founder",
+    },
+  ];
 
   return (
     <div className={styles.panel}>
-      <div className={styles.gradientBg} />
-      <div className={styles.overlay} />
-
-      <div className={`${styles.circle} ${styles.circlePrimary}`} />
-      <div className={`${styles.circle} ${styles.circleSecondary}`} />
-      <div className={`${styles.circle} ${styles.circleAccent}`} />
-
       {/* Logo */}
       <div className={styles.logoWrapper}>
         <div className={styles.logoBox}>
-          <span className={styles.logoText}>S</span>
+          <span className={styles.logoText}>M</span>
         </div>
-        <span className={styles.logoTitle}>SnapDish</span>
+        <span className={styles.logoTitle}>Modern Phonebook</span>
       </div>
 
       {/* Content */}
       <div className={styles.content}>
         <div className={styles.intro}>
           <h3 className={styles.heading}>
-            Share Food,
+            Store Contact ,
             <br />
-            <span className={styles.highlight}>Share Hope</span>
+            <span className={styles.highlight}>Access Globally🌍</span>
           </h3>
           <p className={styles.description}>
-            Join thousands of community members making a difference through food
-            sharing. Together, we&apos;re reducing waste and helping those in
-            need.
+            Join others simplifying the way they connect and communicate. Keep
+            your contacts organized, updated, and always accessible.
           </p>
 
           {/* Stats */}
           <div className={styles.statsGrid}>
             <div className={styles.statBox}>
-              <div className={styles.statNumber}>5,200+</div>
-              <div className={styles.statLabel}>Meals Shared</div>
+              <div className={styles.statNumber}>10k+</div>
+              <div className={styles.statLabel}>Contacts Managed</div>
             </div>
             <div className={styles.statBox}>
-              <div className={styles.statNumber}>480+</div>
-              <div className={styles.statLabel}>Active Donors</div>
+              <div className={styles.statNumber}>1,200+</div>
+              <div className={styles.statLabel}>Active Users</div>
             </div>
             <div className={styles.statBox}>
-              <div className={styles.statNumber}>120+</div>
-              <div className={styles.statLabel}>Communities</div>
+              <div className={styles.statNumber}>98%</div>
+              <div className={styles.statLabel}>User Satisfaction</div>
             </div>
             <div className={styles.statBox}>
-              <div className={styles.statNumber}>300+</div>
-              <div className={styles.statLabel}>Volunteers</div>
+              <div className={styles.statNumber}>35+</div>
+              <div className={styles.statLabel}>Countries Connected</div>
             </div>
           </div>
-        </div>
 
-        {/* Testimonials */}
-        <div className={styles.testimonialsWrapper}>
-          <div ref={listRef} className={styles.testimonialsList}>
-            {testimonials.map((item) => (
-              <div key={item.name} className={styles.testimonialCard}>
-                <p className={styles.testimonialQuote}>
-                  &quot;{item.quote}&quot;
-                </p>
-                <div className={styles.testimonialAuthor}>
-                  <div className={styles.avatar}>{item.name.charAt(0)}</div>
-                  <div>
-                    <p className={styles.authorName}>{item.name}</p>
-                    <p className={styles.authorRole}>{item.role}</p>
-                  </div>
+          <div className={styles.testimonialsSection}>
+            <div className={styles.testimonialsGrid}>
+              {testimonials.map((t, index) => (
+                <div key={index} className={styles.testimonialCard}>
+                  <p className={styles.testimonialText}>“{t.text}”</p>
+                  <span className={styles.testimonialAuthor}>{t.author}</span>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Wave SVG */}
-      <div className={styles.wave}>
-        <svg
-          className={styles.waveSvg}
-          viewBox="0 0 100 20"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M0,10 Q25,0 50,10 T100,10 L100,20 L0,20 Z"
-            fill="white"
-            fillOpacity="0.1"
-          />
-        </svg>
       </div>
     </div>
   );

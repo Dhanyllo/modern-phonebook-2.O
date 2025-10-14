@@ -2,6 +2,16 @@ body {
   font-family: "Open Sans", "Roboto", Arial, Helvetica, sans-serif, "SimSun";
 }
 
+:root {
+  --color-background: #ffffff;
+  --color-primary: #0d6efd;
+  --color-primary-dark: #084298;
+  --color-secondary: #6c757d;
+  --color-accent-orange: #fd7e14;
+  --color-success: #198754;
+  --color-text-muted: #6c757d;
+}
+
 .body1-style-lightmode {
   margin: 0px;
   padding-top: 90px;

@@ -1,41 +1,54 @@
 .formWrapper {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 1.5rem;
-  padding: 2rem;
-  box-shadow: var(--shadow-default);
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 32rem;
+  position: relative;
+  z-index: 10;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 2rem 2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05), 0 8px 18px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.1rem;
 }
 
 .label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-text-primary);
 }
 
 .inputField {
+  box-sizing: border-box;
+  width: 100%;
   height: 3rem;
   padding: 0 1rem;
-  background: var(--color-background);
-  border: 1px solid var(--color-border);
+  border: 1px solid oklch(0.922 0 0);
   border-radius: 0.75rem;
   font-size: 1rem;
   transition: all 0.3s ease;
 }
 
-.inputField:hover {
-  border-color: var(--color-primary) / 0.5;
+.inputField:hover:not(:focus) {
+  border-color: black;
 }
 
 .inputField:focus {
-  border-color: var(--color-primary);
   outline: none;
   box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
 }
 
 .error {
@@ -73,6 +86,7 @@
   height: 3rem;
   font-weight: 600;
   font-size: 1rem;
+  border-style: none;
   border-radius: 0.75rem;
   transition: all 0.3s ease;
   color: white;
@@ -126,39 +140,14 @@
   margin-left: 0.5rem;
 }
 
-.dividerWrapper {
-  position: relative;
-  margin: 2rem 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.dividerLine {
-  position: absolute;
-  width: 100%;
-  height: 1px;
-  background: var(--color-border);
-}
-
-.dividerText {
-  position: relative;
-  background: var(--color-surface);
-  padding: 0 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-text-muted);
-}
-
 .signInText {
-  margin-top: 2rem;
   text-align: center;
   font-size: 1rem;
   color: var(--color-text-muted);
 }
 
 .signInLink {
-  color: var(--color-primary);
+  color: oklch(0.205 0 0);
   font-weight: 600;
   text-decoration: none;
   transition: color 0.2s ease;
@@ -167,4 +156,36 @@
 .signInLink:hover {
   color: var(--color-primary-dark);
   text-decoration: underline;
+}
+
+.orDivider {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 1rem 0;
+  gap: 0.75rem;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.orDivider::before,
+.orDivider::after {
+  content: "";
+  flex: 1 1 0;
+  height: 0.5px;
+  background-color: #e5e7eb;
+  pointer-events: none;
+}
+
+.orDividerText {
+  pointer-events: auto;
+  padding: 0.35rem 0.8rem;
+  border-radius: 9999px;
+  background-color: var(--card-bg, #fff);
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1;
+  z-index: 1;
+  align-self: center;
 }

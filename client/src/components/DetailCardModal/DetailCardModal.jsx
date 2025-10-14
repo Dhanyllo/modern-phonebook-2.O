@@ -1,98 +1,42 @@
-// import { useEffect, useState } from "react";
-// import ReactDOM from "react-dom";
-// import { motion } from "framer-motion";
-// import DetailCard from "../DetailCard/DetailCard";
-// import styles from "./DetailCardModal.module.css";
-
-// function DetailCardModal({ darkMode, contactId, onClose, onEdit, onDelete }) {
-//   const [detailData, setDetailData] = useState(null);
-//   const [loading, setLoading] = useState(false);
-//   const apiUrl = import.meta.env.VITE_API_URL;
-
-//   useEffect(() => {
-//     if (contactId) {
-//       setLoading(true);
-//       Promise.all([
-//         fetch(`${apiUrl}/detail/${contactId}`, { credentials: "include" }),
-//         fetch(`${apiUrl}/detail/occupations/${contactId}`, {
-//           credentials: "include",
-//         }),
-//       ])
-//         .then(([detailRes, occRes]) =>
-//           Promise.all([detailRes.json(), occRes.json()])
-//         )
-//         .then(([contactDetails, occupations]) => {
-//           setDetailData({ contactDetails, occupations });
-//         })
-//         .catch((err) => console.error("Error fetching detail data:", err))
-//         .finally(() => setLoading(false));
-//     }
-//   }, [contactId, apiUrl]);
-
-//   if (!contactId) return null;
-
-//   return ReactDOM.createPortal(
-//     <motion.div
-//       className={styles.modalOverlay}
-//       onClick={onClose}
-//       initial={{ opacity: 0 }}
-//       animate={{ opacity: 1 }}
-//       exit={{ opacity: 0 }}
-//       transition={{ duration: 0.25 }}
-//     >
-//       {loading ? (
-//         <div className={styles.spinner}></div>
-//       ) : detailData ? (
-//         <DetailCard
-//           key={detailData.contactDetails.id}
-//           {...detailData.contactDetails}
-//           occupations={detailData.occupations}
-//           darkMode={darkMode}
-//           handleUpdateFormOpen={onEdit}
-//           handleDelete={onDelete}
-//           handleCloseModal={onClose}
-//         />
-//       ) : null}
-//     </motion.div>,
-//     document.getElementById("modal-root")
-//   );
-// }
-
-// export default DetailCardModal;
-
-import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 import DetailCard from "../DetailCard/DetailCard";
 import styles from "./DetailCardModal.module.css";
-import { useRevalidator } from "react-router-dom";
 
 function DetailCardModal({ darkMode, contactId, onClose, onEdit, onDelete }) {
-  const [detailData, setDetailData] = useState(null);
-  const [loading, setLoading] = useState(false);
   const apiUrl = import.meta.env.VITE_API_URL;
-  const revalidator = useRevalidator();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (contactId) {
-      setLoading(true);
-      Promise.all([
+  // 🧩 Fetch contact details + occupations with React Query
+  const {
+    data: detailData,
+    isLoading: loading,
+    isError,
+  } = useQuery({
+    queryKey: ["contactDetail", contactId],
+    queryFn: async () => {
+      const [detailRes, occRes] = await Promise.all([
         fetch(`${apiUrl}/detail/${contactId}`, { credentials: "include" }),
         fetch(`${apiUrl}/detail/occupations/${contactId}`, {
           credentials: "include",
         }),
-      ])
-        .then(([detailRes, occRes]) =>
-          Promise.all([detailRes.json(), occRes.json()])
-        )
-        .then(([contactDetails, occupations]) => {
-          setDetailData({ contactDetails, occupations });
-        })
-        .catch((err) => console.error("Error fetching detail data:", err))
-        .finally(() => setLoading(false));
-    }
-  }, [contactId, apiUrl]);
+      ]);
 
+      if (!detailRes.ok || !occRes.ok)
+        throw new Error("Failed to fetch contact details");
+
+      const [contactDetails, occupations] = await Promise.all([
+        detailRes.json(),
+        occRes.json(),
+      ]);
+
+      return { contactDetails, occupations };
+    },
+    enabled: !!contactId, // only run if contactId exists
+  });
+
+  // 🧠 Update favourite status with mutation
   async function updateFavouriteStatus(id, newStatus) {
     try {
       const response = await fetch(`${apiUrl}/update/${id}`, {
@@ -103,7 +47,6 @@ function DetailCardModal({ darkMode, contactId, onClose, onEdit, onDelete }) {
       });
 
       if (!response.ok) throw new Error("Failed to update status");
-
       return await response.json();
     } catch (error) {
       console.error("Update error:", error);
@@ -112,7 +55,12 @@ function DetailCardModal({ darkMode, contactId, onClose, onEdit, onDelete }) {
 
   async function handleUpdate(id, newStatus) {
     await updateFavouriteStatus(id, newStatus);
-    revalidator.revalidate();
+
+    // 🔄 Invalidate relevant queries to refresh UI across app
+    queryClient.invalidateQueries(["contacts"]);
+    queryClient.invalidateQueries(["search"]);
+    queryClient.invalidateQueries(["favStatus"]);
+    queryClient.invalidateQueries(["contactDetail", contactId]);
   }
 
   if (!contactId) return null;
@@ -128,6 +76,8 @@ function DetailCardModal({ darkMode, contactId, onClose, onEdit, onDelete }) {
     >
       {loading ? (
         <div className={styles.spinner}></div>
+      ) : isError ? (
+        <div className={styles.error}>Failed to load details.</div>
       ) : detailData ? (
         <DetailCard
           key={detailData.contactDetails.id}

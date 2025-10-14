@@ -1,28 +1,19 @@
-:root {
-  --color-background: #ffffff;
-  --color-primary: #0d6efd;
-  --color-primary-dark: #084298;
-  --color-secondary: #6c757d;
-  --color-accent-orange: #fd7e14;
-  --color-success: #198754;
-  --color-text-muted: #6c757d;
-}
-
 /* Page layout */
 .pageContainer {
+  display: flex;
+  flex-direction: row;
   min-height: 100vh;
   width: 100%;
   background: var(--color-background);
-  display: flex;
 }
 
 /* Right-hand side wrapper */
 .rightSection {
-  width: 100%;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  padding: 2rem 3rem;
+  align-items: center;
+  flex: 3;
   position: relative;
   overflow: hidden;
 }
@@ -34,7 +25,7 @@
 }
 
 .circlePrimary {
-  top: 5rem;
+  top: 17rem;
   right: 5rem;
   width: 8rem;
   height: 8rem;
@@ -44,39 +35,39 @@
   animation: pulse 2s infinite;
 }
 
-.circleSecondary {
+.circleAccent {
   bottom: 5rem;
   left: 5rem;
-  width: 10rem;
-  height: 10rem;
-  background: var(--color-secondary);
-  opacity: 0.15;
-  filter: blur(3rem);
-  animation: bounce 3s infinite;
-}
-
-.circleAccent {
-  top: 50%;
-  right: 25%;
-  width: 6rem;
-  height: 6rem;
+  width: 8rem;
+  height: 8rem;
   background: var(--color-accent-orange);
-  opacity: 0.2;
-  filter: blur(1rem);
-  animation: ping 1.5s infinite;
+  opacity: 0.1;
+  filter: blur(2rem);
+  animation: pulse 2s infinite;
 }
 
-/* Form wrapper */
-.formWrapper {
+.formWrapperMain {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  max-width: 32rem;
-  position: relative;
-  z-index: 10;
+  padding: 3rem 3rem;
+}
+
+/* Responsive padding for smaller screens */
+@media (max-width: 640px) {
+  .formWrapperMain {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
 }
 
 /* Header section */
 .header {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 2.5rem;
 }
 
@@ -86,7 +77,7 @@
   padding: 0.5rem 1rem;
   border-radius: 9999px;
   background: var(--color-primary);
-  color: var(--color-primary-dark);
+  color: white;
   font-size: 0.875rem;
   font-weight: 500;
   margin-bottom: 1.5rem;
@@ -96,7 +87,7 @@
 .badgeDot {
   width: 0.5rem;
   height: 0.5rem;
-  background: var(--color-success);
+  background: #fd7e14;
   border-radius: 50%;
   margin-right: 0.5rem;
   animation: pulse 2s infinite;
@@ -110,23 +101,41 @@
 }
 
 .gradientText {
+  font-size: larger;
+  font-weight: 900;
   background: linear-gradient(
-    to right,
-    var(--color-primary),
-    var(--color-primary-dark),
-    var(--color-accent-orange)
+    90deg,
+    var(--color-primary) 0%,
+    var(--color-primary) 40%,
+    var(--color-accent-orange) 60%,
+    var(--color-primary-dark) 100%
   );
+  background-size: 200%;
+  animation: shine 4s ease-in-out infinite alternate;
   -webkit-background-clip: text;
-  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
+  text-align: center;
+  font-weight: 500;
+  align-items: center;
+  width: 600px;
   font-size: 1.125rem;
   color: var(--color-text-muted);
-  line-height: 1.6;
+  white-space: normal;
 }
 
-/* Keyframes (basic versions of tailwind animations) */
+/* Keyframes (animations) */
+@keyframes shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
 @keyframes pulse {
   0%,
   100% {
@@ -136,16 +145,6 @@
   50% {
     transform: scale(1.05);
     opacity: 0.7;
-  }
-}
-
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-15%);
   }
 }
 

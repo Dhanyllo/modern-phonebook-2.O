@@ -6,6 +6,7 @@ import {
   Route,
 } from "react-router-dom";
 import { createRoot } from "react-dom/client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 import Home, { loader as homeloader } from "./pages/Home/Home";
 import Favourites, {
@@ -17,6 +18,7 @@ import DetailPage, {
 import Header from "./components/Header/Header";
 import Error from "./pages/Error";
 import NotFound from "./pages/NotFound";
+import Login2 from "./pages/Login2/Login2";
 import Login from "./pages/Login/Login";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
@@ -41,6 +43,8 @@ function App() {
 
   const [darkMode, setDarkMode] = useDarkMode();
 
+  const queryClient = new QueryClient();
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
@@ -62,6 +66,12 @@ function App() {
               <DetailPage darkMode={darkMode} setDarkMode={setDarkMode} />
             }
             loader={detailLoader}
+          />
+
+          <Route
+            path="/login2"
+            element={<Login2 darkMode={darkMode} setDarkMode={setDarkMode} />}
+            // loader={detailLoader}
           />
 
           <Route
@@ -119,7 +129,9 @@ function App() {
 
   return (
     <StrictMode>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </StrictMode>
   );
 }

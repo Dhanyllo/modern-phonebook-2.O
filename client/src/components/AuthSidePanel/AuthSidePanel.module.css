@@ -1,74 +1,42 @@
-:root {
-  --color-primary: #4f46e5;
-  --color-primary-dark: #3730a3;
-  --color-secondary: #facc15;
-}
-
 /* Base container */
-.sidePanel {
-  display: none;
-}
-@media (min-width: 1024px) {
-  .sidePanel {
-    display: flex;
-    width: 33.333%;
-    position: relative;
-    overflow: hidden;
-  }
+
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1.7;
+  background-color: #0f172a;
+  color: #f8fafc;
+  text-align: center;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateX(-30px);
+  animation: slideInPanel 0.8s ease-out forwards;
 }
 
-/* Backgrounds */
-.gradientBackground {
+.panel::before {
+  content: "";
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    var(--color-primary) 0%,
-    var(--color-primary-dark) 100%
-  );
-}
-.overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom right,
-    rgba(0, 0, 0, 0.2),
-    transparent,
-    rgba(0, 0, 0, 0.3)
-  );
-}
-
-/* Circles */
-.circle {
-  position: absolute;
-  border-radius: 50%;
-}
-.circlePrimary {
-  top: 5rem;
-  right: 4rem;
-  width: 8rem;
-  height: 8rem;
-  background: rgba(255, 255, 255, 0.1);
-  filter: blur(2rem);
-  animation: pulse 3s infinite;
-}
-.circleSecondary {
-  bottom: 5rem;
-  left: 4rem;
-  width: 10rem;
-  height: 10rem;
-  background: rgba(250, 204, 21, 0.2);
-  filter: blur(3rem);
-  animation: bounce 6s infinite;
-}
-.circleAccent {
-  top: 50%;
-  left: 25%;
-  width: 6rem;
-  height: 6rem;
-  background: rgba(255, 255, 255, 0.15);
-  filter: blur(1.5rem);
-  animation: ping 4s infinite;
+  inset: -15%;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+      circle at 25% 20%,
+      rgba(15, 23, 42, 0.85) 0%,
+      rgba(56, 189, 248, 0.25) 25%,
+      rgba(15, 23, 42, 0.9) 55%,
+      rgba(15, 23, 42, 1) 100%
+    ),
+    radial-gradient(
+      circle at 80% 75%,
+      rgba(236, 72, 153, 0.25) 0%,
+      rgba(15, 23, 42, 0.9) 40%,
+      rgba(15, 23, 42, 1) 100%
+    );
+  background-repeat: no-repeat;
+  background-size: 200% 200%;
+  filter: blur(30px);
+  animation: glowDrift 8s ease-in-out 0.9s infinite alternate;
 }
 
 /* Logo */
@@ -81,6 +49,7 @@
   gap: 0.75rem;
   z-index: 10;
 }
+
 .logoBox {
   width: 3rem;
   height: 3rem;
@@ -92,11 +61,13 @@
   justify-content: center;
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
+
 .logoLetter {
   color: white;
   font-size: 1.25rem;
   font-weight: bold;
 }
+
 .logoText {
   color: white;
   font-size: 1.5rem;
@@ -112,9 +83,11 @@
   justify-content: center;
   padding: 4rem 2rem;
 }
+
 .intro {
   margin-bottom: 3rem;
 }
+
 .heading {
   font-size: 2rem;
   font-weight: bold;
@@ -122,14 +95,11 @@
   margin-bottom: 1.5rem;
   line-height: 1.25;
 }
-@media (min-width: 1024px) {
-  .heading {
-    font-size: 2.5rem;
-  }
-}
+
 .highlight {
   color: var(--color-secondary);
 }
+
 .description {
   color: rgba(255, 255, 255, 0.9);
   font-size: 1.125rem;
@@ -142,86 +112,89 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
+  margin-bottom: 85px;
 }
+
 .stat {
   text-align: center;
 }
+
 .statNumber {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--color-secondary);
+  font-size: 2rem;
+  font-weight: bolder;
+  color: #4ade80;
   margin-bottom: 0.25rem;
 }
+
 .statLabel {
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.875rem;
 }
 
-/* Testimonials */
-.testimonialsWrapper {
-  position: relative;
+.testimonialsSection {
+  margin-top: 2rem;
+  height: 200px;
   overflow: hidden;
-  height: 12rem;
+  position: relative;
 }
-.testimonialsList {
+
+.testimonialsHeading {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.testimonialsGrid {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  animation: scroll-up 25s linear infinite;
+  gap: 1rem;
+  animation: scrollLoop 25s linear infinite;
 }
+
 .testimonialCard {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-.testimonialQuote {
-  color: rgba(255, 255, 255, 0.9);
-  font-style: italic;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  margin-bottom: 1rem;
-}
-.testimonialAuthor {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-.authorAvatar {
-  width: 2rem;
-  height: 2rem;
-  background: var(--color-secondary);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  color: var(--color-primary-dark);
-  font-weight: bold;
-  font-size: 0.875rem;
-}
-.authorName {
-  color: var(--color-secondary);
-  font-weight: 600;
-  font-size: 0.875rem;
-}
-.authorRole {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.75rem;
+  background-color: #fafafa;
+  border-radius: 10px;
+  padding: 2rem 1.25rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Bottom wave */
-.wave {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 8rem;
+.testimonialCard:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
 }
 
-/* Animations */
-@keyframes scroll-up {
+.testimonialText {
+  font-weight: 500;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 0.5rem;
+  font-style: italic;
+}
+
+.testimonialAuthor {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #3ca62a;
+}
+
+@keyframes slideInPanel {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scrollLoop {
   0% {
     transform: translateY(0);
   }
@@ -229,34 +202,20 @@
     transform: translateY(-50%);
   }
 }
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.7;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
-}
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10%);
-  }
-}
-@keyframes ping {
+
+@keyframes glowDrift {
   0% {
-    transform: scale(1);
+    background-position: 15% 30%, 75% 85%;
+    opacity: 0.9;
+  }
+  100% {
+    background-position: 40% 45%, 90% 65%;
     opacity: 1;
   }
-  75%,
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
+}
+
+@media (min-width: 1024px) {
+  .heading {
+    font-size: 2.5rem;
   }
 }
