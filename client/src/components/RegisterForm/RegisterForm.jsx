@@ -9,6 +9,10 @@ const RegisterForm = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:3000/google";
+  };
+
   return (
     <div className={styles.formWrapper}>
       <Form
@@ -150,7 +154,10 @@ const RegisterForm = () => {
           <span className={styles.orDividerText}>OR</span>
         </div>
 
-        <GoogleButton label="Continue with Google" />
+        <GoogleButton
+          label="Continue with Google"
+          onClick={handleGoogleLogin}
+        />
 
         <div className={styles.signInText}>
           Already have an account?{" "}

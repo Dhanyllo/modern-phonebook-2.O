@@ -7,9 +7,11 @@ import { FaRegUserCircle } from "react-icons/fa";
 import { TfiHelpAlt } from "react-icons/tfi";
 import { FiFlag, FiLogOut } from "react-icons/fi";
 import { GrUpdate, GrDocumentVerified } from "react-icons/gr";
+import { useDarkMode } from "../../context/DarkModeContext";
 import styles from "./Header.module.css";
 
-function Header({ darkMode, setDarkMode }) {
+function Header() {
+  const { darkMode, setDarkMode } = useDarkMode();
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("searchParams") || "";
   const inputRef = useRef(null);
@@ -138,7 +140,6 @@ function Header({ darkMode, setDarkMode }) {
           </div>
 
           <button
-            className={styles.profileLayer2Link}
             onClick={(e) => {
               e.stopPropagation();
               setHeaderActiveModal("create");
@@ -227,7 +228,6 @@ function Header({ darkMode, setDarkMode }) {
 
       <Outlet
         context={{
-          darkMode,
           headerActiveModal,
           setHeaderActiveModal,
         }}

@@ -22,6 +22,7 @@ import {
 } from "@tanstack/react-query";
 import { checkAuth } from "../../utils";
 import styles from "./Home.module.css";
+import { useDarkMode } from "../../context/DarkModeContext";
 
 // ==============================
 // Data fetching helpers
@@ -93,9 +94,8 @@ export async function loader({ request }) {
 // ==============================
 function Home() {
   const { dehydratedState, apiUrl } = useLoaderData();
-  const { darkMode, headerActiveModal, setHeaderActiveModal } =
-    useOutletContext();
-
+  const { headerActiveModal, setHeaderActiveModal } = useOutletContext();
+  const { darkMode } = useDarkMode();
   const [activeModal, setActiveModal] = useState(null);
   const [selectedContact, setSelectedContact] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();

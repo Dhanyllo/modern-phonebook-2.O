@@ -1,16 +1,17 @@
 import { FaHeart } from "react-icons/fa6";
 import styles from "./ContactCard.module.css";
+import { useDarkMode } from "../../context/DarkModeContext";
 
 function ContactCard({
   firstName,
   otherNames,
   phoneNumber,
   favouriteStatus,
-  darkMode,
   id,
   onUpdate,
   onViewClick,
 }) {
+  const { darkMode } = useDarkMode();
   const firstLetter = firstName.charAt(0);
 
   let color;

@@ -36,6 +36,10 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:3000/google";
+  };
+
   return (
     <div className={styles.pageContainer}>
       <AuthSidePanel />
@@ -148,7 +152,10 @@ const Login = () => {
                 <span className={styles.orDividerText}>OR</span>
               </div>
 
-              <GoogleButton label="Continue with Google" />
+              <GoogleButton
+                label="Continue with Google"
+                onClick={handleGoogleLogin}
+              />
 
               <div className={styles.signInText}>
                 Don't have an account?{" "}

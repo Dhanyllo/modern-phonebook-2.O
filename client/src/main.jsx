@@ -28,20 +28,21 @@ import ProfilePage, { profileAction } from "./pages/ProfilePage/ProfilePage";
 import ChangePassword, {
   changePasswordAction,
 } from "./pages/ChangePassword/ChangePassword";
+import { DarkModeProvider } from "./context/DarkModeContext";
 
 function App() {
-  function useDarkMode() {
-    const [darkMode, setDarkMode] = useState(() => {
-      return localStorage.getItem("darkMode") === "true";
-    });
+  // function useDarkMode() {
+  //   const [darkMode, setDarkMode] = useState(() => {
+  //     return localStorage.getItem("darkMode") === "true";
+  //   });
 
-    useEffect(() => {
-      localStorage.setItem("darkMode", darkMode);
-    }, [darkMode]);
-    return [darkMode, setDarkMode];
-  }
+  //   useEffect(() => {
+  //     localStorage.setItem("darkMode", darkMode);
+  //   }, [darkMode]);
+  //   return [darkMode, setDarkMode];
+  // }
 
-  const [darkMode, setDarkMode] = useDarkMode();
+  // const [darkMode, setDarkMode] = useDarkMode();
 
   const queryClient = new QueryClient();
 
@@ -49,9 +50,7 @@ function App() {
     createRoutesFromElements(
       <>
         <Route errorElement={<Error />}>
-          <Route
-            element={<Header darkMode={darkMode} setDarkMode={setDarkMode} />}
-          >
+          <Route element={<Header />}>
             <Route path="/" element={<Home />} loader={homeloader} />
             <Route
               path="/favourites"
@@ -62,21 +61,19 @@ function App() {
 
           <Route
             path="/detail/:id"
-            element={
-              <DetailPage darkMode={darkMode} setDarkMode={setDarkMode} />
-            }
+            element={<DetailPage />}
             loader={detailLoader}
           />
 
           <Route
             path="/login2"
-            element={<Login2 darkMode={darkMode} setDarkMode={setDarkMode} />}
+            element={<Login2 />}
             // loader={detailLoader}
           />
 
           <Route
             path="/login"
-            element={<Login darkMode={darkMode} setDarkMode={setDarkMode} />}
+            element={<Login />}
             // loader={detailLoader}
           />
 
@@ -100,25 +97,19 @@ function App() {
 
           <Route
             path="/resetPassword"
-            element={
-              <ResetPassword darkMode={darkMode} setDarkMode={setDarkMode} />
-            }
+            element={<ResetPassword />}
             // loader={detailLoader}
           />
 
           <Route
             path="/change-password"
-            element={
-              <ChangePassword darkMode={darkMode} setDarkMode={setDarkMode} />
-            }
+            element={<ChangePassword />}
             action={changePasswordAction}
           />
 
           <Route
             path="/forgotPassword"
-            element={
-              <ForgotPassword darkMode={darkMode} setDarkMode={setDarkMode} />
-            }
+            element={<ForgotPassword />}
             // loader={detailLoader}
           />
           <Route path="*" element={<NotFound />} />
@@ -129,9 +120,11 @@ function App() {
 
   return (
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
+      <DarkModeProvider>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </DarkModeProvider>
     </StrictMode>
   );
 }
