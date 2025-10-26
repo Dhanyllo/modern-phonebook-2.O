@@ -1,0 +1,891 @@
+.headerNormalLightmode {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+}
+
+.headerNormalDarkmode {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 57.4px;
+  position: fixed;
+  z-index: 100;
+  border: none;
+  border-right-style: none;
+  border-left-style: none;
+  border-top-style: none;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+  background-color: rgb(176, 176, 176);
+}
+
+.leftSideHeaderLightmode {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  width: 257px;
+  flex-shrink: 0;
+  height: 100%;
+}
+
+.leftSideHeaderDarkmode {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  background-color: #3ca62a;
+  width: 257px;
+  flex-shrink: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.icons {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  background-color: #3ca62a;
+}
+
+.headerLogo {
+  width: 20%;
+  height: 70%;
+}
+
+.logoTitle {
+  color: white;
+  font-family: "Winky Rough", sans-serif;
+  font-size: 25px;
+  font-weight: bolder;
+  margin-left: 5px;
+}
+
+.searchBar {
+  display: flex;
+  flex-direction: row;
+  flex: 3;
+  height: 100%;
+  border-bottom-width: 1px;
+}
+
+.searchInputContainer {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  display: flex;
+  width: 120%;
+  margin-right: -1px;
+}
+
+.searchIconDarkmode {
+  position: absolute;
+  flex: 1;
+  width: 40px;
+  height: 30px;
+  left: 20px;
+  top: 15px;
+  bottom: 10px;
+  color: white;
+}
+
+.searchIconLightmode {
+  position: absolute;
+  flex: 1;
+  width: 40px;
+  height: 30px;
+  left: 20px;
+  top: 15px;
+  bottom: 10px;
+  color: black;
+}
+
+.searchBarInputDarkmode {
+  width: 100%;
+  font-size: 18px;
+  font-weight: normal;
+  padding-left: 20px;
+  text-indent: 65px;
+  border-style: none;
+  background-color: rgb(176, 176, 176);
+  box-shadow: inset 1px 2px 3px rgba(0, 0, 0, 0.15);
+}
+
+.searchBarInputLightmode {
+  width: 100%;
+  font-size: 18px;
+  font-weight: normal;
+  padding-left: 20px;
+  text-indent: 65px;
+  border-style: none;
+  background-color: white;
+  box-shadow: inset 1px 2px 3px rgba(0, 0, 0, 0.15);
+}
+
+.searchBarInputLightmode:focus {
+  outline: none;
+  box-shadow: 0 2px 0 0 blue;
+}
+
+.searchBarInputDarkmode:focus {
+  outline: none;
+  box-shadow: 0 4px 0 0 green;
+}
+
+.searchBarInputLightmode::placeholder {
+  font-size: 15px;
+}
+
+.searchBarInputDarkmode::placeholder {
+  font-size: 15px;
+  color: black;
+}
+
+.toolsWrapDarkmode {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  padding-left: 30px;
+  padding-right: 30px;
+  column-gap: 23px;
+  flex: 0.7;
+  height: 100%;
+  box-shadow: inset 1px 2px 3px rgba(0, 0, 0, 0.15);
+  background-color: rgb(176, 176, 176);
+}
+
+.toolsWrapLightmode {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  padding-left: 30px;
+  padding-right: 30px;
+  column-gap: 23px;
+  flex: 0.7;
+  height: 100%;
+  box-shadow: inset 1px 2px 3px rgba(0, 0, 0, 0.15);
+  background-color: white;
+}
+
+.profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profileIconLightmode {
+  width: 30px;
+  height: 30px;
+  cursor: "pointer";
+  color: black;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.profileIconLightmode:hover {
+  opacity: 0.7;
+}
+
+.profileIconDarkmode {
+  width: 30px;
+  height: 30px;
+  cursor: "pointer";
+  color: white;
+  transition: all 0.1s ease-in-out;
+}
+
+.profileIconDarkmode:hover {
+  color: black;
+}
+
+.wrap {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding-right: 20px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  border-right-width: 2px;
+  border-right-color: grey;
+  border-right-style: solid;
+}
+
+.darkmode {
+  color: white;
+  width: 32px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.darkmode:hover {
+  color: black;
+}
+
+.darkmode:active {
+  color: black;
+}
+
+.lightmode {
+  width: 32px;
+  height: 30px;
+  cursor: pointer;
+  color: black;
+}
+
+.lightmode:hover {
+  opacity: 0.7;
+}
+
+.lightmode:active {
+  width: 32px;
+  height: 30px;
+  cursor: pointer;
+  color: gray;
+}
+
+.notificationsIconContainer {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.notificationsIconDarkmode {
+  width: 35px;
+  height: 32px;
+  color: white;
+  transition: all 0.1s ease-in-out;
+}
+
+.notificationsIconLightmode {
+  width: 35px;
+  height: 32px;
+  color: black;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.notificationsCount {
+  position: absolute;
+  top: -2px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  font-family: Arial;
+  font-size: 12px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border-radius: 10px;
+}
+
+.notificationsIconDarkmode:hover {
+  color: black;
+}
+
+.notificationsIconLightmode:hover {
+  opacity: 0.7;
+}
+
+.addContactBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: inherit;
+  cursor: pointer;
+}
+
+.addBtnIconDarkmode {
+  height: 32px;
+  width: 32px;
+  color: white;
+  transition: all 0.1s ease-in-out;
+}
+
+.addBtnIconLightmode {
+  height: 32px;
+  width: 32px;
+  color: red;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.addBtnIconDarkmode:hover {
+  color: red;
+  opacity: 0.9;
+}
+
+.addBtnIconDarkmode:active {
+  color: red;
+  opacity: 0.7;
+}
+
+.addBtnIconLightmode:hover {
+  opacity: 0.7;
+}
+
+.addBtnIconLightmode:active {
+  opacity: 0.8;
+}
+
+.notificationContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  width: 260px;
+  height: 400px;
+  background-color: rgb(248, 248, 248);
+  border: 5px solid #e5e7eb;
+  top: 35px;
+  right: 20px;
+  border-width: 1px;
+  border-radius: 10px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 8px;
+  margin-top: 20px;
+  scroll-behavior: smooth;
+}
+
+.notificationContainer::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 164px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid rgb(248, 248, 248);
+}
+
+.notificationContainer::-webkit-scrollbar {
+  width: 8px;
+  transition: width 0.3s ease-in-out;
+}
+
+.notificationContainer::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+  margin-block: 5px;
+}
+
+.notificationContainer::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.notificationContainer::-webkit-scrollbar-thumb:hover {
+  background: #888;
+  width: 10px;
+}
+
+.notificationContainer:hover::-webkit-scrollbar {
+  width: 10px;
+}
+
+.notificationContainerDisabled {
+  display: none;
+}
+
+.notificationField {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 5px;
+  font-weight: 700;
+}
+
+.profileContainer {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  width: 260px;
+  height: 360px;
+  background-color: rgb(248, 248, 248);
+  border: 5px solid #e5e7eb;
+  top: 35px;
+  right: 27px;
+  border-width: 1px;
+  border-radius: 10px;
+  padding-top: 15px;
+  margin-top: 20px;
+  scroll-behavior: smooth;
+}
+
+.profileContainer::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 31px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid rgb(248, 248, 248);
+}
+
+.profileContainerDisabled {
+  display: none;
+}
+
+.profileFieldLayer1 {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  column-gap: 8px;
+  font-weight: 700;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.profileName {
+  width: 150px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+.profileImageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  border: 3px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.picture {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+.profileFieldLayer2 {
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+  overflow: auto;
+  scroll-behavior: smooth;
+  margin-bottom: 35px;
+  padding-top: 8px;
+}
+
+.profileLayer2Link {
+  all: unset;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 8px;
+  padding: 8px 0;
+  font-size: 16px;
+  cursor: pointer;
+  padding-left: 20px;
+  margin-left: 10px;
+  border-radius: 10px 0 0 10px;
+}
+
+.profileLayer2Link2 {
+  all: unset;
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 8px;
+  padding: 8px 0;
+  font-size: 16px;
+  cursor: pointer;
+  padding-left: 20px;
+  margin-left: 10px;
+  border-radius: 10px 0 0 10px;
+}
+
+.profileLayer2Link:hover,
+.profileLayer2Link2:hover {
+  background-color: white;
+  color: red;
+}
+
+.profileHr1 {
+  border: none;
+  border-top: 2px solid #999;
+  margin-top: 8px;
+  margin-bottom: 1px;
+  margin-left: 25px;
+  margin-right: 5px;
+}
+
+.hamburgerButtonWrap {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #3ca62a;
+  overflow-x: hidden;
+  transform: translateZ(0);
+  width: 70px;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.hamburgerMenuLightmode {
+  all: unset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background-color: rgb(176, 176, 176);
+  padding: 6px;
+  border-radius: 50%;
+}
+
+.hamburgerMenuDarkmode {
+  all: unset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background-color: rgb(176, 176, 176);
+  padding: 6px;
+  border-radius: 50%;
+}
+
+.hamburgerMenuLightmode:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+}
+
+.hamburgerMenuDarkmode:hover {
+  color: black;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.hamburgerMenuButton {
+  height: 20px;
+  width: 20px;
+}
+
+.searchButtonLightmode {
+  display: none;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  background-color: inherit;
+  border-radius: 50%;
+  border: none;
+}
+
+.searchButtonLightmode:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.searchButtonLightmode:hover .searchButtonIcon {
+  width: 25px;
+  color: white;
+}
+
+.searchButtonDarkmode {
+  display: none;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  background-color: inherit;
+  border-radius: 50%;
+  border: none;
+}
+
+.searchButtonDarkmode:hover {
+  background-color: white;
+}
+
+.searchButtonDarkmode:hover .searchButtonIcon {
+  width: 25px;
+  color: black;
+}
+
+.searchButtonLightmode .searchButtonIcon {
+  color: black;
+  width: 30px;
+  height: 30px;
+}
+
+.searchButtonDarkmode .searchButtonIcon {
+  color: white;
+  width: 50px;
+  height: 30px;
+}
+
+/* ===== Mobile View ===== */
+@media (max-width: 600px) {
+  .headerNormalLightmode,
+  .headerNormalDarkmode {
+    justify-content: space-between;
+    height: 50px;
+  }
+
+  .searchBar {
+    display: none;
+  }
+
+  .leftSideHeaderDarkmode {
+    width: 160px;
+  }
+
+  .leftSideHeaderLightmode {
+    width: 160px;
+  }
+
+  .toolsWrapLightmode {
+    flex: none;
+    justify-content: center;
+    column-gap: 10px;
+    width: 200px;
+    padding: 0px;
+    box-shadow: none;
+  }
+
+  .toolsWrapDarkmode {
+    flex: none;
+    justify-content: center;
+    column-gap: 10px;
+    width: 200px;
+    padding: 0px;
+    box-shadow: none;
+  }
+
+  .profile {
+    display: none;
+  }
+
+  .profileIconLightmode {
+    width: 25px;
+    height: 25px;
+  }
+
+  .profileIconDarkmode {
+    width: 25px;
+    height: 25px;
+  }
+
+  .wrap {
+    padding-right: 10px;
+  }
+
+  .darkmode {
+    display: none;
+  }
+
+  .notificationsIconDarkmode {
+    width: 30px;
+    height: 30px;
+  }
+
+  .notificationsIconLightmode {
+    width: 30px;
+    height: 30px;
+  }
+
+  .addBtnIconDarkmode {
+    height: 30px;
+    width: 30px;
+  }
+
+  .addBtnIconLightmode {
+    height: 30px;
+    width: 30px;
+  }
+
+  .searchButtonLightmode {
+    display: flex;
+  }
+
+  .searchButtonDarkmode {
+    display: flex;
+  }
+
+  .profileLayer2Link2 {
+    display: flex;
+  }
+
+  .notificationContainer::before {
+    top: -10px;
+    left: 200px;
+  }
+
+  .profileContainer::before {
+    top: -10px;
+    left: 148px;
+  }
+
+  .hamburgerButtonWrap {
+    width: 50px;
+  }
+
+  .leftSideHeaderLightmode .icons {
+    padding-right: 10px;
+  }
+
+  .leftSideHeaderDarkmode .icons {
+    padding-right: 10px;
+  }
+
+  .headerLogo {
+    display: none;
+  }
+
+  .leftSideHeaderLightmode .logoTitle {
+    margin-left: 0px;
+    font-size: 20px;
+  }
+
+  .leftSideHeaderDarkmode .logoTitle {
+    margin-left: 0px;
+    font-size: 20px;
+  }
+
+  .searchButtonLightmode .searchButtonIcon {
+    color: black;
+    width: 25px;
+    height: 28px;
+  }
+
+  .searchButtonDarkmode .searchButtonIcon {
+    color: white;
+    width: 25px;
+    height: 28px;
+  }
+}
+
+/* Tablet view */
+@media (min-width: 601px) and (max-width: 788px) {
+  .headerNormalLightmode,
+  .headerNormalDarkmode {
+    justify-content: space-between;
+  }
+
+  .searchBar {
+    display: none;
+  }
+
+  .searchButtonLightmode {
+    display: flex;
+  }
+
+  .searchButtonDarkmode {
+    display: flex;
+  }
+
+  .toolsWrapLightmode {
+    flex: none;
+    justify-content: center;
+    column-gap: 10px;
+    width: 300px;
+    padding: 0px;
+    box-shadow: none;
+  }
+
+  .toolsWrapDarkmode {
+    flex: none;
+    justify-content: center;
+    column-gap: 10px;
+    width: 300px;
+    padding: 0px;
+    box-shadow: none;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 1045px) {
+  .leftSideHeaderLightmode .icons {
+    background-color: white;
+    padding-left: 20px;
+  }
+
+  .leftSideHeaderLightmode .logoTitle {
+    color: #3ca62a;
+  }
+
+  .leftSideHeaderLightmode .headerLogo {
+    display: none;
+  }
+
+  .searchBarInputLightmode {
+    box-shadow: none;
+  }
+}
+
+@media (min-width: 1045px) and (max-width: 1242px) {
+  .leftSideHeaderLightmode {
+    box-sizing: border-box;
+    background-color: #3ca62a;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    width: 220px;
+    flex-shrink: 0;
+    height: 100%;
+  }
+
+  .leftSideHeaderDarkmode {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    width: 220px;
+    flex-shrink: 0;
+    height: 100%;
+  }
+
+  .icons {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+  }
+
+  .hamburgerButtonWrap {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    padding-right: 25px;
+    padding-left: 36px;
+  }
+
+  .headerLogo {
+    width: 22%;
+    height: 60%;
+  }
+
+  .logoTitle {
+    color: white;
+    font-family: "Winky Rough", sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+  }
+}

@@ -1,6 +1,8 @@
 import { FaHeart } from "react-icons/fa6";
 import styles from "./ContactCard.module.css";
 import { useDarkMode } from "../../context/DarkModeContext";
+import { useBreakpoint } from "../../hooks/useBreakpoint";
+import { RiArrowRightSLine } from "react-icons/ri";
 
 function ContactCard({
   firstName,
@@ -12,6 +14,8 @@ function ContactCard({
   onViewClick,
 }) {
   const { darkMode } = useDarkMode();
+  const { isMobile, isTablet, isDesktop } = useBreakpoint();
+
   const firstLetter = firstName.charAt(0);
 
   let color;
@@ -27,6 +31,10 @@ function ContactCard({
 
   return (
     <div
+      onClick={isMobile && onViewClick}
+      onKeyDown={(e) => e.key === "Enter" && onViewClick()}
+      role="button"
+      tabIndex={0}
       className={darkMode ? styles.cardWrapDarkmode : styles.cardWrapLightmode}
     >
       <div className={styles.btnLayer}>
@@ -50,9 +58,11 @@ function ContactCard({
       </div>
 
       <div className={styles.cardDesc}>
-        <div>{`${firstName} ${otherNames}`}</div>
+        <div className={styles.contactName}>{`${firstName} ${otherNames}`}</div>
         <div>{phoneNumber}</div>
       </div>
+
+      <RiArrowRightSLine className={styles.arrowRight} />
     </div>
   );
 }

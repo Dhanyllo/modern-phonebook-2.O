@@ -12,6 +12,7 @@
   left: 0px;
   top: 57px;
   bottom: 0px;
+  overflow-x: hidden;
 }
 
 .sidebarLightmode {
@@ -28,6 +29,8 @@
   left: 0px;
   top: 57px;
   bottom: 0px;
+  overflow-x: hidden;
+  transform: translateZ(0);
 }
 
 .sidebarDarkmode a,
@@ -48,6 +51,7 @@
   padding-bottom: 5px;
   border-style: none;
   font-weight: 500;
+  border-radius: 5px;
 }
 
 .linkText {
@@ -69,7 +73,7 @@
 .sidebarDarkmode a:hover,
 .sidebarLightmode a:hover {
   cursor: pointer;
-  background-color: green;
+  background-color: rgba(0, 128, 0, 0.5);
   border-radius: 5px;
 }
 
@@ -81,4 +85,41 @@
 .heartIcon {
   width: 25px;
   height: 25px;
+}
+
+/* ===== Tablet View ===== */
+@media (min-width: 601px) and (max-width: 1045px) {
+  .sidebarDarkmode,
+  .sidebarLightmode {
+    width: 70px;
+  }
+
+  .sidebarDarkmode a,
+  .sidebarLightmode a {
+    justify-content: center;
+    align-items: center;
+    padding-left: 0px;
+    padding: 5px 0px;
+    width: 60px;
+  }
+
+  .sidebarDarkmode .linkText,
+  .sidebarLightmode .linkText {
+    display: none;
+  }
+}
+
+@media (min-width: 1045px) and (max-width: 1242px) {
+  .sidebarDarkmode,
+  .sidebarLightmode {
+    width: 220px;
+  }
+}
+
+/* ===== Mobile View ===== */
+@media (max-width: 600px) {
+  .sidebarDarkmode,
+  .sidebarLightmode {
+    display: none;
+  }
 }

@@ -3,10 +3,16 @@ import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 import DetailCard from "../DetailCard/DetailCard";
 import styles from "./DetailCardModal.module.css";
+import { useUI } from "../../context/UIContext";
 
-function DetailCardModal({ darkMode, contactId, onClose, onEdit, onDelete }) {
+function DetailCardModal({ darkMode, contactId }) {
   const apiUrl = import.meta.env.VITE_API_URL;
   const queryClient = useQueryClient();
+  const { setActiveModal } = useUI();
+
+  const onClose = () => setActiveModal(null);
+  const onEdit = () => setActiveModal("update");
+  const onDelete = () => setActiveModal("delete");
 
   // 🧩 Fetch contact details + occupations with React Query
   const {

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 import styles from "./LogoutConfirmModal.module.css";
+import { useUI } from "../../context/UIContext";
 
 const modalVariants = {
   hidden: { opacity: 0, scale: 0.9, y: 20 },
@@ -19,9 +20,15 @@ const modalVariants = {
   },
 };
 
-const LogoutConfirmModal = ({ headerActiveModal, closeModal, onConfirm }) => {
+const LogoutConfirmModal = () => {
+  const { activeModal, setActiveModal } = useUI();
+
+  const closeModal = () => setActiveModal(null);
+  const onConfirm = () => setActiveModal(null);
+  const onLogout = () => setActiveModal("logout");
+
   useEffect(() => {
-    if (headerActiveModal === "logout") {
+    if (activeModal === "logout") {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
@@ -30,7 +37,7 @@ const LogoutConfirmModal = ({ headerActiveModal, closeModal, onConfirm }) => {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [headerActiveModal]);
+  }, [activeModal]);
 
   return ReactDOM.createPortal(
     <div

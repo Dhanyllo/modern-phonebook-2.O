@@ -113,7 +113,6 @@ const Login = () => {
                 </div>
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 className={styles.submitButton}

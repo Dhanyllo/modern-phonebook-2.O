@@ -1,14 +1,37 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
 .mainContainer {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow-x: auto;
+  min-width: 0;
+  width: 100%;
   padding-bottom: 60px;
 }
 
 .cardGrid {
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   column-gap: 16px;
   row-gap: 20px;
-  padding: 2px;
+  padding: 20px;
   padding-bottom: 40px;
+}
+
+.Hr1 {
+  display: none;
+  border: none;
+  border-top: 2px solid #999;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: 15px;
+  margin-right: 5px;
 }
 
 .pageNav {
@@ -22,6 +45,7 @@
 
 .next {
   border-style: solid;
+  border-width: 1px;
   border-radius: 5px;
   padding: 10px 30px;
   background-color: #3ca62a;
@@ -43,6 +67,7 @@
 
 .previous {
   border-style: solid;
+  border-width: 1px;
   border-radius: 5px;
   padding: 10px 30px;
   background-color: orange;
@@ -87,4 +112,100 @@
   width: 900px;
   font-weight: 500;
   color: white;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
+
+/* ===== Mobile View ===== */
+@media (max-width: 600px) {
+  .cardGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 0px;
+    padding: 5px 5px 0px 5px;
+    padding-bottom: 40px;
+  }
+
+  .Hr1 {
+    display: flex;
+  }
+
+  .previous {
+    padding: 10px 15px;
+    border-style: none;
+  }
+
+  .next {
+    padding: 10px 15px;
+    border-style: none;
+  }
+
+  .pageNav {
+    justify-content: space-between;
+  }
+
+  .pageNumberLightmode,
+  .pageNumberDarkmode {
+    font-size: 0.95rem;
+  }
+
+  .emptyDirectoryContainerLightmode,
+  .emptyDirectoryContainerDarkmode {
+    width: 100%;
+    font-size: 0.9rem;
+    padding: 0 15px;
+  }
+}
+
+/* ===== Tablet View ===== */
+@media (min-width: 601px) and (max-width: 824px) {
+  .cardGrid {
+    grid-template-columns: 1fr 1fr 1fr;
+    padding-right: 15px;
+    gap: 10px;
+  }
+}
+
+@media (min-width: 825px) and (max-width: 874px) {
+  .cardGrid {
+    padding-right: 15px;
+    column-gap: 10px;
+    row-gap: 10px;
+  }
+}
+
+@media (min-width: 825px) and (max-width: 1190px) {
+  .cardGrid {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+
+  .pageNav {
+    padding: 0px 10px;
+    margin-top: 25px;
+  }
+
+  .next,
+  .previous {
+    padding: 8px 20px;
+    font-size: 0.9rem;
+  }
+
+  .emptyDirectoryContainerLightmode,
+  .emptyDirectoryContainerDarkmode {
+    width: 100%;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+}
+
+@media (min-width: 1190px) {
+  .cardGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    column-gap: 16px;
+    row-gap: 20px;
+    padding-bottom: 40px;
+  }
 }

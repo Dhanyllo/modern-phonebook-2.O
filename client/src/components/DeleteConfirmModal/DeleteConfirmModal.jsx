@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 import styles from "./DeleteConfirmModal.module.css";
+import { useUI } from "../../context/UIContext";
 
 const modalVariants = {
   hidden: { opacity: 0, scale: 0.9, y: 20 },
@@ -19,12 +20,13 @@ const modalVariants = {
   },
 };
 
-const DeleteConfirmModal = ({
-  activeModal,
-  closeModal,
-  onConfirm,
-  backToDetail,
-}) => {
+const DeleteConfirmModal = () => {
+  const { activeModal, setActiveModal } = useUI();
+
+  const closeModal = () => setActiveModal(null);
+  const onConfirm = () => setActiveModal(null);
+  const backToDetail = () => setActiveModal("detail");
+
   useEffect(() => {
     if (activeModal === "delete") {
       document.body.style.overflow = "hidden";

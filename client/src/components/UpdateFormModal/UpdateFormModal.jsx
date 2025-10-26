@@ -7,6 +7,7 @@ import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import CreatableSelect from "react-select/creatable";
+import { useUI } from "../../context/UIContext";
 
 // export async function action({ request }) {
 //   const formData = await request.formData();
@@ -18,7 +19,10 @@ import CreatableSelect from "react-select/creatable";
 //   return null;
 // }
 
-function UpdateFormModal({ closeModal, backToDetail }) {
+function UpdateFormModal() {
+  const { setActiveModal } = useUI();
+  const closeModal = () => setActiveModal(null);
+  const backToDetail = () => setActiveModal("detail");
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const handleFileChange = (e) => {

@@ -1,0 +1,166 @@
+.headerSearchLightmode {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+}
+
+.headerSearchDarkmode {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+}
+
+.searchBar {
+  display: flex;
+  flex-direction: row;
+  flex: 5;
+  height: 100%;
+  border-bottom-width: 1px;
+}
+
+.searchInputContainer {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  display: flex;
+  width: 120%;
+  margin-right: -1px;
+}
+
+.searchIconDarkmode {
+  position: absolute;
+  flex: 1;
+  width: 40px;
+  height: 30px;
+  left: 20px;
+  top: 15px;
+  bottom: 10px;
+  color: white;
+}
+
+.searchIconLightmode {
+  position: absolute;
+  flex: 1;
+  width: 40px;
+  height: 30px;
+  left: 20px;
+  top: 15px;
+  bottom: 10px;
+  color: black;
+}
+
+.searchBarInputDarkmode {
+  width: 100%;
+  font-size: 18px;
+  font-weight: normal;
+  padding-left: 20px;
+  text-indent: 65px;
+  border-style: none;
+  background-color: rgb(176, 176, 176);
+  box-shadow: inset 1px 2px 3px rgba(0, 0, 0, 0.15);
+}
+
+.searchBarInputLightmode {
+  width: 100%;
+  font-size: 18px;
+  font-weight: normal;
+  padding-left: 20px;
+  text-indent: 65px;
+  border-style: none;
+  background-color: white;
+  box-shadow: inset 1px 2px 3px rgba(0, 0, 0, 0.15);
+}
+
+.searchBarInputLightmode:focus {
+  outline: none;
+  box-shadow: 0 2px 0 0 blue;
+}
+
+.searchBarInputDarkmode:focus {
+  outline: none;
+  box-shadow: 0 4px 0 0 green;
+}
+
+.searchBarInputLightmode::placeholder {
+  font-size: 15px;
+}
+
+.searchBarInputDarkmode::placeholder {
+  font-size: 15px;
+  color: black;
+}
+
+.backArrowWrap {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.backArrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  border: none;
+  background-color: white;
+  cursor: pointer;
+}
+
+.backArrow:hover {
+  background-color: rgb(227, 221, 221);
+}
+
+.backArrowIcon {
+  width: 25px;
+  height: 25px;
+}
+
+@media (max-width: 600px) {
+  .searchIconDarkmode {
+    height: 22px;
+  }
+
+  .searchIconLightmode {
+    height: 22px;
+  }
+
+  .searchBarInputDarkmode {
+    text-indent: 50px;
+  }
+
+  .searchBarInputLightmode {
+    text-indent: 50px;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 788px) {
+  .backArrowWrap {
+    flex: none;
+    width: 70px;
+  }
+
+  .searchIconDarkmode {
+    margin-top: 2px;
+    height: 24px;
+  }
+
+  .searchIconLightmode {
+    margin-top: 2px;
+    height: 24px;
+  }
+
+  .searchBarInputDarkmode {
+    text-indent: 50px;
+  }
+
+  .searchBarInputLightmode {
+    text-indent: 50px;
+  }
+}

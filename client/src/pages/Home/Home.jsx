@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import ContactCard from "../../components/ContactCard/ContactCard";
 import UpdateFormModal from "../../components/UpdateFormModal/UpdateFormModal";
@@ -6,12 +6,8 @@ import DetailCardModal from "../../components/DetailCardModal/DetailCardModal";
 import DeleteConfirmModal from "../../components/DeleteConfirmModal/DeleteConfirmModal";
 import LogoutConfirmModal from "../../components/LogoutConfirmModal/LogoutConfirmModal";
 import CreateContactModal from "../../components/CreateContactModal/CreateContactModal";
-import {
-  useSearchParams,
-  useOutletContext,
-  useLoaderData,
-  redirect,
-} from "react-router-dom";
+import MobileSidebarModal from "../../components/MobileSidebarModal/MobileSidebarModal";
+import { useSearchParams, useLoaderData, redirect } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import {
   QueryClient,
@@ -23,6 +19,8 @@ import {
 import { checkAuth } from "../../utils";
 import styles from "./Home.module.css";
 import { useDarkMode } from "../../context/DarkModeContext";
+import { useBreakpoint } from "../../hooks/useBreakpoint";
+import { useUI } from "../../context/UIContext";
 
 // ==============================
 // Data fetching helpers
@@ -94,13 +92,12 @@ export async function loader({ request }) {
 // ==============================
 function Home() {
   const { dehydratedState, apiUrl } = useLoaderData();
-  const { headerActiveModal, setHeaderActiveModal } = useOutletContext();
   const { darkMode } = useDarkMode();
-  const [activeModal, setActiveModal] = useState(null);
+  const { isSidebarOpen, activeModal, setActiveModal } = useUI();
+  const { isMobile, isTablet, isDesktop } = useBreakpoint();
   const [selectedContact, setSelectedContact] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
-
   const currentPage = parseInt(searchParams.get("page")) || 1;
   const limit = 15;
   const searchTerm = searchParams.get("searchParams") || "";
@@ -157,24 +154,34 @@ function Home() {
   const results = hasSearchTerm ? search?.data : contacts?.data;
   const totalPages = hasSearchTerm ? search?.totalPages : contacts?.totalPages;
 
+  let sidebarState;
+
+  if (isDesktop) {
+    sidebarState = "";
+  } else if (isTablet) {
+    sidebarState = "halfSidebar";
+  }
+
   let Cards;
   if (results && results.length > 0) {
-    Cards = results.map((item) => (
-      <ContactCard
-        key={item.id}
-        id={item.id}
-        firstName={item.first_name}
-        otherNames={item.other_names}
-        phoneNumber={item.phone_number}
-        imageURL={item.image_url}
-        favouriteStatus={item.favourite_status}
-        onUpdate={handleUpdate}
-        darkMode={darkMode}
-        onViewClick={() => {
-          setSelectedContact(item.id);
-          setActiveModal("detail");
-        }}
-      />
+    Cards = results.map((item, index, array) => (
+      <React.Fragment key={item.id || index}>
+        <ContactCard
+          id={item.id}
+          firstName={item.first_name}
+          otherNames={item.other_names}
+          phoneNumber={item.phone_number}
+          imageURL={item.image_url}
+          favouriteStatus={item.favourite_status}
+          onUpdate={handleUpdate}
+          darkMode={darkMode}
+          onViewClick={() => {
+            setSelectedContact(item.id);
+            setActiveModal("detail");
+          }}
+        />
+        {index !== array.length - 1 && <hr className={styles.Hr1} />}
+      </React.Fragment>
     ));
   } else if (!hasSearchTerm && results < 0) {
     Cards = (
@@ -199,19 +206,30 @@ function Home() {
     const BodyBgStyle = darkMode
       ? "body1-style-darkmode"
       : "body1-style-lightmode";
+
+    document.body.classList.remove(
+      "body1-style-darkmode",
+      "body1-style-lightmode"
+    );
+
     document.body.classList.add(BodyBgStyle);
+
+    // cleanup function (runs when component unmounts)
     return () => {
-      document.body.classList.remove(BodyBgStyle);
+      document.body.classList.remove(
+        "body1-style-darkmode",
+        "body1-style-lightmode"
+      );
     };
-  }, [darkMode]);
+  }, [darkMode, isTablet]);
 
   // ==============================
   // Render (hydrated)
   // ==============================
   return (
     <HydrationBoundary state={dehydratedState}>
-      <>
-        <Sidebar darkMode={darkMode} favStatus={favStatus?.exists_status} />
+      <div className={styles.layout}>
+        <Sidebar favStatus={favStatus?.exists_status} />
         <main className={styles.mainContainer}>
           <section className={styles.cardGrid}>{Cards}</section>
 
@@ -262,50 +280,25 @@ function Home() {
           {/* ==================== Modals ==================== */}
           <AnimatePresence>
             {activeModal === "detail" && (
-              <DetailCardModal
-                contactId={selectedContact}
-                darkMode={darkMode}
-                onClose={() => setActiveModal(null)}
-                onEdit={() => setActiveModal("update")}
-                onDelete={() => setActiveModal("delete")}
-              />
+              <DetailCardModal contactId={selectedContact} />
             )}
 
             {activeModal === "update" && (
-              <UpdateFormModal
-                contactId={selectedContact}
-                closeModal={() => setActiveModal(null)}
-                backToDetail={() => setActiveModal("detail")}
-              />
+              <UpdateFormModal contactId={selectedContact} />
             )}
 
-            {activeModal === "delete" && (
-              <DeleteConfirmModal
-                closeModal={() => setActiveModal(null)}
-                onConfirm={() => setActiveModal(null)}
-                backToDetail={() => setActiveModal("detail")}
-                activeModal={activeModal}
-              />
+            {activeModal === "mobilesidebar" && (
+              <MobileSidebarModal favStatus={favStatus?.exists_status} />
             )}
 
-            {headerActiveModal === "logout" && (
-              <LogoutConfirmModal
-                closeModal={() => setHeaderActiveModal(null)}
-                onConfirm={() => setHeaderActiveModal(null)}
-                onLogout={() => setHeaderActiveModal("logout")}
-                headerActiveModal={headerActiveModal}
-              />
-            )}
+            {activeModal === "delete" && <DeleteConfirmModal />}
 
-            {headerActiveModal === "create" && (
-              <CreateContactModal
-                setHeaderActiveModal={setHeaderActiveModal}
-                darkMode={darkMode}
-              />
-            )}
+            {activeModal === "logout" && <LogoutConfirmModal />}
+
+            {activeModal === "create" && <CreateContactModal />}
           </AnimatePresence>
         </main>
-      </>
+      </div>
     </HydrationBoundary>
   );
 }

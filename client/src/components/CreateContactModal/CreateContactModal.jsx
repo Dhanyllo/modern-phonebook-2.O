@@ -6,6 +6,7 @@ import { RiCloseLine } from "react-icons/ri";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import CreatableSelect from "react-select/creatable";
+import { useUI } from "../../context/UIContext";
 
 // export async function action({ request }) {
 //   const formData = await request.formData();
@@ -17,7 +18,8 @@ import CreatableSelect from "react-select/creatable";
 //   return null;
 // }
 
-function CreateContactModal({ setHeaderActiveModal }) {
+function CreateContactModal() {
+  const { setActiveModal } = useUI();
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const handleFileChange = (e) => {
@@ -63,7 +65,7 @@ function CreateContactModal({ setHeaderActiveModal }) {
       className={styles.modalOverlay}
       onClick={(e) => {
         e.stopPropagation();
-        setHeaderActiveModal("null");
+        setActiveModal("null");
       }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -83,7 +85,7 @@ function CreateContactModal({ setHeaderActiveModal }) {
             className={styles.modalClose}
             onClick={(e) => {
               e.stopPropagation();
-              setHeaderActiveModal("null");
+              setActiveModal("null");
             }}
           >
             <RiCloseLine size={24} />
