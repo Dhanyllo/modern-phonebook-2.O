@@ -14,7 +14,6 @@ function DetailCardModal({ darkMode, contactId }) {
   const onEdit = () => setActiveModal("update");
   const onDelete = () => setActiveModal("delete");
 
-  // 🧩 Fetch contact details + occupations with React Query
   const {
     data: detailData,
     isLoading: loading,

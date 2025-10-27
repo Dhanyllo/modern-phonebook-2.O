@@ -816,6 +816,16 @@
     padding: 0px;
     box-shadow: none;
   }
+
+  .notificationContainer::before {
+    top: -10px;
+    left: 180px;
+  }
+
+  .profileContainer::before {
+    top: -10px;
+    left: 68px;
+  }
 }
 
 @media (min-width: 601px) and (max-width: 1045px) {

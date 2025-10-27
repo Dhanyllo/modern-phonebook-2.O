@@ -53,7 +53,7 @@ const DeleteConfirmModal = () => {
         initial="hidden"
         animate="visible"
         exit="exit"
-        onClick={(e) => e.stopPropagation()} // prevent overlay click bubbling
+        onClick={(e) => e.stopPropagation()}
       >
         <h2 className={styles.modalTitle}>Delete Confirmation</h2>
         <p className={styles.modalMessage}>
@@ -83,7 +83,7 @@ const DeleteConfirmModal = () => {
         </div>
       </motion.div>
     </div>,
-    document.getElementById("modal-root") // ensure you have <div id="modal-root"></div> in index.html
+    document.getElementById("modal-root")
   );
 };
 
