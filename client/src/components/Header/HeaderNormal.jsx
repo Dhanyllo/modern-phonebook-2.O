@@ -10,6 +10,7 @@ import { TfiHelpAlt } from "react-icons/tfi";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { FiFlag, FiLogOut } from "react-icons/fi";
 import { GrUpdate, GrDocumentVerified } from "react-icons/gr";
+import { isTablet } from "react-device-detect";
 import { useDarkMode } from "../../context/DarkModeContext";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useUI } from "../../context/UIContext";
@@ -35,6 +36,7 @@ function HeaderNormal() {
     clearTimeout(profileTimer.current);
     setProfileToggle(true);
   };
+
   const handleProfileMouseLeave = () => {
     profileTimer.current = setTimeout(() => setProfileToggle(false), 100);
   };
@@ -92,7 +94,7 @@ function HeaderNormal() {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                isMobile && setActiveModal("mobilesidebar");
+                setActiveModal("mobilesidebar");
               }}
               className={
                 darkMode
@@ -167,14 +169,22 @@ function HeaderNormal() {
                   ? styles.profileIconDarkmode
                   : styles.profileIconLightmode
               }
+              onClick={(e) => {
+                e.stopPropagation();
+                isTablet && setActiveModal("tabletProfile");
+              }}
             />
           </div>
 
           <div className={styles.wrap}>
             {isMobile ? (
               <FaRegUserCircle
-                onMouseEnter={handleProfileMouseEnter}
-                onMouseLeave={handleProfileMouseLeave}
+                onMouseEnter={!isMobile ? handleProfileMouseEnter : undefined}
+                onMouseLeave={!isMobile ? handleProfileMouseLeave : undefined}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveModal("mobileprofile");
+                }}
                 className={
                   darkMode
                     ? styles.profileIconDarkmode
@@ -191,8 +201,13 @@ function HeaderNormal() {
 
           <div
             className={styles.notificationsIconContainer}
-            onMouseEnter={handleNotificationMouseEnter}
-            onMouseLeave={handleNotificationMouseLeave}
+            onMouseEnter={!isMobile ? handleNotificationMouseEnter : undefined}
+            onMouseLeave={!isMobile ? handleNotificationMouseLeave : undefined}
+            onClick={(e) => {
+              e.stopPropagation();
+              isMobile && setActiveModal("mobileNotification");
+              isTablet && setActiveModal("tabletNotification");
+            }}
           >
             <MdNotificationsNone
               className={

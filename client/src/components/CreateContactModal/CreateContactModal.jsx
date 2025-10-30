@@ -34,7 +34,7 @@ function CreateContactModal() {
     setPreviewUrl(objectUrl);
 
     return () => {
-      URL.revokeObjectURL(objectUrl); // Cleanup old preview when file changes or component unmounts
+      URL.revokeObjectURL(objectUrl);
     };
   }, [selectedFile]);
 
@@ -80,17 +80,15 @@ function CreateContactModal() {
         animate="visible"
         exit="exit"
       >
-        <div className={styles.btnContainer}>
-          <button
-            className={styles.modalClose}
-            onClick={(e) => {
-              e.stopPropagation();
-              setActiveModal("null");
-            }}
-          >
-            <RiCloseLine size={24} />
-          </button>
-        </div>
+        <button
+          className={styles.modalClose}
+          onClick={(e) => {
+            e.stopPropagation();
+            setActiveModal("null");
+          }}
+        >
+          <RiCloseLine size={24} />
+        </button>
 
         <div className={styles.headerContainer}>
           <div className={styles.imgIcon}>
@@ -101,7 +99,7 @@ function CreateContactModal() {
             />
           </div>
           <div className={styles.imgSideText}>
-            <div className={styles.text2}>Modern Phonebook 2.O</div>
+            <div className={styles.text1}>Modern Phonebook 2.O</div>
             <div className={styles.text3}>
               Easy &nbsp; &#8226; &nbsp; Convenient&nbsp; &#8226; &nbsp;
               Flexible
@@ -112,7 +110,7 @@ function CreateContactModal() {
         <hr />
 
         <div className={styles.title}>
-          <div className={styles.text1}>Update this Contact</div>
+          <div className={styles.text2}>Update this Contact</div>
           <br />
           <div className={styles.text6}>
             The following are required fields to create a contact and will only
@@ -276,17 +274,17 @@ function CreateContactModal() {
           <hr />
           <br />
 
-          <div className={`${styles.formLayer1} ${styles.cvSide}`}>
+          <div className={`${styles.formLayer1} ${styles.contactImage}`}>
             <div className={styles.text4}>Attach an image for contact</div>
-            <label className={styles.cvStyle} htmlFor="CV">
-              <img src="/images/Icon18.png" alt="file-icon" />
-              <div>Attach an image</div>
+            <label className={styles.contactImageStyle} htmlFor="contactImage">
+              <img src="/images/Icon18.png" alt="image-file-icon" />
+              <div>Attach image</div>
             </label>
             <input
               className={styles.fileBtn}
               type="file"
-              name="cvFile"
-              id="CV"
+              name="contactImage"
+              id="contactImage"
               accept=".jpg,.jpeg,.png,.webp"
               onChange={handleFileChange}
             />

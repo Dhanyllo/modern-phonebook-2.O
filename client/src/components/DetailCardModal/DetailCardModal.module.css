@@ -32,3 +32,15 @@
     transform: rotate(360deg);
   }
 }
+
+@media screen and (max-width: 321px) {
+  .modalOverlay {
+    align-items: flex-end;
+  }
+}
+
+@media screen and (min-width: 322px) and (max-width: 500px) {
+  .modalOverlay {
+    align-items: flex-end;
+  }
+}

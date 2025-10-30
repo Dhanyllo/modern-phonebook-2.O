@@ -7,6 +7,10 @@ import DeleteConfirmModal from "../../components/DeleteConfirmModal/DeleteConfir
 import LogoutConfirmModal from "../../components/LogoutConfirmModal/LogoutConfirmModal";
 import CreateContactModal from "../../components/CreateContactModal/CreateContactModal";
 import MobileSidebarModal from "../../components/MobileSidebarModal/MobileSidebarModal";
+import MobileProfileModal from "../../components/MobileProfileModal/MobileProfileModal";
+import MobileNotificationModal from "../../components/MobileNotificationModal/MobileNotificationModal";
+import TabletNotificationModal from "../../components/TabletNotificationModal/TabletNotificationModal";
+import TabletProfileModal from "../../components/TabletProfileModal/TabletProfileModal";
 import { useSearchParams, useLoaderData, redirect } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import {
@@ -296,6 +300,18 @@ function Home() {
             {activeModal === "logout" && <LogoutConfirmModal />}
 
             {activeModal === "create" && <CreateContactModal />}
+
+            {activeModal === "mobileprofile" && <MobileProfileModal />}
+
+            {activeModal === "mobileNotification" && (
+              <MobileNotificationModal />
+            )}
+
+            {activeModal === "tabletNotification" && (
+              <TabletNotificationModal />
+            )}
+
+            {activeModal === "tabletProfile" && <TabletProfileModal />}
           </AnimatePresence>
         </main>
       </div>

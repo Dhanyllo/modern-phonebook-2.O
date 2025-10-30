@@ -2,16 +2,16 @@ import { useState, useEffect } from "react";
 
 export function useBreakpoint() {
   const [breakpoints, setBreakpoints] = useState({
-    isMobile: window.matchMedia("(max-width: 600px)").matches,
-    isTablet: window.matchMedia("(min-width: 601px) and (max-width: 1024px)")
+    isMobile: window.matchMedia("(max-width: 599.99px)").matches,
+    isTablet: window.matchMedia("(min-width: 600px) and (max-width: 1024px)")
       .matches,
     isDesktop: window.matchMedia("(min-width: 1025px)").matches,
   });
 
   useEffect(() => {
-    const mobileQuery = window.matchMedia("(max-width: 600px)");
+    const mobileQuery = window.matchMedia("(max-width: 599.99px)");
     const tabletQuery = window.matchMedia(
-      "(min-width: 601px) and (max-width: 1024px)"
+      "(min-width: 600px) and (max-width: 1024px)"
     );
     const desktopQuery = window.matchMedia("(min-width: 1025px)");
 

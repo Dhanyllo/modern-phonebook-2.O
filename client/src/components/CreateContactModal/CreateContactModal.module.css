@@ -30,19 +30,14 @@
   padding-bottom: 50px;
   padding-left: 10px;
   padding-right: 10px;
-  padding-top: 38px;
+  padding-top: 48px;
   overflow-y: scroll;
 }
 
-.btnContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: right;
-  margin-bottom: 10px;
-  margin-right: 5px;
-}
-
 .modalClose {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   top: 35px;
   right: 0px;
@@ -78,32 +73,32 @@
   margin-bottom: 20px;
 }
 
-.text1 {
-  color: #25324b;
-  font-size: 25px;
-  font-weight: 700;
-}
+.text1,
 .text2 {
   color: #25324b;
   font-size: 25px;
   font-weight: 700;
 }
+
 .text3 {
   font-weight: thin;
   color: #515b6f;
 }
+
 .text4 {
   color: #202430;
   font-weight: 700;
 }
+
 .text5 {
   color: #a8adb7;
 }
+
 .text6 {
   color: #7c8493;
 }
+
 .text7 {
-  /* color: #25324b; */
   font-weight: 700;
   color: red;
 }
@@ -186,15 +181,16 @@ textarea::placeholder {
   justify-content: space-between;
 }
 
-.cvSide {
+.contactImage {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 }
 
-.cvStyle {
-  width: 200px;
+.contactImageStyle {
+  box-sizing: border-box;
+  width: 150px;
   white-space: nowrap;
   text-align: center;
   margin-right: 4px;
@@ -210,7 +206,8 @@ textarea::placeholder {
   border-radius: 5px;
   padding: 15px 15px;
 }
-.cvStyle:hover {
+
+.contactImageStyle:hover {
   background-color: rgb(231, 231, 231);
 }
 
@@ -383,19 +380,82 @@ label {
 /* == RESPONSIVE STYLES ==== */
 /* ========================= */
 
-/* Tablet view (screens up to 1024px wide) */
-
-@media screen and (max-width: 500px) {
+/* Mobile view */
+@media screen and (max-width: 321px) {
   .mainContainer {
     width: 100%;
+    height: 100%;
     padding-top: 30px;
     padding-bottom: 40px;
+    margin-top: 70px;
+  }
+
+  .imgIcon {
+    height: 80px;
+    width: 100px;
+    border-radius: 50%;
+  }
+
+  .companyLogo {
+    height: 70px;
+    width: 70px;
+  }
+
+  .modalClose {
+    top: 5px;
+    right: 0px;
+  }
+
+  .text1,
+  .text2 {
+    font-size: initial;
+  }
+
+  .headerContainer {
+    column-gap: 15px;
   }
 }
 
+@media screen and (min-width: 322px) and (max-width: 500px) {
+  .mainContainer {
+    width: 100%;
+    height: 100%;
+    padding-top: 30px;
+    padding-bottom: 40px;
+    margin-top: 70px;
+  }
+
+  .imgIcon {
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+  }
+
+  .companyLogo {
+    height: 70px;
+    width: 70px;
+  }
+
+  .modalClose {
+    top: 5px;
+    right: 0px;
+  }
+
+  .text1,
+  .text2 {
+    font-size: 18px;
+  }
+
+  .headerContainer {
+    column-gap: 15px;
+  }
+}
+
+/* Tablet view (screens up to 1024px wide) */
 @media screen and (min-width: 501px) and (max-width: 600px) {
   .mainContainer {
     width: 85%;
+    height: 100%;
     padding-top: 30px;
     padding-bottom: 40px;
   }
@@ -404,6 +464,7 @@ label {
 @media screen and (min-width: 601px) and (max-width: 800px) {
   .mainContainer {
     width: 75%;
+    height: 100%;
     padding-top: 30px;
     padding-bottom: 40px;
   }
@@ -411,9 +472,9 @@ label {
 
 @media screen and (min-width: 801px) and (max-width: 1024px) {
   .mainContainer {
-    width: 60%;
+    width: 65%;
+    height: 100%;
     padding-top: 30px;
     padding-bottom: 40px;
-    background-color: pink;
   }
 }

@@ -285,17 +285,17 @@ function UpdateFormModal() {
           <hr />
           <br />
 
-          <div className={`${styles.formLayer1} ${styles.cvSide}`}>
+          <div className={`${styles.formLayer1} ${styles.contactImage}`}>
             <div className={styles.text4}>Attach an image for contact</div>
-            <label className={styles.cvStyle} htmlFor="CV">
-              <img src="/images/Icon18.png" alt="file-icon" />
-              <div>Attach an image</div>
+            <label className={styles.contactImageStyle} htmlFor="contactImage">
+              <img src="/images/Icon18.png" alt="image-file-icon" />
+              <div>Attach image</div>
             </label>
             <input
               className={styles.fileBtn}
               type="file"
-              name="cvFile"
-              id="CV"
+              name="contactImage"
+              id="contactImage"
               accept=".jpg,.jpeg,.png,.webp"
               onChange={handleFileChange}
             />

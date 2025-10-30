@@ -1,3 +1,43 @@
+.cardContainer {
+  box-sizing: border-box;
+  background: white;
+  width: 50%;
+  max-width: 450px;
+  height: 100%;
+  border-radius: 8px;
+  position: relative;
+}
+
+.cardContent {
+  box-sizing: border-box;
+  width: 100%;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  padding: 2px 2px 55px 2px;
+  border-radius: 8px;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #aaa #f1f1f1;
+}
+
+.cardContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cardContent::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.cardContent::-webkit-scrollbar-thumb {
+  background-color: #aaa;
+  border-radius: 3px;
+}
+
+.cardContent::-webkit-scrollbar-thumb:hover {
+  background-color: #888;
+}
+
 .occupation1 {
   font-size: small;
   font-weight: 700;
@@ -43,47 +83,6 @@
 .backArrowDesc {
   font-size: 20px;
   font-weight: 700;
-}
-
-.cardContainer {
-  box-sizing: border-box;
-  background: white;
-  width: 50%;
-  max-width: 400px;
-  height: 570px;
-  height: 100%;
-  border-radius: 8px;
-  position: relative;
-}
-
-.cardContent {
-  box-sizing: border-box;
-  width: 100%;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  padding: 2px 2px 55px 2px;
-  border-radius: 8px;
-  height: 100%;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #aaa #f1f1f1;
-}
-
-.cardContent::-webkit-scrollbar {
-  width: 6px;
-}
-
-.cardContent::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
-}
-
-.cardContent::-webkit-scrollbar-thumb {
-  background-color: #aaa;
-  border-radius: 3px;
-}
-
-.cardContent::-webkit-scrollbar-thumb:hover {
-  background-color: #888;
 }
 
 .detailedCardImageContainer {
@@ -492,4 +491,55 @@
 .modalClose svg:hover {
   transform: rotate(360deg);
   fill: red;
+}
+
+/* ========================= */
+/* == RESPONSIVE STYLES ==== */
+/* ========================= */
+
+/* Mobile view */
+@media screen and (max-width: 321px) {
+  .cardContainer {
+    width: 100%;
+    height: 95%;
+  }
+
+  .modalClose {
+    top: 10px;
+    right: 20px;
+  }
+}
+
+@media screen and (min-width: 322px) and (max-width: 500px) {
+  .cardContainer {
+    width: 100%;
+    height: 95%;
+  }
+
+  .modalClose {
+    top: 10px;
+    right: 20px;
+  }
+}
+
+/* Tablet view (screens up to 1024px wide) */
+@media screen and (min-width: 501px) and (max-width: 600px) {
+  .cardContainer {
+    width: 85%;
+    height: 100%;
+  }
+}
+
+@media screen and (min-width: 601px) and (max-width: 800px) {
+  .cardContainer {
+    width: 75%;
+    height: 100%;
+  }
+}
+
+@media screen and (min-width: 801px) and (max-width: 1024px) {
+  .cardContainer {
+    width: 65%;
+    height: 100%;
+  }
 }

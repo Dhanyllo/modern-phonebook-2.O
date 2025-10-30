@@ -54,6 +54,7 @@
   align-items: center;
   justify-content: left;
   background-color: #3ca62a;
+  padding-left: 10px;
 }
 
 .headerLogo {
@@ -181,12 +182,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .profileIconLightmode {
   width: 30px;
   height: 30px;
-  cursor: "pointer";
   color: black;
   transition: opacity 0.1s ease-in-out;
 }
@@ -198,7 +199,6 @@
 .profileIconDarkmode {
   width: 30px;
   height: 30px;
-  cursor: "pointer";
   color: white;
   transition: all 0.1s ease-in-out;
 }
@@ -538,12 +538,13 @@
 
 .hamburgerButtonWrap {
   box-sizing: border-box;
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   background-color: #3ca62a;
   overflow-x: hidden;
   transform: translateZ(0);
+  height: 100%;
   width: 70px;
   padding-right: 10px;
   padding-left: 10px;
@@ -596,6 +597,7 @@
   background-color: inherit;
   border-radius: 50%;
   border: none;
+  cursor: pointer;
 }
 
 .searchButtonLightmode:hover {
@@ -616,6 +618,7 @@
   background-color: inherit;
   border-radius: 50%;
   border: none;
+  cursor: pointer;
 }
 
 .searchButtonDarkmode:hover {
@@ -640,7 +643,139 @@
 }
 
 /* ===== Mobile View ===== */
-@media (max-width: 600px) {
+@media screen and (max-width: 321px) {
+  .headerNormalLightmode,
+  .headerNormalDarkmode {
+    justify-content: space-between;
+    height: 50px;
+  }
+
+  .searchBar {
+    display: none;
+  }
+
+  .leftSideHeaderLightmode,
+  .leftSideHeaderDarkmode {
+    width: 140px;
+  }
+
+  .toolsWrapLightmode,
+  .toolsWrapDarkmode {
+    box-sizing: border-box;
+    flex: none;
+    justify-content: center;
+    column-gap: 2px;
+    width: 200px;
+    padding: 0px 0px 0px 5px;
+    box-shadow: none;
+  }
+
+  .profile {
+    display: none;
+  }
+
+  .profileIconLightmode {
+    width: 23px;
+    height: 23px;
+  }
+
+  .profileIconDarkmode {
+    width: 23px;
+    height: 23px;
+  }
+
+  .wrap {
+    padding-right: 10px;
+  }
+
+  .darkmode {
+    display: none;
+  }
+
+  .notificationsIconLightmode {
+    width: 28px;
+    height: 28px;
+  }
+
+  .notificationsIconDarkmode {
+    width: 28px;
+    height: 28px;
+  }
+
+  .addBtnIconDarkmode {
+    height: 28px;
+    width: 28px;
+  }
+
+  .addBtnIconLightmode {
+    height: 28px;
+    width: 28px;
+  }
+
+  .searchButtonLightmode {
+    display: flex;
+  }
+
+  .searchButtonDarkmode {
+    display: flex;
+  }
+
+  .profileLayer2Link2 {
+    display: flex;
+  }
+
+  .profileContainer::before {
+    top: -10px;
+    left: 178px;
+  }
+
+  .hamburgerButtonWrap {
+    display: flex;
+    width: 40px;
+    padding: 0;
+  }
+
+  .hamburgerMenuLightmode {
+    padding: 4px;
+  }
+
+  .hamburgerMenuDarkmode {
+    padding: 4px;
+  }
+
+  .hamburgerMenuButton {
+    height: 18px;
+    width: 18px;
+  }
+
+  .headerLogo {
+    display: none;
+  }
+
+  .leftSideHeaderLightmode .logoTitle {
+    margin-left: 0px;
+    font-size: 18px;
+  }
+
+  .leftSideHeaderDarkmode .logoTitle {
+    margin-left: 0px;
+    font-size: 18px;
+  }
+
+  .searchButtonLightmode .searchButtonIcon {
+    color: black;
+    width: 23px;
+    height: 27px;
+  }
+
+  .searchButtonDarkmode .searchButtonIcon {
+    color: white;
+    width: 23px;
+    height: 27px;
+  }
+}
+
+@media screen and (min-width: 322px) and (max-width: 599.99px) {
   .headerNormalLightmode,
   .headerNormalDarkmode {
     justify-content: space-between;
@@ -731,25 +866,31 @@
     display: flex;
   }
 
-  .notificationContainer::before {
-    top: -10px;
-    left: 200px;
-  }
-
   .profileContainer::before {
     top: -10px;
     left: 148px;
   }
 
   .hamburgerButtonWrap {
+    display: flex;
     width: 50px;
   }
 
+  .hamburgerMenuLightmode {
+    padding: 4px;
+  }
+
+  .hamburgerMenuDarkmode {
+    padding: 4px;
+  }
+
   .leftSideHeaderLightmode .icons {
+    padding-left: 0px;
     padding-right: 10px;
   }
 
   .leftSideHeaderDarkmode .icons {
+    padding-left: 0px;
     padding-right: 10px;
   }
 
@@ -781,7 +922,7 @@
 }
 
 /* Tablet view */
-@media (min-width: 601px) and (max-width: 788px) {
+@media (min-width: 600px) and (max-width: 788px) {
   .headerNormalLightmode,
   .headerNormalDarkmode {
     justify-content: space-between;
@@ -834,6 +975,14 @@
     padding-left: 20px;
   }
 
+  .leftSideHeaderDarkmode .icons {
+    padding-left: 0px;
+  }
+
+  .leftSideHeaderDarkmode .headerLogo {
+    width: 22%;
+  }
+
   .leftSideHeaderLightmode .logoTitle {
     color: #3ca62a;
   }
@@ -844,6 +993,10 @@
 
   .searchBarInputLightmode {
     box-shadow: none;
+  }
+
+  .hamburgerButtonWrap {
+    display: flex;
   }
 }
 
@@ -875,11 +1028,11 @@
     flex-direction: row;
     align-items: center;
     justify-content: left;
+    padding-left: 10px;
   }
 
   .hamburgerButtonWrap {
     box-sizing: border-box;
-    display: flex;
     justify-content: center;
     align-items: center;
     width: 50px;
@@ -889,7 +1042,7 @@
 
   .headerLogo {
     width: 22%;
-    height: 60%;
+    height: 67%;
   }
 
   .logoTitle {
