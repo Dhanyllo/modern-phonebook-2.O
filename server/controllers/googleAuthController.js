@@ -5,7 +5,6 @@ const generateTokens = require("../utils/generateTokens.js");
 db = DatabaseConnection();
 
 const googleAuth = async (req, res) => {
-  console.log("inside google callback function");
   try {
     const { accessToken, refreshToken } = generateTokens(req.user);
 
@@ -32,11 +31,10 @@ const googleAuth = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       // path: "/",
     });
-
-    res.redirect("http://localhost:5173");
+    res.redirect(process.env.FRONTEND_URL);
   } catch (err) {
     console.error("Google callback error:", err);
-    res.redirect("http://localhost:5173/login");
+    res.redirect(`${process.env.FRONTEND_URL}/login`);
   }
 };
 

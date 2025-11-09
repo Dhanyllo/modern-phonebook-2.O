@@ -1,9 +1,9 @@
 import AuthSidePanel from "../../components/AuthSidePanel/AuthSidePanel";
-import styles from "./Login.module.css";
 import { useState } from "react";
 import { Form, Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { GoogleButton } from "../../components/GoogleButton/GoogleButton";
+import styles from "./Login.module.css";
 
 // --- Action function for the form ---
 export async function action({ request }) {
@@ -33,11 +33,12 @@ export async function action({ request }) {
 }
 
 const Login = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/google";
+    window.location.href = `${apiUrl}/google`;
   };
 
   return (

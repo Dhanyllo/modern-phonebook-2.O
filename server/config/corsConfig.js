@@ -1,9 +1,6 @@
 const cors = require("cors");
 
-const allowedOrigins = [
-  "http://localhost:5173", // dev frontend
-  process.env.FRONTEND_URL,
-];
+const allowedOrigins = [process.env.FRONTEND_URL];
 
 const corsOptions = {
   origin: (origin, callback) => {

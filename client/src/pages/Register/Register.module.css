@@ -55,15 +55,6 @@
   padding: 3rem 3rem;
 }
 
-/* Responsive padding for smaller screens */
-@media (max-width: 640px) {
-  .formWrapperMain {
-    padding: 1.5rem;
-    border-radius: 12px;
-  }
-}
-
-/* Header section */
 .header {
   display: flex;
   flex-direction: column;
@@ -119,11 +110,19 @@
 .subtitle {
   text-align: center;
   font-weight: 500;
-  align-items: center;
-  width: 600px;
+  max-width: 450px;
+  width: 100%;
   font-size: 1.125rem;
   color: var(--color-text-muted);
   white-space: normal;
+  word-break: normal;
+  overflow-wrap: anywhere;
+  min-width: 0;
+  margin: 0 auto;
+}
+
+.brandName {
+  white-space: nowrap;
 }
 
 /* Keyframes (animations) */
@@ -157,5 +156,30 @@
   100% {
     transform: scale(1.5);
     opacity: 0;
+  }
+}
+
+/* Responsive padding for smaller screens */
+@media (max-width: 400.99px) {
+  .subtitle {
+    font-size: 1rem;
+    font-weight: 700;
+    max-width: 300px;
+  }
+
+  .gradientText {
+    font-size: 30px;
+  }
+}
+
+@media (min-width: 401px) and (max-width: 570px) {
+  .gradientText {
+    font-size: 30px;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    font-weight: 700;
+    max-width: 350px;
   }
 }

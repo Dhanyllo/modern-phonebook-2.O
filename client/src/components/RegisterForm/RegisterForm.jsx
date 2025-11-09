@@ -5,12 +5,13 @@ import { GoogleButton } from "../../components/GoogleButton/GoogleButton";
 import styles from "./RegisterForm.module.css";
 
 const RegisterForm = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/google";
+    window.location.href = `${apiUrl}/google`;
   };
 
   return (

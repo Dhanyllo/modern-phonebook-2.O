@@ -43,8 +43,8 @@ app.use("/", forgot_password);
 app.use(verifyJWT);
 
 // Protected routes
-app.use("/", change_password);
 app.use("/", homepage);
+app.use("/", change_password);
 app.use("/", favourite);
 app.use("/", card_details);
 app.use("/", profile_update);

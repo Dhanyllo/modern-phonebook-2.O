@@ -1,9 +1,10 @@
 .formWrapper {
-  width: 60%;
+  box-sizing: border-box;
+  width: 500px;
+  max-width: 600px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 32rem;
   position: relative;
   z-index: 10;
   background-color: #ffffff;
@@ -122,12 +123,6 @@
   margin-right: 0.5rem;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .buttonContent {
   display: flex;
   align-items: center;
@@ -188,4 +183,18 @@
   line-height: 1;
   z-index: 1;
   align-self: center;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive padding for smaller screens */
+@media (max-width: 570px) {
+  .formWrapper {
+    width: 90%;
+    max-width: 500px;
+  }
 }

@@ -67,7 +67,7 @@ export default function App() {
         <Route path="/verify-otp" element={<OtpForm />} />
         <Route path="/resetPassword" element={<ResetPassword />} />
         <Route
-          path="/change-password"
+          path="/changePassword"
           element={<ChangePassword />}
           action={changePasswordAction}
         />

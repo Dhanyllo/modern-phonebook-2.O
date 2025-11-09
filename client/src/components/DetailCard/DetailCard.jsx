@@ -37,6 +37,84 @@ function DetailCard(props) {
     color: props.favourite_status ? "red" : "white",
   };
 
+  const generateVCard = () => {
+    const vcardData = `
+BEGIN:VCARD
+VERSION:3.0
+FN:${props.first_name} ${props.other_names}
+TEL:${props.phone_number}
+EMAIL:${props.email}
+${
+  props.occupations && props.occupations.length > 0
+    ? `TITLE:${props.occupations.map((item) => item.occupation).join(", ")}`
+    : ""
+}
+END:VCARD
+`.trim();
+
+    return new Blob([vcardData], { type: "text/vcard" });
+  };
+
+  const handleDownload = () => {
+    const blob = generateVCard();
+    if (!blob || blob.size === 0) {
+      alert("Failed to generate vCard data!");
+      return;
+    }
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${
+      props.first_name || props.other_names
+        ? `${props.first_name || ""} ${props.other_names || ""}`.trim()
+        : "contact"
+    }.vcf`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleNativeShare = async () => {
+    const blob = generateVCard();
+    const file = new File(
+      [blob],
+      `${
+        props.first_name || props.other_names
+          ? `${props.first_name || ""} ${props.other_names || ""}`.trim()
+          : "contact"
+      }.vcf`,
+      {
+        type: "text/vcard",
+      }
+    );
+
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+      try {
+        await navigator.share({
+          title: "Share Contact",
+          text: `Sharing ${props.first_name} ${props.other_names}'s contact card`,
+          files: [file],
+        });
+      } catch (err) {
+        // User canceled OR platform not permitted
+        if (err.name === "NotAllowedError" || err.name === "AbortError") {
+          console.warn("Native share not permitted or canceled:", err);
+          alert(
+            "Sharing is not supported on this device or was canceled. Download instead for manual sharing..."
+          );
+          handleDownload();
+        } else {
+          console.error("Unexpected share error:", err);
+        }
+      }
+    } else {
+      alert(
+        "File sharing isn't supported on this device. Downloading instead..."
+      );
+      handleDownload();
+    }
+  };
+
   const occupationTags = props.occupations.map((item, index, array) => (
     <React.Fragment key={item.id || index}>
       <div className={styles.occupation1}>{`#${item.occupation}`}</div>
@@ -96,7 +174,7 @@ function DetailCard(props) {
               <FaHeart style={favouriteStyle} className={styles.favIcon} />
             </button>
 
-            <button className={styles.shareBtn}>
+            <button onClick={handleNativeShare} className={styles.shareBtn}>
               <FaShareAlt className={styles.share} />
             </button>
           </div>

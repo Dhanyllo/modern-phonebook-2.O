@@ -50,10 +50,10 @@ const Register = () => {
               <span className={styles.gradientText}>Create Account</span>
             </div>
             <div className={styles.subtitle}>
-              Simplify the way you Manage, Organize, Track, and Connect with
-              your contacts — all in one place with{" "}
-              <b>
-                Mphone <small>2</small>.O
+              Simplify how you manage and connect with your contacts — all in
+              one place with{" "}
+              <b class={styles.brandName}>
+                Mphone&nbsp;<small>2</small>.O
               </b>
             </div>
           </div>

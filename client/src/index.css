@@ -53,6 +53,7 @@ body {
 }
 
 /* ===== Mobile View ===== */
+
 @media (max-width: 600px) {
   .body1-style-lightmode,
   .body1-style-darkmode {
