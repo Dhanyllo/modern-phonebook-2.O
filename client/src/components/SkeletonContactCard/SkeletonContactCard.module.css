@@ -1,0 +1,139 @@
+.skeletonCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 16px;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.skeletonLineWrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  gap: 0.5rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.skeletonAvatar,
+.skeletonLine,
+.skeletonLineShort,
+.skeletonLineShorter {
+  position: relative;
+  overflow: hidden;
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+/* Avatar retains circle shape */
+.skeletonAvatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+.skeletonLine {
+  height: 12px;
+  width: 80%;
+  background: #e3e3e3;
+}
+
+.skeletonLineShort {
+  height: 12px;
+  width: 60%;
+  background: #e3e3e3;
+}
+
+.skeletonLineShorter {
+  height: 12px;
+  width: 40%;
+  background: #e3e3e3;
+}
+
+/* ===========================================
+   SHIMMER EFFECT
+   =========================================== */
+
+.skeletonAvatar::after,
+.skeletonLine::after,
+.skeletonLineShort::after,
+.skeletonLineShorter::after,
+.skeletonCard::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150px;
+  height: 100%;
+  width: 150px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-150px);
+  }
+  100% {
+    transform: translateX(300px);
+  }
+}
+
+/* ===========================================
+   DARK MODE OVERRIDES
+   =========================================== */
+
+html[data-darkmode="true"] .skeletonCard {
+  background: #2b2b2b;
+}
+
+html[data-darkmode="true"] .skeletonAvatar,
+html[data-darkmode="true"] .skeletonLine,
+html[data-darkmode="true"] .skeletonLineShort,
+html[data-darkmode="true"] .skeletonLineShorter {
+  background: #3a3a3a;
+}
+
+/* Dark-mode shimmer tint */
+html[data-darkmode="true"] .skeletonAvatar::after,
+html[data-darkmode="true"] .skeletonLine::after,
+html[data-darkmode="true"] .skeletonLineShort::after,
+html[data-darkmode="true"] .skeletonLineShorter::after,
+html[data-darkmode="true"] .skeletonCard::after {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+@media (max-width: 600px) {
+  .skeletonCard {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 8px;
+    padding: 8px;
+  }
+
+  .skeletonLineWrap {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .skeletonCard::after {
+    all: unset;
+  }
+
+  .skeletonLineShorter {
+    display: none;
+  }
+}

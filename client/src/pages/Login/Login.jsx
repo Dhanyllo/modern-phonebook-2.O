@@ -4,6 +4,7 @@ import { Form, Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { GoogleButton } from "../../components/GoogleButton/GoogleButton";
 import styles from "./Login.module.css";
+import { useDarkMode } from "../../context/DarkModeContext";
 
 // --- Action function for the form ---
 export async function action({ request }) {
@@ -33,6 +34,7 @@ export async function action({ request }) {
 }
 
 const Login = () => {
+  const { darkMode } = useDarkMode();
   const apiUrl = import.meta.env.VITE_API_URL;
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -42,7 +44,7 @@ const Login = () => {
   };
 
   return (
-    <div className={styles.pageContainer}>
+    <div data-darkmode={darkMode} className={styles.pageContainer}>
       <AuthSidePanel />
 
       <div className={styles.rightSection}>

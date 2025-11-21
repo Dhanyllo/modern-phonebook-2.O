@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Form, Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { GoogleButton } from "../../components/GoogleButton/GoogleButton";
+import { useDarkMode } from "../../context/DarkModeContext";
 import styles from "./RegisterForm.module.css";
 
 const RegisterForm = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
+  const { darkMode } = useDarkMode();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -15,7 +17,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className={styles.formWrapper}>
+    <div data-darkmode={darkMode} className={styles.formWrapper}>
       <Form
         method="post"
         action="/register"

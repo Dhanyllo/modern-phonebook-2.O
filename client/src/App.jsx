@@ -1,12 +1,11 @@
-// src/App.jsx
 import {
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
   Route,
+  Outlet,
 } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
 import { DarkModeProvider } from "./context/DarkModeContext";
 import { UIProvider } from "./context/UIContext";
 
@@ -18,9 +17,6 @@ import Home, { loader as homeLoader } from "./pages/Home/Home";
 import Favourites, {
   loader as favouritesLoader,
 } from "./pages/Favourites/Favourites";
-import DetailPage, {
-  loader as detailLoader,
-} from "./pages/DetailPage/DetailPage";
 import Login from "./pages/Login/Login";
 import Register, { action as registerAction } from "./pages/Register/Register";
 import ProfilePage, { profileAction } from "./pages/ProfilePage/ProfilePage";
@@ -30,15 +26,44 @@ import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import ChangePassword, {
   changePasswordAction,
 } from "./pages/ChangePassword/ChangePassword";
+// import MicroSplashLoader from "./components/MicroSplashLoader/MicroSplashLoader";
+import NavigationProgress from "./components/NavigationProgressBar/NavigationProgress";
 
 export default function App() {
   // Setup React Query
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        // This catches expired token cases
+        onError: (error) => {
+          if (error?.status === 401 || error?.message === "Not authenticated") {
+            window.location.href = "/login";
+          }
+        },
+      },
+      mutations: {
+        onError: (error) => {
+          if (error?.status === 401) {
+            window.location.href = "/login";
+          }
+        },
+      },
+    },
+  });
 
   // Define routes here
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route errorElement={<Error />}>
+      <Route
+        errorElement={<Error />}
+        element={
+          <>
+            <NavigationProgress />
+            <Outlet />
+          </>
+        }
+      >
         <Route element={<Header />}>
           <Route path="/" element={<Home />} loader={homeLoader} />
           <Route
@@ -48,11 +73,6 @@ export default function App() {
           />
         </Route>
 
-        <Route
-          path="/detail/:id"
-          element={<DetailPage />}
-          loader={detailLoader}
-        />
         <Route path="/login" element={<Login />} />
         <Route
           path="/register"

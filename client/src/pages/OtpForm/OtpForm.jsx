@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Form } from "react-router-dom";
 import OtpInput from "../../components/OtpInput/OtpInput";
 import styles from "./OtpForm.module.css";
+import { useDarkMode } from "../../context/DarkModeContext";
 
 export const otpAction = async ({ request }) => {
   const formData = await request.formData();
@@ -19,6 +20,7 @@ const RESEND_DELAY = 60;
 const OtpForm = () => {
   const [otpValue, setOtpValue] = useState("");
   const [timeLeft, setTimeLeft] = useState(0);
+  const { darkMode } = useDarkMode();
 
   const handleOtpChange = (value) => {
     setOtpValue(value);
@@ -39,8 +41,10 @@ const OtpForm = () => {
     setTimeLeft(RESEND_DELAY);
   };
 
+  console.log(darkMode);
+
   return (
-    <div className={styles.page}>
+    <div data-darkmode={darkMode} className={styles.page}>
       <div className={styles.card}>
         <h2 className={styles.title}>Verify OTP</h2>
         <p className={styles.subtitle}>

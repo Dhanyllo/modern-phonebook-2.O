@@ -3,23 +3,11 @@ import { RiContactsBookFill } from "react-icons/ri";
 import { FaHeart } from "react-icons/fa6";
 import { useNavigation } from "react-router-dom";
 import { useDarkMode } from "../../context/DarkModeContext";
-import { useBreakpoint } from "../../hooks/useBreakpoint";
-import { useUI } from "../../context/UIContext";
 import styles from "./Sidebar.module.css";
 
 function Sidebar({ favStatus }) {
-  const { isMobile, isTablet, isDesktop } = useBreakpoint();
-  const { isSidebarOpen, activeModal, setActiveModal } = useUI();
   const { darkMode } = useDarkMode();
   const navigation = useNavigation();
-
-  let sidebarState;
-
-  if (isDesktop) {
-    sidebarState = "";
-  } else if (isTablet) {
-    sidebarState = "halfSidebar";
-  }
 
   const heartIcon = {
     color: favStatus ? "red" : "white",

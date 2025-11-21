@@ -6,6 +6,10 @@
   background: var(--color-background);
 }
 
+.pageContainer[data-darkmode="true"] {
+  background-color: #121212;
+}
+
 .rightSection {
   display: flex;
   flex-direction: column;
@@ -52,11 +56,8 @@
   padding: 3rem 3rem;
 }
 
-@media (max-width: 640px) {
-  .formWrapperMain {
-    padding: 1.5rem;
-    border-radius: 12px;
-  }
+.pageContainer[data-darkmode="true"] .subtitle {
+  color: #ffffff;
 }
 
 .header {
@@ -143,6 +144,11 @@
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
+.pageContainer[data-darkmode="true"] .formWrapper {
+  background-color: #1a1a1a;
+  color: #f5f5f5;
+}
+
 .form {
   display: flex;
   flex-direction: column;
@@ -152,6 +158,10 @@
 .label {
   font-size: 0.875rem;
   font-weight: 600;
+}
+
+.pageContainer[data-darkmode="true"] .label {
+  color: #ffffff;
 }
 
 .inputField {
@@ -165,8 +175,41 @@
   transition: all 0.3s ease;
 }
 
+.pageContainer[data-darkmode="true"] .inputField {
+  background-color: #2a2a2a;
+  color: white;
+}
+
+.pageContainer[data-darkmode="true"] .inputField::placeholder {
+  color: #a1a1a1;
+}
+
+.pageContainer[data-darkmode="true"] input:-webkit-autofill,
+.pageContainer[data-darkmode="true"] input:-webkit-autofill:hover,
+.pageContainer[data-darkmode="true"] input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #2a2a2a inset !important;
+  -webkit-text-fill-color: white !important;
+  caret-color: white;
+  border: 1px solid white !important;
+  transition: border-color 0.2s ease;
+}
+
+input:-webkit-autofill {
+  animation: autofillFix 0s forwards;
+}
+
+@keyframes autofillFix {
+  100% {
+    background-color: #2a2a2a;
+  }
+}
+
 .inputField:hover:not(:focus) {
   border-color: black;
+}
+
+.pageContainer[data-darkmode="true"] .inputField:hover:not(:focus) {
+  border-color: inherit;
 }
 
 .inputField:focus {
@@ -201,7 +244,15 @@
   transition: color 0.2s ease;
 }
 
+.pageContainer[data-darkmode="true"] .passwordToggle {
+  color: white;
+}
+
 .passwordToggle:hover {
+  color: var(--color-primary);
+}
+
+.pageContainer[data-darkmode="true"] .passwordToggle:hover {
   color: var(--color-primary);
 }
 
@@ -271,11 +322,19 @@
   margin: 5px 0px;
 }
 
+.pageContainer[data-darkmode="true"] .signInText {
+  color: white;
+}
+
 .signInLink {
   color: oklch(0.205 0 0);
   font-weight: bolder;
   text-decoration: none;
   transition: color 0.2s ease;
+}
+
+.pageContainer[data-darkmode="true"] .signInLink {
+  color: #4493f8;
 }
 
 .signInLink:hover {
@@ -302,7 +361,15 @@
   pointer-events: none;
 }
 
+.pageContainer[data-darkmode="true"] .orDivider::before,
+.pageContainer[data-darkmode="true"] .orDivider::after {
+  background-color: #3a3a3a;
+}
+
 .orDividerText {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   pointer-events: auto;
   padding: 0.35rem 0.8rem;
   border-radius: 9999px;
@@ -312,7 +379,11 @@
   font-size: 0.875rem;
   line-height: 1;
   z-index: 1;
-  align-self: center;
+}
+
+.pageContainer[data-darkmode="true"] .orDividerText {
+  background-color: #2a2a2a;
+  color: #cfcfcf;
 }
 
 @keyframes shine {
@@ -351,6 +422,13 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .formWrapperMain {
+    padding: 1.5rem;
+    border-radius: 12px;
   }
 }
 

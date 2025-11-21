@@ -348,16 +348,21 @@
   width: 260px;
   height: 400px;
   background-color: rgb(248, 248, 248);
-  border: 5px solid #e5e7eb;
+  border: 1px solid #e5e7eb;
   top: 35px;
   right: 20px;
-  border-width: 1px;
   border-radius: 10px;
   padding-top: 7px;
   padding-bottom: 7px;
   padding-left: 8px;
   margin-top: 20px;
   scroll-behavior: smooth;
+}
+
+html[data-darkmode="true"] .notificationContainer {
+  background-color: #1e1e1e;
+  border: 1px solid #1e1e1e;
+  color: white;
 }
 
 .notificationContainer::before {
@@ -370,6 +375,10 @@
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-bottom: 10px solid rgb(248, 248, 248);
+}
+
+html[data-darkmode="true"] .notificationContainer::before {
+  border-bottom: 10px solid #1e1e1e;
 }
 
 .notificationContainer::-webkit-scrollbar {
@@ -420,14 +429,19 @@
   width: 260px;
   height: 360px;
   background-color: rgb(248, 248, 248);
-  border: 5px solid #e5e7eb;
+  border: 1px solid #e5e7eb;
   top: 35px;
   right: 27px;
-  border-width: 1px;
   border-radius: 10px;
   padding-top: 15px;
   margin-top: 20px;
   scroll-behavior: smooth;
+}
+
+html[data-darkmode="true"] .profileContainer {
+  background-color: #1e1e1e;
+  border: 1px solid #1e1e1e;
+  color: white;
 }
 
 .profileContainer::before {
@@ -440,6 +454,10 @@
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-bottom: 10px solid rgb(248, 248, 248);
+}
+
+html[data-darkmode="true"] .profileContainer::before {
+  border-bottom: 10px solid #1e1e1e;
 }
 
 .profileContainerDisabled {
@@ -525,6 +543,12 @@
 .profileLayer2Link2:hover {
   background-color: white;
   color: red;
+}
+
+html[data-darkmode="true"] .profileLayer2Link:hover,
+html[data-darkmode="true"] .profileLayer2Link2:hover {
+  background-color: #2a2a2a;
+  color: #ff4d4d;
 }
 
 .profileHr1 {

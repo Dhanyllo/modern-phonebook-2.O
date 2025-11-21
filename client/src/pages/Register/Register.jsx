@@ -1,5 +1,6 @@
 import AuthSidePanel from "../../components/AuthSidePanel/AuthSidePanel";
 import RegisterForm from "../../components/RegisterForm/RegisterForm";
+import { useDarkMode } from "../../context/DarkModeContext";
 import styles from "./Register.module.css";
 
 // --- Action function for the form ---
@@ -30,8 +31,9 @@ export async function action({ request }) {
 }
 
 const Register = () => {
+  const { darkMode } = useDarkMode();
   return (
-    <div className={styles.pageContainer}>
+    <div data-darkmode={darkMode} className={styles.pageContainer}>
       <AuthSidePanel />
 
       <div className={styles.rightSection}>

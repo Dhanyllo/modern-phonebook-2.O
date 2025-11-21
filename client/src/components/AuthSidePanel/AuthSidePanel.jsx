@@ -1,6 +1,8 @@
+import { useDarkMode } from "../../context/DarkModeContext";
 import styles from "./AuthSidePanel.module.css";
 
 const AuthSidePanel = () => {
+  const { darkMode } = useDarkMode();
   const testimonials = [
     {
       text: "This app completely transformed how I manage my contacts. Everything’s organized and accessible in seconds.",
@@ -49,7 +51,7 @@ const AuthSidePanel = () => {
   ];
 
   return (
-    <div className={styles.panel}>
+    <div data-darkmode={darkMode} className={styles.panel}>
       {/* Logo */}
       <div className={styles.logoWrapper}>
         <div className={styles.logoBox}>
@@ -74,11 +76,11 @@ const AuthSidePanel = () => {
           {/* Stats */}
           <div className={styles.statsGrid}>
             <div className={styles.statBox}>
-              <div className={styles.statNumber}>10k+</div>
+              <div className={styles.statNumber}>10M+</div>
               <div className={styles.statLabel}>Contacts Managed</div>
             </div>
             <div className={styles.statBox}>
-              <div className={styles.statNumber}>1,200+</div>
+              <div className={styles.statNumber}>150k+</div>
               <div className={styles.statLabel}>Active Users</div>
             </div>
             <div className={styles.statBox}>

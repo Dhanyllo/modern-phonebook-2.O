@@ -14,9 +14,11 @@ import {
   SiWhatsapp,
   SiGmail,
 } from "react-icons/si";
+import { useDarkMode } from "../../context/DarkModeContext";
 import styles from "./DetailCard.module.css";
 
 function DetailCard(props) {
+  const darkMode = useDarkMode();
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.95, y: 20 },
     visible: {

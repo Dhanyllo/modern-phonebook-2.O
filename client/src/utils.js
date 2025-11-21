@@ -1,5 +1,4 @@
-// src/utils/checkAuth.js
-export const checkAuth = async (apiUrl) => {
+export const checkAuthStatus = async (apiUrl) => {
   try {
     const res = await fetch(`${apiUrl}/auth/check`, {
       method: "GET",

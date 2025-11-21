@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Form, useNavigate } from "react-router-dom";
 import styles from "./ProfilePage.module.css";
 import { IoIosArrowBack } from "react-icons/io";
+import { useDarkMode } from "../../context/DarkModeContext";
 
 export const profileAction = async ({ request }) => {
   const formData = await request.formData();
@@ -28,6 +29,7 @@ export const profileAction = async ({ request }) => {
 const ProfilePage = () => {
   const [preview, setPreview] = useState("/images/profile.jpg");
   const [file, setFile] = useState(null);
+  const { darkMode } = useDarkMode();
   const navigate = useNavigate();
 
   const handlePictureChange = (e) => {
@@ -54,7 +56,7 @@ const ProfilePage = () => {
   }, [file]);
 
   return (
-    <div className={styles.page}>
+    <div data-darkmode={darkMode} className={styles.page}>
       <div className={styles.card}>
         <button
           type="button"

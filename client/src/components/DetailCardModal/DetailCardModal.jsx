@@ -4,8 +4,10 @@ import { motion } from "framer-motion";
 import DetailCard from "../DetailCard/DetailCard";
 import styles from "./DetailCardModal.module.css";
 import { useUI } from "../../context/UIContext";
+import { useDarkMode } from "../../context/DarkModeContext";
 
-function DetailCardModal({ darkMode, contactId }) {
+function DetailCardModal({ contactId }) {
+  const darkMode = useDarkMode();
   const apiUrl = import.meta.env.VITE_API_URL;
   const queryClient = useQueryClient();
   const { setActiveModal } = useUI();

@@ -11,6 +11,10 @@
   z-index: 2000;
 }
 
+html[data-darkmode="true"] .modalOverlay {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
 @supports not (height: 100dvh) {
   .modalOverlay {
     height: 100vh;
@@ -32,6 +36,11 @@
   padding-right: 10px;
   padding-top: 48px;
   overflow-y: scroll;
+}
+
+html[data-darkmode="true"] .mainContainer {
+  background-color: #1e1e1e;
+  color: white;
 }
 
 .modalClose {
@@ -69,6 +78,16 @@
   border-radius: 80px;
 }
 
+hr {
+  border: none;
+  border-top: 1px solid #d1d5db;
+  margin: 15px 0;
+}
+
+html[data-darkmode="true"] hr {
+  border-top: 1px solid #3f3f46;
+}
+
 .title {
   margin-bottom: 20px;
 }
@@ -85,9 +104,30 @@
   color: #515b6f;
 }
 
+.optionalTag {
+  color: black;
+}
+
+html[data-darkmode="true"] .optionalTag {
+  color: #e5e7eb;
+}
+
+html[data-darkmode="true"] .text1,
+html[data-darkmode="true"] .text2 {
+  color: #e5e7eb;
+}
+
+html[data-darkmode="true"] .text3 {
+  color: #9ca3af;
+}
+
 .text4 {
   color: #202430;
   font-weight: 700;
+}
+
+html[data-darkmode="true"] .text4 {
+  color: #e4e4e7;
 }
 
 .text5 {
@@ -96,6 +136,10 @@
 
 .text6 {
   color: #7c8493;
+}
+
+html[data-darkmode="true"] .text6 {
+  color: #c5c5d0;
 }
 
 .text7 {
@@ -125,53 +169,6 @@
   display: flex;
   flex-direction: column;
   row-gap: 5px;
-}
-
-textarea {
-  height: 100px;
-  text-indent: 5px;
-  padding-top: 2px;
-  resize: none;
-  border-radius: 0px;
-  border-top-left-radius: 2px;
-  border-top-right-radius: 2px;
-}
-textarea::placeholder {
-  padding-top: 5px;
-}
-
-.textareaIcons {
-  display: flex;
-  flex-direction: row;
-  justify-content: left;
-  align-items: center;
-  column-gap: 10px;
-  padding-left: 10px;
-  height: 30px;
-  border-style: solid;
-  border-color: gray;
-  border-top-width: 0px;
-  border-bottom-width: 1px;
-  border-left-width: 1px;
-  border-right-width: 1px;
-  border-bottom-left-radius: 2px;
-  border-bottom-right-radius: 2px;
-  margin-top: -5px;
-  padding: 2px 5px;
-}
-
-.textareaIcons button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-  padding: 5px;
-  border-radius: 25px;
-}
-.textareaIcons button:hover {
-  background-color: rgba(232, 231, 231, 0.5);
 }
 
 .additionalSection {
@@ -209,6 +206,10 @@ textarea::placeholder {
 
 .contactImageStyle:hover {
   background-color: rgb(231, 231, 231);
+}
+
+html[data-darkmode="true"] .contactImageStyle:hover {
+  background-color: #2f2f2f;
 }
 
 .fileBtn {
@@ -251,6 +252,35 @@ textarea::placeholder {
   box-shadow: none;
 }
 
+html[data-darkmode="true"] .layer1 input {
+  background-color: #2a2a2a;
+  color: white;
+}
+
+html[data-darkmode="true"] input:-webkit-autofill,
+html[data-darkmode="true"] input:-webkit-autofill:hover,
+html[data-darkmode="true"] input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #2a2a2a inset !important;
+  -webkit-text-fill-color: white !important;
+  caret-color: white;
+  border: 1px solid white !important;
+  transition: border-color 0.2s ease;
+}
+
+input:-webkit-autofill {
+  animation: autofillFix 0s forwards;
+}
+
+@keyframes autofillFix {
+  100% {
+    background-color: #2a2a2a;
+  }
+}
+
+html[data-darkmode="true"] .layer1 input::placeholder {
+  color: #a1a1a1;
+}
+
 .layer2 {
   display: flex;
   flex-direction: column;
@@ -271,9 +301,22 @@ textarea::placeholder {
   box-shadow: none;
 }
 
+html[data-darkmode="true"] .layer2 input {
+  background-color: #2a2a2a;
+  color: white;
+}
+
+html[data-darkmode="true"] .layer2 input::placeholder {
+  color: #a1a1a1;
+}
+
 label {
   font-weight: 700;
   color: #515b6f;
+}
+
+html[data-darkmode="true"] label {
+  color: #e5e7eb;
 }
 
 .layer1 input:focus {
@@ -317,6 +360,34 @@ label {
 
 .phoneInput:focus {
   outline: none;
+}
+
+/* Flag button background */
+:global(
+    html[data-darkmode="true"]
+      .react-international-phone-country-selector-button
+  ),
+:global(
+    html[data-darkmode="true"]
+      .react-international-phone-country-selector__button
+  ) {
+  background-color: #2a2a2a !important;
+  border-color: #444 !important;
+  color: white !important;
+}
+
+/* Dropdown Container */
+:global(
+    html[data-darkmode="true"]
+      .react-international-phone-country-selector-dropdown
+  ),
+:global(
+    html[data-darkmode="true"]
+      .react-international-phone-country-selector__dropdown
+  ) {
+  background-color: #2a2a2a !important;
+  color: #e0e0e0 !important;
+  border-color: #444 !important;
 }
 
 .selectValue {

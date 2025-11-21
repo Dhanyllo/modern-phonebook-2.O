@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
-import styles from "./CreateContactModal.module.css";
 import { RiCloseLine } from "react-icons/ri";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import CreatableSelect from "react-select/creatable";
 import { useUI } from "../../context/UIContext";
+import { useDarkMode } from "../../context/DarkModeContext";
+import { darkSelectStyles } from "../../theme/select/darkSelectStyles";
+import { lightSelectStyles } from "../../theme/select/lightSelectStyles";
+import styles from "./CreateContactModal.module.css";
 
 // export async function action({ request }) {
 //   const formData = await request.formData();
@@ -20,6 +23,7 @@ import { useUI } from "../../context/UIContext";
 
 function CreateContactModal() {
   const { setActiveModal } = useUI();
+  const { darkMode } = useDarkMode();
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const handleFileChange = (e) => {
@@ -148,6 +152,7 @@ function CreateContactModal() {
                 id="phone_number"
                 defaultCountry="gh"
                 inputClassName={styles.phoneInput}
+                menuClassName={styles.darkMenuClass}
                 className={styles.phoneContainer}
                 placeholder="Enter your phone number"
               />
@@ -184,20 +189,9 @@ function CreateContactModal() {
                 isClearable
                 placeholder="Type and press Enter..."
                 onChange={handleChange}
-                styles={{
-                  control: (base, state) => ({
-                    ...base,
-                    borderRadius: 3,
-                    border: state.isFocused
-                      ? "2px solid #2684ff" // When focused
-                      : "1.5px solid #ccc", // Default border
-                    fontSize: "0.95rem",
-                    boxShadow: "none",
-                    "&:hover": {
-                      borderColor: "none",
-                    },
-                  }),
-                }}
+                styles={
+                  darkMode ? { ...darkSelectStyles } : { ...lightSelectStyles }
+                }
               />
 
               <input
@@ -213,7 +207,7 @@ function CreateContactModal() {
           <br />
 
           <div className={styles.text7}>
-            LINKS <span style={{ color: "black" }}>(Optional)</span>
+            LINKS <span className={styles.optionalTag}>(Optional)</span>
           </div>
 
           <br />

@@ -1,8 +1,11 @@
 import styles from "./ResetPassword.module.css";
+import { useDarkMode } from "../../context/DarkModeContext";
 
 const ResetPassword = () => {
+  const { darkMode } = useDarkMode();
+
   return (
-    <div className={styles.pageWrapper}>
+    <div data-darkmode={darkMode} className={styles.pageWrapper}>
       <div className={styles.changePasswordContainer}>
         <div className={styles.title}>Change your password</div>
 

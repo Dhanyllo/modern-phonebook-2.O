@@ -5,7 +5,7 @@ const UIContext = createContext();
 
 export const UIProvider = ({ children }) => {
   const [isSearchMode, setIsSearchMode] = useState(false);
-  const [activeModal, setActiveModal] = useState("shareContact");
+  const [activeModal, setActiveModal] = useState("");
   const { isMobile, isTablet, isDesktop } = useBreakpoint(); //delete|create|logout|mobilesidebar|
   // mobileprofile|update|detail|mobileNotification|tabletNotification|tabletProfile|null
 

@@ -11,6 +11,10 @@
   z-index: 2000;
 }
 
+html[data-darkmode="true"] .modalOverlay {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
 @supports not (height: 100dvh) {
   .modalOverlay {
     height: 100vh;

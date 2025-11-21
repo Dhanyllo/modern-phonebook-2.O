@@ -18,8 +18,8 @@ import styles from "./HeaderNormal.module.css";
 
 function HeaderNormal() {
   const { darkMode, setDarkMode } = useDarkMode();
-  const { setActiveModal, setIsSearchMode } = useUI();
-  const { isMobile } = useBreakpoint();
+  const { setActiveModal, activeModal, setIsSearchMode } = useUI();
+  const { isMobile, isTablet } = useBreakpoint();
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("searchParams") || "";
   const inputRef = useRef(null);
@@ -45,12 +45,27 @@ function HeaderNormal() {
     clearTimeout(notificationTimer.current);
     setNotificationToggle(true);
   };
+
   const handleNotificationMouseLeave = () => {
     notificationTimer.current = setTimeout(
       () => setNotificationToggle(false),
       100
     );
   };
+
+  useEffect(() => {
+    const invalidMobileModals = ["mobileprofile", "mobileNotification"];
+
+    const invalidTabletModals = ["tabletprofile", "tabletNotification"];
+
+    if (invalidMobileModals.includes(activeModal) && !isMobile) {
+      setActiveModal(null);
+    }
+
+    if (invalidTabletModals.includes(activeModal) && !isTablet) {
+      setActiveModal(null);
+    }
+  }, [isMobile, isTablet, activeModal]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {

@@ -1,15 +1,19 @@
 import styles from "./ForgotPassword.module.css";
+import { useDarkMode } from "../../context/DarkModeContext";
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
+import { AiOutlineMail } from "react-icons/ai";
 
 const ForgotPassword = () => {
+  const { darkMode } = useDarkMode();
   return (
-    <div className={styles.container}>
+    <div data-darkmode={darkMode} className={styles.container}>
       {/* Left Side */}
       <div className={styles.leftSide}></div>
 
       {/* Right Side */}
       <div className={styles.rightSide}>
         <div className={styles.rightSideContent}>
-          <div className={styles.forgotPasswordLayer1}>Forgot Password</div>
+          <div className={styles.forgotPasswordLayer1}>Reset your password</div>
 
           <div className={styles.forgotPasswordLayer2}>
             <form>
@@ -26,16 +30,16 @@ const ForgotPassword = () => {
                     name="changePassword"
                     id="passwordChange"
                   />
-                  <img src="images/email-icon.png" alt="email" />
+                  <AiOutlineMail className={styles.emailIcon} />
                 </div>
 
-                <button type="submit">Submit</button>
+                <button type="submit">Send password reset email</button>
               </div>
             </form>
 
             <div className={styles.backToMenu}>
               <a className={styles.mainMenuLink} href="">
-                <img src="/images/left-arrow.png" alt="left arrow" />
+                <MdOutlineKeyboardArrowLeft className={styles.leftArrow} />
                 Back to login
               </a>
             </div>

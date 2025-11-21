@@ -16,21 +16,35 @@ import { AnimatePresence } from "framer-motion";
 import {
   QueryClient,
   useQuery,
+  useMutation,
   useQueryClient,
   dehydrate,
   HydrationBoundary,
 } from "@tanstack/react-query";
-import { checkAuth } from "../../utils";
+import { checkAuthStatus } from "../../utils";
 import styles from "./Home.module.css";
 import { useDarkMode } from "../../context/DarkModeContext";
-import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useUI } from "../../context/UIContext";
+import SkeletonContactCard from "../../components/SkeletonContactCard/SkeletonContactCard";
 
 // ==============================
 // Data fetching helpers
 // ==============================
 async function fetchFavStatus(apiUrl) {
   const res = await fetch(`${apiUrl}/favstatus`, { credentials: "include" });
+
+  if (res.status === 401) {
+    const error = new Error("Not authenticated");
+    error.status = 401;
+    throw error;
+  }
+
+  if (!res.ok) {
+    const error = new Error("Request failed");
+    error.status = res.status;
+    throw error;
+  }
+
   return res.json();
 }
 
@@ -38,15 +52,42 @@ async function fetchContacts(apiUrl, page, limit) {
   const res = await fetch(`${apiUrl}?page=${page}&limit=${limit}`, {
     credentials: "include",
   });
+
+  if (res.status === 401) {
+    const error = new Error("Not authenticated");
+    error.status = 401;
+    throw error;
+  }
+
+  if (!res.ok) {
+    const error = new Error("Request failed");
+    error.status = res.status;
+    throw error;
+  }
+
   return res.json();
 }
 
 async function fetchSearchResults(apiUrl, searchTerm, page, limit) {
   const encodedSearchTerm = encodeURIComponent(searchTerm);
+
   const res = await fetch(
     `${apiUrl}/search/home?searchParams=${encodedSearchTerm}&page=${page}&limit=${limit}`,
     { credentials: "include" }
   );
+
+  if (res.status === 401) {
+    const error = new Error("Not authenticated");
+    error.status = 401;
+    throw error;
+  }
+
+  if (!res.ok) {
+    const error = new Error("Request failed");
+    error.status = res.status;
+    throw error;
+  }
+
   return res.json();
 }
 
@@ -55,7 +96,8 @@ async function fetchSearchResults(apiUrl, searchTerm, page, limit) {
 // ==============================
 export async function loader({ request }) {
   const apiUrl = import.meta.env.VITE_API_URL;
-  const authData = await checkAuth(apiUrl);
+  const authData = await checkAuthStatus(apiUrl);
+
   if (authData.redirectToLogin) {
     return redirect("/login");
   }
@@ -67,7 +109,6 @@ export async function loader({ request }) {
 
   const queryClient = new QueryClient();
 
-  // Prefetch all data before hydration
   await queryClient.prefetchQuery({
     queryKey: ["favStatus"],
     queryFn: () => fetchFavStatus(apiUrl),
@@ -92,43 +133,75 @@ export async function loader({ request }) {
 }
 
 // ==============================
-// Home component (hydrated + unified)
+// Home Component
 // ==============================
 function Home() {
   const { dehydratedState, apiUrl } = useLoaderData();
   const { darkMode } = useDarkMode();
-  const { isSidebarOpen, activeModal, setActiveModal } = useUI();
-  const { isMobile, isTablet, isDesktop } = useBreakpoint();
+  const { activeModal, setActiveModal } = useUI();
+  const [showSkeleton, setShowSkeleton] = useState(false);
+
   const [selectedContact, setSelectedContact] = useState("");
+
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
+
   const currentPage = parseInt(searchParams.get("page")) || 1;
   const limit = 15;
   const searchTerm = searchParams.get("searchParams") || "";
   const hasSearchTerm = Boolean(searchTerm);
 
   // ==============================
-  // Data fetching with hydration
+  // Data Fetching
   // ==============================
   const { data: favStatus } = useQuery({
     queryKey: ["favStatus"],
     queryFn: () => fetchFavStatus(apiUrl),
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  const { data: contacts } = useQuery({
+  const {
+    data: contacts,
+    isLoading: contactsLoading,
+    isFetching: contactsFetching,
+  } = useQuery({
     queryKey: ["contacts", currentPage, limit],
     queryFn: () => fetchContacts(apiUrl, currentPage, limit),
     enabled: !hasSearchTerm,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  const { data: search } = useQuery({
+  const {
+    data: search,
+    isLoading: searchLoading,
+    isFetching: searchFetching,
+  } = useQuery({
     queryKey: ["search", searchTerm, currentPage, limit],
     queryFn: () => fetchSearchResults(apiUrl, searchTerm, currentPage, limit),
     enabled: hasSearchTerm,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
+  useEffect(() => {
+    if (!contactsLoading) {
+      const timer = setTimeout(() => setShowSkeleton(false), 500); // minimum display time
+      return () => clearTimeout(timer);
+    } else {
+      setShowSkeleton(true);
+    }
+  }, [contactsLoading]);
+
   // ==============================
-  // Update favourite logic
+  // Favourite Update
   // ==============================
   async function updateFavouriteStatus(id, newStatus) {
     try {
@@ -138,73 +211,100 @@ function Home() {
         body: JSON.stringify({ favourite_status: newStatus }),
         credentials: "include",
       });
+
       if (!response.ok) throw new Error("Failed to update status");
+
       return await response.json();
     } catch (error) {
       console.error("Update error:", error);
     }
   }
 
-  async function handleUpdate(id, newStatus) {
-    await updateFavouriteStatus(id, newStatus);
-    queryClient.invalidateQueries(["contacts"]);
-    queryClient.invalidateQueries(["search"]);
-    queryClient.invalidateQueries(["favStatus"]);
+  const mutation = useMutation({
+    mutationFn: ({ id, newStatus }) => updateFavouriteStatus(id, newStatus),
+
+    // 1. Immediately update the UI
+    onMutate: async ({ id, newStatus }) => {
+      // Cancel outgoing refetches for the related queries
+      await queryClient.cancelQueries(["contacts"]);
+      await queryClient.cancelQueries(["search"]);
+
+      // Snapshot previous data to roll back if needed
+      const previousContacts = queryClient.getQueryData(["contacts"]);
+      const previousSearch = queryClient.getQueryData(["search"]);
+
+      // Optimistically update contacts
+      queryClient.setQueryData(["contacts"], (old) =>
+        old?.map((contact) =>
+          contact.id === id ? { ...contact, favourite: newStatus } : contact
+        )
+      );
+
+      // Optimistically update search results, if needed
+      queryClient.setQueryData(["search"], (old) =>
+        old?.map((contact) =>
+          contact.id === id ? { ...contact, favourite: newStatus } : contact
+        )
+      );
+
+      return { previousContacts, previousSearch };
+    },
+
+    // 2. Roll back if request fails
+    onError: (_err, _vars, context) => {
+      if (context?.previousContacts) {
+        queryClient.setQueryData(["contacts"], context.previousContacts);
+      }
+      if (context?.previousSearch) {
+        queryClient.setQueryData(["search"], context.previousSearch);
+      }
+    },
+
+    // 3. Re-sync in background (but non-invasive!)
+    onSettled: () => {
+      queryClient.invalidateQueries(["contacts"]);
+      queryClient.invalidateQueries(["search"]);
+    },
+  });
+
+  function handleUpdate(id, newStatus) {
+    mutation.mutate({ id, newStatus });
   }
 
   // ==============================
-  // Contacts rendering
+  // Contacts Rendering
   // ==============================
   const results = hasSearchTerm ? search?.data : contacts?.data;
   const totalPages = hasSearchTerm ? search?.totalPages : contacts?.totalPages;
 
-  let sidebarState;
+  let Cards = null;
 
-  if (isDesktop) {
-    sidebarState = "";
-  } else if (isTablet) {
-    sidebarState = "halfSidebar";
-  }
-
-  let Cards;
-  if (results && results.length > 0) {
-    Cards = results.map((item, index, array) => (
-      <React.Fragment key={item.id || index}>
-        <ContactCard
-          id={item.id}
-          firstName={item.first_name}
-          otherNames={item.other_names}
-          phoneNumber={item.phone_number}
-          imageURL={item.image_url}
-          favouriteStatus={item.favourite_status}
-          onUpdate={handleUpdate}
-          darkMode={darkMode}
-          onViewClick={() => {
-            setSelectedContact(item.id);
-            setActiveModal("detail");
-          }}
-        />
-        {index !== array.length - 1 && <hr className={styles.Hr1} />}
-      </React.Fragment>
-    ));
-  } else if (!hasSearchTerm && results < 0) {
-    Cards = (
-      <p
-        className={
-          darkMode
-            ? styles.emptyDirectoryContainerDarkmode
-            : styles.emptyDirectoryContainerLightmode
-        }
-      >
-        No contacts added.
-      </p>
-    );
-  } else {
-    Cards = null;
+  if (!contactsLoading) {
+    if (results && results.length > 0) {
+      Cards = results.map((item, index, array) => (
+        <React.Fragment key={item.id || index}>
+          <ContactCard
+            id={item.id}
+            firstName={item.first_name}
+            otherNames={item.other_names}
+            phoneNumber={item.phone_number}
+            imageURL={item.image_url}
+            favouriteStatus={item.favourite_status}
+            onUpdate={handleUpdate}
+            darkMode={darkMode}
+            onViewClick={() => {
+              setSelectedContact(item.id);
+              setActiveModal("detail");
+            }}
+          />
+          {index !== array.length - 1 && <hr className={styles.Hr1} />}
+        </React.Fragment>
+      ));
+    }
   }
 
   // ==============================
-  // Body background effect
+  // Background Mode
   // ==============================
   useEffect(() => {
     const BodyBgStyle = darkMode
@@ -218,36 +318,42 @@ function Home() {
 
     document.body.classList.add(BodyBgStyle);
 
-    // cleanup function (runs when component unmounts)
     return () => {
       document.body.classList.remove(
         "body1-style-darkmode",
         "body1-style-lightmode"
       );
     };
-  }, [darkMode, isTablet]);
+  }, [darkMode]);
 
   // ==============================
-  // Render (hydrated)
+  // Render w/ Skeleton
   // ==============================
   return (
     <HydrationBoundary state={dehydratedState}>
       <div className={styles.layout}>
         <Sidebar favStatus={favStatus?.exists_status} />
-        <main className={styles.mainContainer}>
-          <section className={styles.cardGrid}>{Cards}</section>
 
-          {results && results.length > 0 && (
+        <main className={styles.mainContainer}>
+          <section className={styles.cardGrid}>
+            {showSkeleton
+              ? Array.from({ length: 15 }).map((_, i) => (
+                  <SkeletonContactCard key={i} />
+                ))
+              : Cards}
+          </section>
+
+          {!contactsLoading && results && results.length > 0 && (
             <div className={styles.pageNav}>
               <button
                 className={styles.previous}
                 aria-disabled={currentPage === 1}
                 onClick={() => {
-                  setSearchParams((prevParams) => {
-                    const newParams = new URLSearchParams(prevParams);
-                    newParams.set("page", currentPage - 1);
-                    newParams.set("limit", limit);
-                    return newParams;
+                  setSearchParams((prev) => {
+                    const params = new URLSearchParams(prev);
+                    params.set("page", currentPage - 1);
+                    params.set("limit", limit);
+                    return params;
                   });
                 }}
               >
@@ -266,13 +372,13 @@ function Home() {
 
               <button
                 className={styles.next}
-                aria-disabled={currentPage === totalPages || totalPages === 0}
+                aria-disabled={currentPage === totalPages}
                 onClick={() => {
-                  setSearchParams((prevParams) => {
-                    const newParams = new URLSearchParams(prevParams);
-                    newParams.set("page", currentPage + 1);
-                    newParams.set("limit", limit);
-                    return newParams;
+                  setSearchParams((prev) => {
+                    const params = new URLSearchParams(prev);
+                    params.set("page", currentPage + 1);
+                    params.set("limit", limit);
+                    return params;
                   });
                 }}
               >
@@ -286,31 +392,22 @@ function Home() {
             {activeModal === "detail" && (
               <DetailCardModal contactId={selectedContact} />
             )}
-
             {activeModal === "update" && (
               <UpdateFormModal contactId={selectedContact} />
             )}
-
             {activeModal === "mobilesidebar" && (
               <MobileSidebarModal favStatus={favStatus?.exists_status} />
             )}
-
             {activeModal === "delete" && <DeleteConfirmModal />}
-
             {activeModal === "logout" && <LogoutConfirmModal />}
-
             {activeModal === "create" && <CreateContactModal />}
-
             {activeModal === "mobileprofile" && <MobileProfileModal />}
-
             {activeModal === "mobileNotification" && (
               <MobileNotificationModal />
             )}
-
             {activeModal === "tabletNotification" && (
               <TabletNotificationModal />
             )}
-
             {activeModal === "tabletProfile" && <TabletProfileModal />}
           </AnimatePresence>
         </main>

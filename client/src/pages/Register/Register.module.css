@@ -18,6 +18,10 @@
   overflow: hidden;
 }
 
+.pageContainer[data-darkmode="true"] {
+  background-color: #121212;
+}
+
 /* Circle styles */
 .circle {
   position: absolute;
@@ -119,6 +123,10 @@
   overflow-wrap: anywhere;
   min-width: 0;
   margin: 0 auto;
+}
+
+.pageContainer[data-darkmode="true"] .subtitle {
+  color: #ffffff;
 }
 
 .brandName {

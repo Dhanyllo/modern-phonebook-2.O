@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import ContactCard from "../../components/ContactCard/ContactCard";
 import UpdateFormModal from "../../components/UpdateFormModal/UpdateFormModal";
@@ -6,24 +6,27 @@ import DetailCardModal from "../../components/DetailCardModal/DetailCardModal";
 import DeleteConfirmModal from "../../components/DeleteConfirmModal/DeleteConfirmModal";
 import LogoutConfirmModal from "../../components/LogoutConfirmModal/LogoutConfirmModal";
 import CreateContactModal from "../../components/CreateContactModal/CreateContactModal";
+import MobileSidebarModal from "../../components/MobileSidebarModal/MobileSidebarModal";
+import MobileProfileModal from "../../components/MobileProfileModal/MobileProfileModal";
+import MobileNotificationModal from "../../components/MobileNotificationModal/MobileNotificationModal";
+import TabletNotificationModal from "../../components/TabletNotificationModal/TabletNotificationModal";
+import TabletProfileModal from "../../components/TabletProfileModal/TabletProfileModal";
+import SkeletonContactCard from "../../components/SkeletonContactCard/SkeletonContactCard";
+import { useLoaderData, useSearchParams, redirect } from "react-router-dom";
 
-import {
-  useLoaderData,
-  useOutletContext,
-  useSearchParams,
-  redirect,
-} from "react-router-dom";
 import {
   QueryClient,
   useQuery,
+  useMutation,
   useQueryClient,
   dehydrate,
   HydrationBoundary,
 } from "@tanstack/react-query";
-import { AnimatePresence } from "framer-motion";
 
-import { checkAuth } from "../../utils";
+import { AnimatePresence } from "framer-motion";
+import { checkAuthStatus } from "../../utils";
 import { useDarkMode } from "../../context/DarkModeContext";
+import { useUI } from "../../context/UIContext";
 import styles from "./Favourites.module.css";
 
 // ==============================
@@ -31,7 +34,19 @@ import styles from "./Favourites.module.css";
 // ==============================
 async function fetchFavStatus(apiUrl) {
   const res = await fetch(`${apiUrl}/favstatus`, { credentials: "include" });
-  if (!res.ok) throw new Error("Failed to fetch fav status");
+
+  if (res.status === 401) {
+    const error = new Error("Not authenticated");
+    error.status = 401;
+    throw error;
+  }
+
+  if (!res.ok) {
+    const error = new Error("Failed to fetch fav status");
+    error.status = res.status;
+    throw error;
+  }
+
   return res.json();
 }
 
@@ -39,26 +54,51 @@ async function fetchFavourites(apiUrl, page, limit) {
   const res = await fetch(`${apiUrl}/favourites?page=${page}&limit=${limit}`, {
     credentials: "include",
   });
-  if (!res.ok) throw new Error("Failed to fetch favourites");
+
+  if (res.status === 401) {
+    const error = new Error("Not authenticated");
+    error.status = 401;
+    throw error;
+  }
+
+  if (!res.ok) {
+    const error = new Error("Failed to fetch favourites");
+    error.status = res.status;
+    throw error;
+  }
+
   return res.json();
 }
 
 async function fetchSearchResults(apiUrl, searchTerm, page, limit) {
-  const encodedSearchTerm = encodeURIComponent(searchTerm);
+  const encoded = encodeURIComponent(searchTerm);
+
   const res = await fetch(
-    `${apiUrl}/search/favourites?searchParams=${encodedSearchTerm}&page=${page}&limit=${limit}`,
+    `${apiUrl}/search/favourites?searchParams=${encoded}&page=${page}&limit=${limit}`,
     { credentials: "include" }
   );
-  if (!res.ok) throw new Error("Failed to fetch search results");
+
+  if (res.status === 401) {
+    const error = new Error("Not authenticated");
+    error.status = 401;
+    throw error;
+  }
+
+  if (!res.ok) {
+    const error = new Error("Failed to fetch results");
+    error.status = res.status;
+    throw error;
+  }
+
   return res.json();
 }
 
 // ==============================
-// Loader with hydration
+// Loader
 // ==============================
 export async function loader({ request }) {
   const apiUrl = import.meta.env.VITE_API_URL;
-  const authData = await checkAuth(apiUrl);
+  const authData = await checkAuthStatus(apiUrl);
   if (authData.redirectToLogin) {
     return redirect("/login");
   }
@@ -70,7 +110,6 @@ export async function loader({ request }) {
 
   const queryClient = new QueryClient();
 
-  // Prefetch queries before hydration
   await queryClient.prefetchQuery({
     queryKey: ["favStatus"],
     queryFn: () => fetchFavStatus(apiUrl),
@@ -99,12 +138,13 @@ export async function loader({ request }) {
 // ==============================
 function Favourites() {
   const { dehydratedState, apiUrl } = useLoaderData();
-  const { headerActiveModal, setHeaderActiveModal } = useOutletContext();
   const { darkMode } = useDarkMode();
+  const { activeModal, setActiveModal } = useUI();
+  const [showSkeleton, setShowSkeleton] = useState(false);
+  const [selectedContact, setSelectedContact] = useState("");
+
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
-  const [activeModal, setActiveModal] = useState(null);
-  const [selectedContact, setSelectedContact] = useState("");
 
   const currentPage = parseInt(searchParams.get("page")) || 1;
   const limit = 15;
@@ -112,48 +152,121 @@ function Favourites() {
   const hasSearchTerm = Boolean(searchTerm);
 
   // ==============================
-  // React Query hooks
+  // Queries
   // ==============================
   const { data: favStatus } = useQuery({
     queryKey: ["favStatus"],
     queryFn: () => fetchFavStatus(apiUrl),
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  const { data: favourites } = useQuery({
+  const {
+    data: favourites,
+    isLoading: favLoading,
+    isFetching: favFetching,
+  } = useQuery({
     queryKey: ["favourites", currentPage, limit],
     queryFn: () => fetchFavourites(apiUrl, currentPage, limit),
     enabled: !hasSearchTerm,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  const { data: search } = useQuery({
+  const {
+    data: search,
+    isLoading: searchLoading,
+    isFetching: searchFetching,
+  } = useQuery({
     queryKey: ["favouritesSearch", searchTerm, currentPage, limit],
     queryFn: () => fetchSearchResults(apiUrl, searchTerm, currentPage, limit),
     enabled: hasSearchTerm,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
+  useEffect(() => {
+    if (!favLoading) {
+      const timer = setTimeout(() => setShowSkeleton(false), 500); // minimum display time
+      return () => clearTimeout(timer);
+    } else {
+      setShowSkeleton(true);
+    }
+  }, [favLoading]);
+
   // ==============================
-  // Favourite status update
+  // Update favourite status
   // ==============================
   async function updateFavouriteStatus(id, newStatus) {
     try {
-      const response = await fetch(`${apiUrl}/update/${id}`, {
+      const res = await fetch(`${apiUrl}/update/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ favourite_status: newStatus }),
         credentials: "include",
       });
-      if (!response.ok) throw new Error("Failed to update status");
-      return await response.json();
-    } catch (error) {
-      console.error("Update error:", error);
+      if (!res.ok) throw new Error("Failed to update");
+      return await res.json();
+    } catch (err) {
+      console.error("Update error:", err);
     }
   }
 
-  async function handleUpdate(id, newStatus) {
-    await updateFavouriteStatus(id, newStatus);
-    queryClient.invalidateQueries(["favourites"]);
-    queryClient.invalidateQueries(["favouritesSearch"]);
-    queryClient.invalidateQueries(["favStatus"]);
+  const mutation = useMutation({
+    mutationFn: ({ id, newStatus }) => updateFavouriteStatus(id, newStatus),
+
+    // 1. Immediately update the UI
+    onMutate: async ({ id, newStatus }) => {
+      // Cancel outgoing refetches for the related queries
+      await queryClient.cancelQueries(["contacts"]);
+      await queryClient.cancelQueries(["search"]);
+
+      // Snapshot previous data to roll back if needed
+      const previousContacts = queryClient.getQueryData(["contacts"]);
+      const previousSearch = queryClient.getQueryData(["search"]);
+
+      // Optimistically update contacts
+      queryClient.setQueryData(["contacts"], (old) =>
+        old?.map((contact) =>
+          contact.id === id ? { ...contact, favourite: newStatus } : contact
+        )
+      );
+
+      // Optimistically update search results, if needed
+      queryClient.setQueryData(["search"], (old) =>
+        old?.map((contact) =>
+          contact.id === id ? { ...contact, favourite: newStatus } : contact
+        )
+      );
+
+      return { previousContacts, previousSearch };
+    },
+
+    // 2. Roll back if request fails
+    onError: (_err, _vars, context) => {
+      if (context?.previousContacts) {
+        queryClient.setQueryData(["contacts"], context.previousContacts);
+      }
+      if (context?.previousSearch) {
+        queryClient.setQueryData(["search"], context.previousSearch);
+      }
+    },
+
+    // 3. Re-sync in background (but non-invasive!)
+    onSettled: () => {
+      queryClient.invalidateQueries(["contacts"]);
+      queryClient.invalidateQueries(["search"]);
+    },
+  });
+
+  function handleUpdate(id, newStatus) {
+    mutation.mutate({ id, newStatus });
   }
 
   // ==============================
@@ -164,51 +277,64 @@ function Favourites() {
     ? search?.totalPages
     : favourites?.totalPages;
 
-  let Cards;
-  if (results && results.length > 0) {
-    Cards = results.map((item) => (
-      <ContactCard
-        key={item.id}
-        id={item.id}
-        firstName={item.first_name}
-        otherNames={item.other_names}
-        phoneNumber={item.phone_number}
-        imageURL={item.image_url}
-        favouriteStatus={item.favourite_status}
-        onUpdate={handleUpdate}
-        darkMode={darkMode}
-        onViewClick={() => {
-          setSelectedContact(item.id);
-          setActiveModal("detail");
-        }}
-      />
-    ));
-  } else if (!hasSearchTerm) {
-    Cards = (
-      <p
-        className={
-          darkMode
-            ? styles.emptyDirectoryContainerDarkmode
-            : styles.emptyDirectoryContainerLightmode
-        }
-      >
-        No favourites yet.
-      </p>
-    );
-  } else {
-    Cards = null;
+  let Cards = null;
+
+  if (!favLoading) {
+    if (results && results.length > 0) {
+      Cards = results.map((item, index, array) => (
+        <React.Fragment key={item.id || index}>
+          <ContactCard
+            id={item.id}
+            firstName={item.first_name}
+            otherNames={item.other_names}
+            phoneNumber={item.phone_number}
+            imageURL={item.image_url}
+            favouriteStatus={item.favourite_status}
+            onUpdate={handleUpdate}
+            darkMode={darkMode}
+            onViewClick={() => {
+              setSelectedContact(item.id);
+              setActiveModal("detail");
+            }}
+          />
+          {index !== array.length - 1 && <hr className={styles.Hr1} />}
+        </React.Fragment>
+      ));
+    } else {
+      Cards = (
+        <p
+          className={
+            darkMode
+              ? styles.emptyDirectoryContainerDarkmode
+              : styles.emptyDirectoryContainerLightmode
+          }
+        >
+          No favourites yet.
+        </p>
+      );
+    }
   }
 
   // ==============================
-  // Body background
+  // Bg styling
   // ==============================
   useEffect(() => {
     const BodyBgStyle = darkMode
       ? "body1-style-darkmode"
       : "body1-style-lightmode";
+
+    document.body.classList.remove(
+      "body1-style-darkmode",
+      "body1-style-lightmode"
+    );
+
     document.body.classList.add(BodyBgStyle);
+
     return () => {
-      document.body.classList.remove(BodyBgStyle);
+      document.body.classList.remove(
+        "body1-style-darkmode",
+        "body1-style-lightmode"
+      );
     };
   }, [darkMode]);
 
@@ -217,23 +343,29 @@ function Favourites() {
   // ==============================
   return (
     <HydrationBoundary state={dehydratedState}>
-      <>
-        <Sidebar darkMode={darkMode} favStatus={favStatus?.exists_status} />
+      <div className={styles.layout}>
+        <Sidebar favStatus={favStatus?.exists_status} />
 
         <main className={styles.mainContainer}>
-          <section className={styles.cardGrid}>{Cards}</section>
+          <section className={styles.cardGrid}>
+            {showSkeleton
+              ? Array.from({ length: 15 }).map((_, i) => (
+                  <SkeletonContactCard key={i} />
+                ))
+              : Cards}
+          </section>
 
-          {results && results.length > 0 && (
+          {!favLoading && results && results.length > 0 && (
             <div className={styles.pageNav}>
               <button
                 className={styles.previous}
                 aria-disabled={currentPage === 1}
                 onClick={() => {
-                  setSearchParams((prevParams) => {
-                    const newParams = new URLSearchParams(prevParams);
-                    newParams.set("page", currentPage - 1);
-                    newParams.set("limit", limit);
-                    return newParams;
+                  setSearchParams((prev) => {
+                    const params = new URLSearchParams(prev);
+                    params.set("page", currentPage - 1);
+                    params.set("limit", limit);
+                    return params;
                   });
                 }}
               >
@@ -252,13 +384,13 @@ function Favourites() {
 
               <button
                 className={styles.next}
-                aria-disabled={currentPage === totalPages || totalPages === 0}
+                aria-disabled={currentPage === totalPages}
                 onClick={() => {
-                  setSearchParams((prevParams) => {
-                    const newParams = new URLSearchParams(prevParams);
-                    newParams.set("page", currentPage + 1);
-                    newParams.set("limit", limit);
-                    return newParams;
+                  setSearchParams((prev) => {
+                    const params = new URLSearchParams(prev);
+                    params.set("page", currentPage + 1);
+                    params.set("limit", limit);
+                    return params;
                   });
                 }}
               >
@@ -270,50 +402,28 @@ function Favourites() {
           {/* ==================== Modals ==================== */}
           <AnimatePresence>
             {activeModal === "detail" && (
-              <DetailCardModal
-                contactId={selectedContact}
-                darkMode={darkMode}
-                onClose={() => setActiveModal(null)}
-                onEdit={() => setActiveModal("update")}
-                onDelete={() => setActiveModal("delete")}
-              />
+              <DetailCardModal contactId={selectedContact} />
             )}
-
             {activeModal === "update" && (
-              <UpdateFormModal
-                contactId={selectedContact}
-                closeModal={() => setActiveModal(null)}
-                backToDetail={() => setActiveModal("detail")}
-              />
+              <UpdateFormModal contactId={selectedContact} />
             )}
-
-            {activeModal === "delete" && (
-              <DeleteConfirmModal
-                closeModal={() => setActiveModal(null)}
-                onConfirm={() => setActiveModal(null)}
-                backToDetail={() => setActiveModal("detail")}
-                activeModal={activeModal}
-              />
+            {activeModal === "delete" && <DeleteConfirmModal />}
+            {activeModal === "logout" && <LogoutConfirmModal />}
+            {activeModal === "create" && <CreateContactModal />}
+            {activeModal === "mobilesidebar" && (
+              <MobileSidebarModal favStatus={favStatus?.exists_status} />
             )}
-
-            {headerActiveModal === "logout" && (
-              <LogoutConfirmModal
-                closeModal={() => setHeaderActiveModal(null)}
-                onConfirm={() => setHeaderActiveModal(null)}
-                onLogout={() => setHeaderActiveModal("logout")}
-                headerActiveModal={headerActiveModal}
-              />
+            {activeModal === "mobileprofile" && <MobileProfileModal />}
+            {activeModal === "mobileNotification" && (
+              <MobileNotificationModal />
             )}
-
-            {headerActiveModal === "create" && (
-              <CreateContactModal
-                setHeaderActiveModal={setHeaderActiveModal}
-                darkMode={darkMode}
-              />
+            {activeModal === "tabletNotification" && (
+              <TabletNotificationModal />
             )}
+            {activeModal === "tabletProfile" && <TabletProfileModal />}
           </AnimatePresence>
         </main>
-      </>
+      </div>
     </HydrationBoundary>
   );
 }

@@ -1,9 +1,11 @@
 import { useRef, useState } from "react";
+import { useDarkMode } from "../../context/DarkModeContext";
 import styles from "./OtpInput.module.css";
 
 const OtpInput = ({ length = 6, onChange }) => {
   const [otp, setOtp] = useState(Array(length).fill(""));
   const inputsRef = useRef([]);
+  const { darkMode } = useDarkMode();
 
   const handleChange = (value, index) => {
     if (!/^[0-9]?$/.test(value)) return;
@@ -41,7 +43,11 @@ const OtpInput = ({ length = 6, onChange }) => {
   };
 
   return (
-    <div onPaste={handlePaste} className={styles.container}>
+    <div
+      data-darkmode={darkMode}
+      onPaste={handlePaste}
+      className={styles.container}
+    >
       {otp.map((digit, index) => (
         <input
           key={index}

@@ -13,6 +13,10 @@
   z-index: 3000;
 }
 
+html[data-darkmode="true"] .modalOverlay {
+  background-color: rgba(18, 18, 18, 0.8);
+}
+
 @supports not (height: 100dvh) {
   .modalOverlay {
     height: 100vh;
@@ -29,6 +33,11 @@
   text-align: center;
 }
 
+html[data-darkmode="true"] .modalContainer {
+  background-color: #1e1e1e;
+  color: white;
+}
+
 .modalTitle {
   font-size: 1.4rem;
   font-weight: 700;
@@ -36,10 +45,18 @@
   margin-bottom: 10px;
 }
 
+html[data-darkmode="true"] .modalTitle {
+  color: #f5f5f5;
+}
+
 .modalMessage {
   font-size: 0.95rem;
   color: #555;
   margin-bottom: 20px;
+}
+
+html[data-darkmode="true"] .modalMessage {
+  color: #cccccc;
 }
 
 .cancelBtn {
@@ -53,8 +70,17 @@
   transition: background-color 0.2s ease;
 }
 
+html[data-darkmode="true"] .cancelBtn {
+  background-color: #2a2a2a;
+  color: #f5f5f5;
+}
+
 .cancelBtn:hover {
   background-color: #d0d3d8;
+}
+
+html[data-darkmode="true"] .cancelBtn:hover {
+  background-color: #3a3a3a;
 }
 
 .logoutBtn {
@@ -68,7 +94,16 @@
   transition: background-color 0.2s ease;
 }
 
+html[data-darkmode="true"] .logoutBtn {
+  background-color: #0d47a1;
+  color: #ffffff;
+}
+
 .logoutBtn:hover {
+  background-color: #1565c0;
+}
+
+html[data-darkmode="true"] .logoutBtn:hover {
   background-color: #1565c0;
 }
 

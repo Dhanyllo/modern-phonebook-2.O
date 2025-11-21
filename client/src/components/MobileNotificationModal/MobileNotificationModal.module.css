@@ -11,6 +11,10 @@
   z-index: 2000;
 }
 
+html[data-darkmode="true"] .modalOverlay {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
 @supports not (height: 100dvh) {
   .modalOverlay {
     height: 100vh;
@@ -28,6 +32,11 @@
   flex-direction: column;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   overflow: auto;
+}
+
+html[data-darkmode="true"] .mainContainer {
+  background-color: #1e1e1e;
+  color: white;
 }
 
 .modalClose {
@@ -66,6 +75,12 @@
   border-radius: 10px;
   overflow: auto;
   scroll-behavior: smooth;
+}
+
+html[data-darkmode="true"] .notificationContainer {
+  background-color: #1e1e1e;
+  border: 1px solid #1e1e1e;
+  color: white;
 }
 
 .notificationField {

@@ -11,6 +11,10 @@
   z-index: 2010;
 }
 
+html[data-darkmode="true"] .modalOverlay {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
 @supports not (height: 100dvh) {
   .modalOverlay {
     height: 100vh;
@@ -32,6 +36,11 @@
   overflow-y: scroll;
 }
 
+html[data-darkmode="true"] .mainContainer {
+  background-color: #1e1e1e;
+  color: white;
+}
+
 .btnContainer {
   width: 100%;
   display: flex;
@@ -47,9 +56,18 @@
   background: transparent;
   border: none;
   cursor: pointer;
+  color: black;
+}
+
+html[data-darkmode="true"] .backBtn {
+  color: white;
 }
 
 .backBtn:hover {
+  color: rgba(255, 0, 0, 0.5);
+}
+
+html[data-darkmode="true"] .backBtn:hover {
   color: rgba(255, 0, 0, 0.5);
 }
 
@@ -85,6 +103,16 @@
   border-radius: 80px;
 }
 
+hr {
+  border: none;
+  border-top: 1px solid #d1d5db;
+  margin: 15px 0;
+}
+
+html[data-darkmode="true"] hr {
+  border-top: 1px solid #3f3f46;
+}
+
 .title {
   margin-bottom: 20px;
 }
@@ -103,16 +131,45 @@
   font-weight: thin;
   color: #515b6f;
 }
+
+.optionalTag {
+  color: black;
+}
+
+html[data-darkmode="true"] .optionalTag {
+  color: #e5e7eb;
+}
+
+html[data-darkmode="true"] .text1,
+html[data-darkmode="true"] .text2 {
+  color: #e5e7eb;
+}
+
+html[data-darkmode="true"] .text3 {
+  color: #9ca3af;
+}
+
 .text4 {
   color: #202430;
   font-weight: 700;
 }
+
+html[data-darkmode="true"] .text4 {
+  color: #e4e4e7;
+}
+
 .text5 {
   color: #a8adb7;
 }
+
 .text6 {
   color: #7c8493;
 }
+
+html[data-darkmode="true"] .text6 {
+  color: #c5c5d0;
+}
+
 .text7 {
   font-weight: 700;
   color: red;
@@ -179,6 +236,10 @@
   background-color: rgb(231, 231, 231);
 }
 
+html[data-darkmode="true"] .contactImageStyle:hover {
+  background-color: #2f2f2f;
+}
+
 .fileBtn {
   display: none;
 }
@@ -219,6 +280,35 @@
   box-shadow: none;
 }
 
+html[data-darkmode="true"] .layer1 input {
+  background-color: #2a2a2a;
+  color: white;
+}
+
+html[data-darkmode="true"] input:-webkit-autofill,
+html[data-darkmode="true"] input:-webkit-autofill:hover,
+html[data-darkmode="true"] input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #2a2a2a inset !important;
+  -webkit-text-fill-color: white !important;
+  caret-color: white;
+  border: 1px solid white !important;
+  transition: border-color 0.2s ease;
+}
+
+input:-webkit-autofill {
+  animation: autofillFix 0s forwards;
+}
+
+@keyframes autofillFix {
+  100% {
+    background-color: #2a2a2a;
+  }
+}
+
+html[data-darkmode="true"] .layer1 input::placeholder {
+  color: #a1a1a1;
+}
+
 .layer1 input:focus {
   outline: none;
   border: 2px solid #2684ff;
@@ -245,6 +335,15 @@
   box-shadow: none;
 }
 
+html[data-darkmode="true"] .layer2 input {
+  background-color: #2a2a2a;
+  color: white;
+}
+
+html[data-darkmode="true"] .layer2 input::placeholder {
+  color: #a1a1a1;
+}
+
 .layer2 input:focus {
   outline: none;
   border: 2px solid #2684ff;
@@ -254,6 +353,10 @@
 label {
   font-weight: 700;
   color: #515b6f;
+}
+
+html[data-darkmode="true"] label {
+  color: #e5e7eb;
 }
 
 .phoneContainer {
@@ -285,6 +388,34 @@ label {
 
 .phoneInput:focus {
   outline: none;
+}
+
+/* Flag button background */
+:global(
+    html[data-darkmode="true"]
+      .react-international-phone-country-selector-button
+  ),
+:global(
+    html[data-darkmode="true"]
+      .react-international-phone-country-selector__button
+  ) {
+  background-color: #2a2a2a !important;
+  border-color: #444 !important;
+  color: white !important;
+}
+
+/* Dropdown Container */
+:global(
+    html[data-darkmode="true"]
+      .react-international-phone-country-selector-dropdown
+  ),
+:global(
+    html[data-darkmode="true"]
+      .react-international-phone-country-selector__dropdown
+  ) {
+  background-color: #2a2a2a !important;
+  color: #e0e0e0 !important;
+  border-color: #444 !important;
 }
 
 .selectValue {

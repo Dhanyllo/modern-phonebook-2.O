@@ -1,5 +1,6 @@
 import { Form } from "react-router-dom";
 import styles from "./ChangePassword.module.css";
+import { useDarkMode } from "../../context/DarkModeContext";
 
 export const changePasswordAction = async ({ request }) => {
   const formData = await request.formData();
@@ -28,8 +29,10 @@ export const changePasswordAction = async ({ request }) => {
 };
 
 const ChangePassword = () => {
+  const { darkMode } = useDarkMode();
+
   return (
-    <div className={styles.page}>
+    <div data-darkmode={darkMode} className={styles.page}>
       <div className={styles.card}>
         <h2 className={styles.title}>Change Password</h2>
 

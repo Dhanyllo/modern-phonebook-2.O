@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
-import styles from "./LogoutConfirmModal.module.css";
 import { useUI } from "../../context/UIContext";
+import { useDarkMode } from "../../context/DarkModeContext";
+import styles from "./LogoutConfirmModal.module.css";
 
 const modalVariants = {
   hidden: { opacity: 0, scale: 0.9, y: 20 },
@@ -22,6 +23,7 @@ const modalVariants = {
 
 const LogoutConfirmModal = () => {
   const { activeModal, setActiveModal } = useUI();
+  const darkmode = useDarkMode();
 
   const closeModal = () => setActiveModal(null);
   const onConfirm = () => setActiveModal(null);

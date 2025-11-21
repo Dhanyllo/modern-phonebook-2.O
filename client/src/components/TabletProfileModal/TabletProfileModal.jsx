@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
-import { useUI } from "../../context/UIContext";
 import { Link } from "react-router-dom";
 import { BsBrightnessHigh } from "react-icons/bs";
 import { TfiHelpAlt } from "react-icons/tfi";
 import { FiFlag, FiLogOut } from "react-icons/fi";
 import { GrUpdate, GrDocumentVerified } from "react-icons/gr";
+import { useUI } from "../../context/UIContext";
 import { useDarkMode } from "../../context/DarkModeContext";
 import styles from "./TabletProfileModal.module.css";
 
