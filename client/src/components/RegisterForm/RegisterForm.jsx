@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Form, Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { GoogleButton } from "../../components/GoogleButton/GoogleButton";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import styles from "./RegisterForm.module.css";
 
 const RegisterForm = () => {

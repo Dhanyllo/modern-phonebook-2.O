@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { RiContactsBookFill } from "react-icons/ri";
 import { FaHeart } from "react-icons/fa6";
 import { useNavigation } from "react-router-dom";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import styles from "./Sidebar.module.css";
 
 function Sidebar({ favStatus }) {

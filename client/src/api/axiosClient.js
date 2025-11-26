@@ -2,6 +2,8 @@ import axios from "axios";
 
 axios.defaults.withCredentials = true;
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 let isRefreshing = false;
 let failedQueue = [];
 
@@ -26,7 +28,7 @@ axios.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await axios.get("http://localhost:5000/api/refresh-token", {
+        await axios.post(`${apiUrl}/api/refresh-token`, {
           withCredentials: true,
         });
 

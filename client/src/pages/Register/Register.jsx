@@ -1,6 +1,6 @@
 import AuthSidePanel from "../../components/AuthSidePanel/AuthSidePanel";
 import RegisterForm from "../../components/RegisterForm/RegisterForm";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import styles from "./Register.module.css";
 
 // --- Action function for the form ---

@@ -6,7 +6,7 @@ import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import CreatableSelect from "react-select/creatable";
 import { useUI } from "../../context/UIContext";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import { darkSelectStyles } from "../../theme/select/darkSelectStyles";
 import { lightSelectStyles } from "../../theme/select/lightSelectStyles";
 import styles from "./CreateContactModal.module.css";

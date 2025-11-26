@@ -11,7 +11,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { FiFlag, FiLogOut } from "react-icons/fi";
 import { GrUpdate, GrDocumentVerified } from "react-icons/gr";
 import { isTablet } from "react-device-detect";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useUI } from "../../context/UIContext";
 import styles from "./HeaderNormal.module.css";

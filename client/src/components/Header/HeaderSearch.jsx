@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import { IoIosSearch } from "react-icons/io";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import { useUI } from "../../context/UIContext";
 import styles from "./HeaderSearch.module.css";
 

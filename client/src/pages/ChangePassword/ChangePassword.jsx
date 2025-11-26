@@ -1,6 +1,6 @@
 import { Form } from "react-router-dom";
 import styles from "./ChangePassword.module.css";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 
 export const changePasswordAction = async ({ request }) => {
   const formData = await request.formData();

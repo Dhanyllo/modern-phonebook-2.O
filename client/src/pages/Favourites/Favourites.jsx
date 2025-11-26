@@ -15,83 +15,22 @@ import SkeletonContactCard from "../../components/SkeletonContactCard/SkeletonCo
 import { useLoaderData, useSearchParams, redirect } from "react-router-dom";
 
 import {
-  QueryClient,
   useQuery,
   useMutation,
   useQueryClient,
   dehydrate,
   HydrationBoundary,
 } from "@tanstack/react-query";
-
+import { queryClient as globalQueryClient } from "../../queryClient";
 import { AnimatePresence } from "framer-motion";
-import { checkAuthStatus } from "../../utils";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { checkAuthStatus } from "../../api/checkAuthStatus";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import { useUI } from "../../context/UIContext";
+import { fetchFavourites } from "../../api/fetchFavourites";
+import { fetchFavStatus } from "../../api/fetchFavStatus";
+import { fetchSearchResults } from "../../api/fetchFavSearchResults";
+import { updateFavouriteStatus } from "../../api/updateFavouriteStatus";
 import styles from "./Favourites.module.css";
-
-// ==============================
-// Data fetching helpers
-// ==============================
-async function fetchFavStatus(apiUrl) {
-  const res = await fetch(`${apiUrl}/favstatus`, { credentials: "include" });
-
-  if (res.status === 401) {
-    const error = new Error("Not authenticated");
-    error.status = 401;
-    throw error;
-  }
-
-  if (!res.ok) {
-    const error = new Error("Failed to fetch fav status");
-    error.status = res.status;
-    throw error;
-  }
-
-  return res.json();
-}
-
-async function fetchFavourites(apiUrl, page, limit) {
-  const res = await fetch(`${apiUrl}/favourites?page=${page}&limit=${limit}`, {
-    credentials: "include",
-  });
-
-  if (res.status === 401) {
-    const error = new Error("Not authenticated");
-    error.status = 401;
-    throw error;
-  }
-
-  if (!res.ok) {
-    const error = new Error("Failed to fetch favourites");
-    error.status = res.status;
-    throw error;
-  }
-
-  return res.json();
-}
-
-async function fetchSearchResults(apiUrl, searchTerm, page, limit) {
-  const encoded = encodeURIComponent(searchTerm);
-
-  const res = await fetch(
-    `${apiUrl}/search/favourites?searchParams=${encoded}&page=${page}&limit=${limit}`,
-    { credentials: "include" }
-  );
-
-  if (res.status === 401) {
-    const error = new Error("Not authenticated");
-    error.status = 401;
-    throw error;
-  }
-
-  if (!res.ok) {
-    const error = new Error("Failed to fetch results");
-    error.status = res.status;
-    throw error;
-  }
-
-  return res.json();
-}
 
 // ==============================
 // Loader
@@ -108,27 +47,25 @@ export async function loader({ request }) {
   const page = parseInt(url.searchParams.get("page") || "1");
   const limit = parseInt(url.searchParams.get("limit") || "15");
 
-  const queryClient = new QueryClient();
-
-  await queryClient.prefetchQuery({
+  await globalQueryClient.prefetchQuery({
     queryKey: ["favStatus"],
     queryFn: () => fetchFavStatus(apiUrl),
   });
 
   if (searchTerm) {
-    await queryClient.prefetchQuery({
+    await globalQueryClient.prefetchQuery({
       queryKey: ["favouritesSearch", searchTerm, page, limit],
       queryFn: () => fetchSearchResults(apiUrl, searchTerm, page, limit),
     });
   } else {
-    await queryClient.prefetchQuery({
+    await globalQueryClient.prefetchQuery({
       queryKey: ["favourites", page, limit],
       queryFn: () => fetchFavourites(apiUrl, page, limit),
     });
   }
 
   return {
-    dehydratedState: dehydrate(queryClient),
+    dehydratedState: dehydrate(globalQueryClient),
     apiUrl,
   };
 }
@@ -201,28 +138,15 @@ function Favourites() {
   }, [favLoading]);
 
   // ==============================
-  // Update favourite status
+  // Favourite Update
   // ==============================
-  async function updateFavouriteStatus(id, newStatus) {
-    try {
-      const res = await fetch(`${apiUrl}/update/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ favourite_status: newStatus }),
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to update");
-      return await res.json();
-    } catch (err) {
-      console.error("Update error:", err);
-    }
-  }
 
   const mutation = useMutation({
-    mutationFn: ({ id, newStatus }) => updateFavouriteStatus(id, newStatus),
+    mutationFn: ({ apiUrl, id, newStatus }) =>
+      updateFavouriteStatus(apiUrl, id, newStatus),
 
     // 1. Immediately update the UI
-    onMutate: async ({ id, newStatus }) => {
+    onMutate: async ({ apiUrl, id, newStatus }) => {
       // Cancel outgoing refetches for the related queries
       await queryClient.cancelQueries(["contacts"]);
       await queryClient.cancelQueries(["search"]);
@@ -249,12 +173,15 @@ function Favourites() {
     },
 
     // 2. Roll back if request fails
-    onError: (_err, _vars, context) => {
+    onError: (error, _vars, context) => {
       if (context?.previousContacts) {
         queryClient.setQueryData(["contacts"], context.previousContacts);
       }
       if (context?.previousSearch) {
         queryClient.setQueryData(["search"], context.previousSearch);
+      }
+      if (error.status === 401) {
+        window.location.href = "/login";
       }
     },
 
@@ -265,8 +192,8 @@ function Favourites() {
     },
   });
 
-  function handleUpdate(id, newStatus) {
-    mutation.mutate({ id, newStatus });
+  function handleUpdate(apiUrl, id, newStatus) {
+    mutation.mutate({ apiUrl, id, newStatus });
   }
 
   // ==============================

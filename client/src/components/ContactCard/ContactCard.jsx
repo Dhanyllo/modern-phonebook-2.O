@@ -1,6 +1,6 @@
 import { FaHeart } from "react-icons/fa6";
 import styles from "./ContactCard.module.css";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { RiArrowRightSLine } from "react-icons/ri";
 
@@ -14,6 +14,7 @@ function ContactCard({
   onViewClick,
 }) {
   const { darkMode } = useDarkMode();
+  const apiUrl = import.meta.env.VITE_API_URL;
   const { isMobile, isTablet, isDesktop } = useBreakpoint();
 
   const firstLetter = firstName.charAt(0);
@@ -40,7 +41,7 @@ function ContactCard({
       <div className={styles.btnLayer}>
         <button
           className={styles.favBtn}
-          onClick={() => onUpdate(id, !favouriteStatus)}
+          onClick={() => onUpdate(apiUrl, id, !favouriteStatus)}
         >
           <FaHeart style={favouriteStyle} className={styles.heartIcon} />
         </button>

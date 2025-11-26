@@ -5,7 +5,8 @@ import {
   Route,
   Outlet,
 } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./queryClient";
 import { DarkModeProvider } from "./context/DarkModeContext";
 import { UIProvider } from "./context/UIContext";
 
@@ -30,28 +31,6 @@ import ChangePassword, {
 import NavigationProgress from "./components/NavigationProgressBar/NavigationProgress";
 
 export default function App() {
-  // Setup React Query
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-        // This catches expired token cases
-        onError: (error) => {
-          if (error?.status === 401 || error?.message === "Not authenticated") {
-            window.location.href = "/login";
-          }
-        },
-      },
-      mutations: {
-        onError: (error) => {
-          if (error?.status === 401) {
-            window.location.href = "/login";
-          }
-        },
-      },
-    },
-  });
-
   // Define routes here
   const router = createBrowserRouter(
     createRoutesFromElements(

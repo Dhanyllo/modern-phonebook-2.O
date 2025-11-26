@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 import { useUI } from "../../context/UIContext";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { logoutUser } from "../../api/logoutUser";
+import { useNavigate } from "react-router-dom";
 import styles from "./LogoutConfirmModal.module.css";
 
 const modalVariants = {
@@ -22,12 +23,17 @@ const modalVariants = {
 };
 
 const LogoutConfirmModal = () => {
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const { activeModal, setActiveModal } = useUI();
-  const darkmode = useDarkMode();
-
+  const navigate = useNavigate();
   const closeModal = () => setActiveModal(null);
-  const onConfirm = () => setActiveModal(null);
-  const onLogout = () => setActiveModal("logout");
+
+  const handleLogout = async (apiUrl) => {
+    const result = await logoutUser(apiUrl);
+    if (result.success) {
+      navigate("/login");
+    }
+  };
 
   useEffect(() => {
     if (activeModal === "logout") {
@@ -68,7 +74,7 @@ const LogoutConfirmModal = () => {
             className={styles.logoutBtn}
             onClick={(e) => {
               e.stopPropagation();
-              onConfirm();
+              handleLogout(apiUrl);
             }}
           >
             Logout

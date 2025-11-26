@@ -14,82 +14,22 @@ import TabletProfileModal from "../../components/TabletProfileModal/TabletProfil
 import { useSearchParams, useLoaderData, redirect } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import {
-  QueryClient,
   useQuery,
-  useMutation,
   useQueryClient,
+  useMutation,
   dehydrate,
   HydrationBoundary,
 } from "@tanstack/react-query";
-import { checkAuthStatus } from "../../utils";
+import { queryClient as globalQueryClient } from "../../queryClient";
+import { checkAuthStatus } from "../../api/checkAuthStatus";
 import styles from "./Home.module.css";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import { useUI } from "../../context/UIContext";
 import SkeletonContactCard from "../../components/SkeletonContactCard/SkeletonContactCard";
-
-// ==============================
-// Data fetching helpers
-// ==============================
-async function fetchFavStatus(apiUrl) {
-  const res = await fetch(`${apiUrl}/favstatus`, { credentials: "include" });
-
-  if (res.status === 401) {
-    const error = new Error("Not authenticated");
-    error.status = 401;
-    throw error;
-  }
-
-  if (!res.ok) {
-    const error = new Error("Request failed");
-    error.status = res.status;
-    throw error;
-  }
-
-  return res.json();
-}
-
-async function fetchContacts(apiUrl, page, limit) {
-  const res = await fetch(`${apiUrl}?page=${page}&limit=${limit}`, {
-    credentials: "include",
-  });
-
-  if (res.status === 401) {
-    const error = new Error("Not authenticated");
-    error.status = 401;
-    throw error;
-  }
-
-  if (!res.ok) {
-    const error = new Error("Request failed");
-    error.status = res.status;
-    throw error;
-  }
-
-  return res.json();
-}
-
-async function fetchSearchResults(apiUrl, searchTerm, page, limit) {
-  const encodedSearchTerm = encodeURIComponent(searchTerm);
-
-  const res = await fetch(
-    `${apiUrl}/search/home?searchParams=${encodedSearchTerm}&page=${page}&limit=${limit}`,
-    { credentials: "include" }
-  );
-
-  if (res.status === 401) {
-    const error = new Error("Not authenticated");
-    error.status = 401;
-    throw error;
-  }
-
-  if (!res.ok) {
-    const error = new Error("Request failed");
-    error.status = res.status;
-    throw error;
-  }
-
-  return res.json();
-}
+import { fetchContacts } from "../../api/fetchContacts";
+import { fetchFavStatus } from "../../api/fetchFavStatus";
+import { fetchSearchResults } from "../../api/fetchHomeSearchResults";
+import { updateFavouriteStatus } from "../../api/updateFavouriteStatus";
 
 // ==============================
 // Loader with React Query hydration
@@ -107,27 +47,25 @@ export async function loader({ request }) {
   const page = parseInt(url.searchParams.get("page") || "1");
   const limit = parseInt(url.searchParams.get("limit") || "15");
 
-  const queryClient = new QueryClient();
-
-  await queryClient.prefetchQuery({
+  await globalQueryClient.prefetchQuery({
     queryKey: ["favStatus"],
     queryFn: () => fetchFavStatus(apiUrl),
   });
 
   if (searchTerm) {
-    await queryClient.prefetchQuery({
+    await globalQueryClient.prefetchQuery({
       queryKey: ["search", searchTerm, page, limit],
       queryFn: () => fetchSearchResults(apiUrl, searchTerm, page, limit),
     });
   } else {
-    await queryClient.prefetchQuery({
+    await globalQueryClient.prefetchQuery({
       queryKey: ["contacts", page, limit],
       queryFn: () => fetchContacts(apiUrl, page, limit),
     });
   }
 
   return {
-    dehydratedState: dehydrate(queryClient),
+    dehydratedState: dehydrate(globalQueryClient),
     apiUrl,
   };
 }
@@ -140,12 +78,9 @@ function Home() {
   const { darkMode } = useDarkMode();
   const { activeModal, setActiveModal } = useUI();
   const [showSkeleton, setShowSkeleton] = useState(false);
-
   const [selectedContact, setSelectedContact] = useState("");
-
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
-
   const currentPage = parseInt(searchParams.get("page")) || 1;
   const limit = 15;
   const searchTerm = searchParams.get("searchParams") || "";
@@ -203,28 +138,13 @@ function Home() {
   // ==============================
   // Favourite Update
   // ==============================
-  async function updateFavouriteStatus(id, newStatus) {
-    try {
-      const response = await fetch(`${apiUrl}/update/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ favourite_status: newStatus }),
-        credentials: "include",
-      });
-
-      if (!response.ok) throw new Error("Failed to update status");
-
-      return await response.json();
-    } catch (error) {
-      console.error("Update error:", error);
-    }
-  }
 
   const mutation = useMutation({
-    mutationFn: ({ id, newStatus }) => updateFavouriteStatus(id, newStatus),
+    mutationFn: ({ apiUrl, id, newStatus }) =>
+      updateFavouriteStatus(apiUrl, id, newStatus),
 
     // 1. Immediately update the UI
-    onMutate: async ({ id, newStatus }) => {
+    onMutate: async ({ apiUrl, id, newStatus }) => {
       // Cancel outgoing refetches for the related queries
       await queryClient.cancelQueries(["contacts"]);
       await queryClient.cancelQueries(["search"]);
@@ -251,12 +171,15 @@ function Home() {
     },
 
     // 2. Roll back if request fails
-    onError: (_err, _vars, context) => {
+    onError: (error, _vars, context) => {
       if (context?.previousContacts) {
         queryClient.setQueryData(["contacts"], context.previousContacts);
       }
       if (context?.previousSearch) {
         queryClient.setQueryData(["search"], context.previousSearch);
+      }
+      if (error.status === 401) {
+        window.location.href = "/login";
       }
     },
 
@@ -267,8 +190,8 @@ function Home() {
     },
   });
 
-  function handleUpdate(id, newStatus) {
-    mutation.mutate({ id, newStatus });
+  function handleUpdate(apiUrl, id, newStatus) {
+    mutation.mutate({ apiUrl, id, newStatus });
   }
 
   // ==============================

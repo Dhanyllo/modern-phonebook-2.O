@@ -1,5 +1,5 @@
 import styles from "./ResetPassword.module.css";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 
 const ResetPassword = () => {
   const { darkMode } = useDarkMode();

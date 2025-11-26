@@ -1,13 +1,13 @@
+import axiosClient from "./axiosClient";
+
 export const checkAuthStatus = async (apiUrl) => {
   try {
-    const res = await fetch(`${apiUrl}/auth/check`, {
-      method: "GET",
-      credentials: "include",
+    const res = await axiosClient.get(`${apiUrl}/auth/check`, {
+      withCredentials: true,
     });
 
-    if (!res.ok) return { redirectToLogin: true };
+    const data = res.data;
 
-    const data = await res.json();
     if (!data.authenticated) return { redirectToLogin: true };
 
     return data;

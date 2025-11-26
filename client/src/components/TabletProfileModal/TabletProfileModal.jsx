@@ -7,7 +7,7 @@ import { TfiHelpAlt } from "react-icons/tfi";
 import { FiFlag, FiLogOut } from "react-icons/fi";
 import { GrUpdate, GrDocumentVerified } from "react-icons/gr";
 import { useUI } from "../../context/UIContext";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import styles from "./TabletProfileModal.module.css";
 
 function TabletProfileModal() {

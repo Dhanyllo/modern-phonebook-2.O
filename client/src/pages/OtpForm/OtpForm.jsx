@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Form } from "react-router-dom";
 import OtpInput from "../../components/OtpInput/OtpInput";
 import styles from "./OtpForm.module.css";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 
 export const otpAction = async ({ request }) => {
   const formData = await request.formData();

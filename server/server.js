@@ -36,7 +36,7 @@ app.use("/", reset_otp);
 app.use("/", refresh_token);
 app.use("/", googleAuth);
 app.use("/", login);
-app.use("/", logout);
+app.use("/api/auth", logout);
 app.use("/", forgot_password);
 
 // Applying verifyJWT for all routes after this point

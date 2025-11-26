@@ -1,5 +1,5 @@
 import styles from "./ForgotPassword.module.css";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import { AiOutlineMail } from "react-icons/ai";
 

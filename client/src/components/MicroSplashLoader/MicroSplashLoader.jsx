@@ -1,5 +1,5 @@
 import styles from "./MicroSplashLoader.module.css";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 
 function MicroSplashLoader() {
   const { darkMode } = useDarkMode();

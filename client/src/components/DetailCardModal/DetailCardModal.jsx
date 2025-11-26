@@ -1,10 +1,13 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 import DetailCard from "../DetailCard/DetailCard";
 import styles from "./DetailCardModal.module.css";
 import { useUI } from "../../context/UIContext";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
+import { updateFavouriteStatus } from "../../api/updateFavouriteStatus";
+import { fetchContactDetails } from "../../api/fetchContactDetails";
+import { fetchOccupations } from "../../api/fetchOccupations";
 
 function DetailCardModal({ contactId }) {
   const darkMode = useDarkMode();
@@ -23,51 +26,71 @@ function DetailCardModal({ contactId }) {
   } = useQuery({
     queryKey: ["contactDetail", contactId],
     queryFn: async () => {
-      const [detailRes, occRes] = await Promise.all([
-        fetch(`${apiUrl}/detail/${contactId}`, { credentials: "include" }),
-        fetch(`${apiUrl}/detail/occupations/${contactId}`, {
-          credentials: "include",
-        }),
-      ]);
-
-      if (!detailRes.ok || !occRes.ok)
-        throw new Error("Failed to fetch contact details");
-
-      const [contactDetails, occupations] = await Promise.all([
-        detailRes.json(),
-        occRes.json(),
-      ]);
-
+      const contactDetails = await fetchContactDetails(apiUrl, contactId);
+      const occupations = await fetchOccupations(apiUrl, contactId);
       return { contactDetails, occupations };
     },
-    enabled: !!contactId, // only run if contactId exists
+    retry: false,
+    enabled: !!contactId,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 
-  // 🧠 Update favourite status with mutation
-  async function updateFavouriteStatus(id, newStatus) {
-    try {
-      const response = await fetch(`${apiUrl}/update/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ favourite_status: newStatus }),
-        credentials: "include",
-      });
+  const mutation = useMutation({
+    mutationFn: ({ apiUrl, id, newStatus }) =>
+      updateFavouriteStatus(apiUrl, id, newStatus),
 
-      if (!response.ok) throw new Error("Failed to update status");
-      return await response.json();
-    } catch (error) {
-      console.error("Update error:", error);
-    }
-  }
+    // 1. Immediately update the UI
+    onMutate: async ({ apiUrl, id, newStatus }) => {
+      // Cancel outgoing refetches for the related queries
+      await queryClient.cancelQueries(["contacts"]);
+      await queryClient.cancelQueries(["search"]);
 
-  async function handleUpdate(id, newStatus) {
-    await updateFavouriteStatus(id, newStatus);
+      // Snapshot previous data to roll back if needed
+      const previousContacts = queryClient.getQueryData(["contacts"]);
+      const previousSearch = queryClient.getQueryData(["search"]);
 
-    // 🔄 Invalidate relevant queries to refresh UI across app
-    queryClient.invalidateQueries(["contacts"]);
-    queryClient.invalidateQueries(["search"]);
-    queryClient.invalidateQueries(["favStatus"]);
-    queryClient.invalidateQueries(["contactDetail", contactId]);
+      // Optimistically update contacts
+      queryClient.setQueryData(["contacts"], (old) =>
+        old?.map((contact) =>
+          contact.id === id ? { ...contact, favourite: newStatus } : contact
+        )
+      );
+
+      // Optimistically update search results, if needed
+      queryClient.setQueryData(["search"], (old) =>
+        old?.map((contact) =>
+          contact.id === id ? { ...contact, favourite: newStatus } : contact
+        )
+      );
+
+      return { previousContacts, previousSearch };
+    },
+
+    // 2. Roll back if request fails
+    onError: (error, _vars, context) => {
+      if (context?.previousContacts) {
+        queryClient.setQueryData(["contacts"], context.previousContacts);
+      }
+      if (context?.previousSearch) {
+        queryClient.setQueryData(["search"], context.previousSearch);
+      }
+      if (error.status === 401) {
+        window.location.href = "/login";
+      }
+    },
+
+    // 3. Re-sync in background
+    onSettled: () => {
+      queryClient.invalidateQueries(["contacts"]);
+      queryClient.invalidateQueries(["search"]);
+      queryClient.invalidateQueries(["favStatus"]);
+      queryClient.invalidateQueries(["contactDetail", contactId]);
+    },
+  });
+
+  function handleUpdate(apiUrl, id, newStatus) {
+    mutation.mutate({ apiUrl, id, newStatus });
   }
 
   if (!contactId) return null;
@@ -84,7 +107,7 @@ function DetailCardModal({ contactId }) {
       {loading ? (
         <div className={styles.spinner}></div>
       ) : isError ? (
-        <div className={styles.error}>Failed to load details.</div>
+        <div className={styles.errorMessage}>Failed to load details.</div>
       ) : detailData ? (
         <DetailCard
           key={detailData.contactDetails.id}

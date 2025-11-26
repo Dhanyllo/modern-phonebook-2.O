@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import styles from "./OtpInput.module.css";
 
 const OtpInput = ({ length = 6, onChange }) => {

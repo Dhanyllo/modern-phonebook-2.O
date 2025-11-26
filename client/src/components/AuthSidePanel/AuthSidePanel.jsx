@@ -1,4 +1,4 @@
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import styles from "./AuthSidePanel.module.css";
 
 const AuthSidePanel = () => {

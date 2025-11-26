@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Form, useNavigate } from "react-router-dom";
 import styles from "./ProfilePage.module.css";
 import { IoIosArrowBack } from "react-icons/io";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 
 export const profileAction = async ({ request }) => {
   const formData = await request.formData();

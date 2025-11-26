@@ -15,6 +15,10 @@ html[data-darkmode="true"] .modalOverlay {
   background-color: rgba(0, 0, 0, 0.8);
 }
 
+html[data-darkmode="true"] .errorMessage {
+  color: white;
+}
+
 @supports not (height: 100dvh) {
   .modalOverlay {
     height: 100vh;

@@ -4,7 +4,7 @@ import { FaHeart } from "react-icons/fa6";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 import { useUI } from "../../context/UIContext";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import { NavLink, useNavigation } from "react-router-dom";
 import styles from "./MobileSidebarModal.module.css";
 

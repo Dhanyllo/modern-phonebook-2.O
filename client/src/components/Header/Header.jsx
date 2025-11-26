@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import HeaderNormal from "./HeaderNormal";
 import HeaderSearch from "./HeaderSearch";
 import { useUI } from "../../context/UIContext";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import styles from "./Header.module.css";
 
 function Header() {

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import ReactDOM from "react-dom";
 import { IoNotifications } from "react-icons/io5";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import { useUI } from "../../context/UIContext";
 import styles from "./TabletNotificationModal.module.css";
 

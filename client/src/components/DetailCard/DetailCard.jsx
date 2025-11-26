@@ -14,11 +14,12 @@ import {
   SiWhatsapp,
   SiGmail,
 } from "react-icons/si";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import styles from "./DetailCard.module.css";
 
 function DetailCard(props) {
   const darkMode = useDarkMode();
+  const apiUrl = import.meta.env.VITE_API_URL;
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.95, y: 20 },
     visible: {
@@ -170,7 +171,11 @@ END:VCARD
               className={styles.favouriteBtn}
               onClick={(e) => {
                 e.stopPropagation();
-                props.handleUpdateFavourite(props.id, !props.favourite_status);
+                props.handleUpdateFavourite(
+                  apiUrl,
+                  props.id,
+                  !props.favourite_status
+                );
               }}
             >
               <FaHeart style={favouriteStyle} className={styles.favIcon} />

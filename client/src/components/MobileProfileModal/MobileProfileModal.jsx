@@ -8,7 +8,7 @@ import { BsBrightnessHigh } from "react-icons/bs";
 import { TfiHelpAlt } from "react-icons/tfi";
 import { FiFlag, FiLogOut } from "react-icons/fi";
 import { GrUpdate, GrDocumentVerified } from "react-icons/gr";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { useDarkMode } from "../../hooks/useDarkmode";
 import styles from "./MobileProfileModal.module.css";
 
 function MobileProfileModal() {
