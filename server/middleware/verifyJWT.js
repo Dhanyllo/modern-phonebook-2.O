@@ -16,7 +16,13 @@ const verifyJWT = (req, res, next) => {
         .json({ authenticated: false, message: "Invalid or expired token" });
     }
 
-    req.user = { id: decoded.id, email: decoded.email };
+    req.user = {
+      id: decoded.id,
+      email: decoded.email,
+      first_name: decoded.first_name,
+      other_names: decoded.other_names,
+    };
+
     console.log("done verifying");
     next();
   });

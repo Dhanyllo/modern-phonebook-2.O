@@ -4,17 +4,29 @@ db = DatabaseConnection();
 
 const getAllFavouriteContacts = async (req, res) => {
   try {
+    const userId = req.user.id; // from JWT middleware
+
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 15;
     const offset = (page - 1) * limit;
 
+    // Fetch favourite contacts for the logged-in user
     const [results] = await db.query(
-      "SELECT id,first_name,other_names,phone_number,image_url,favourite_status FROM contact_profiles WHERE favourite_status = True LIMIT ? OFFSET ?",
-      [limit, offset]
+      `SELECT id, first_name, other_names, phone_number, image_url, favourite_status 
+       FROM contact_profiles 
+       WHERE user_id = ? 
+         AND favourite_status = TRUE
+       LIMIT ? OFFSET ?`,
+      [userId, limit, offset]
     );
 
+    // Count favourites for this user
     const [countResult] = await db.query(
-      `SELECT COUNT(*) AS total FROM contact_profiles WHERE favourite_status = True`
+      `SELECT COUNT(*) AS total 
+       FROM contact_profiles 
+       WHERE user_id = ? 
+         AND favourite_status = TRUE`,
+      [userId]
     );
 
     const totalContacts = countResult[0].total;
@@ -29,62 +41,76 @@ const getAllFavouriteContacts = async (req, res) => {
 
 const searchFavouriteContacts = async (req, res) => {
   try {
+    const userId = req.user.id; // from JWT middleware
+
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 15;
     const offset = (page - 1) * limit;
+
     const searchTerm = decodeURIComponent(
       req.query.searchParams ? req.query.searchParams.toLowerCase() : ""
     );
 
+    const likeTerm = `%${searchTerm}%`;
+
+    // Values for the main search query
     const values = [
-      `%${searchTerm}%`,
-      `%${searchTerm}%`,
+      userId,
+      likeTerm,
+      likeTerm,
       searchTerm,
       searchTerm,
-      `%${searchTerm}%`,
+      likeTerm,
       searchTerm,
       limit,
       offset,
     ];
 
+    // Values for the count query
     const values2 = [
-      `%${searchTerm}%`,
-      `%${searchTerm}%`,
+      userId,
+      likeTerm,
+      likeTerm,
       searchTerm,
       searchTerm,
-      `%${searchTerm}%`,
+      likeTerm,
       searchTerm,
     ];
 
     const query = `
-      SELECT * FROM contact_profiles 
-      WHERE favourite_status = True 
-      AND (
-        LOWER(first_name) LIKE ? 
-        OR LOWER(other_names) LIKE ? 
-        OR SOUNDEX(LOWER(first_name)) = SOUNDEX(?) 
-        OR SOUNDEX(LOWER(other_names)) = SOUNDEX(?) 
-        OR LOWER(CONCAT(first_name, ' ', other_names)) LIKE ? 
-        OR SOUNDEX(LOWER(CONCAT(first_name, ' ', other_names))) = SOUNDEX(?)
-      ) 
+      SELECT *
+      FROM contact_profiles
+      WHERE user_id = ?
+        AND favourite_status = TRUE
+        AND (
+          LOWER(first_name) LIKE ?
+          OR LOWER(other_names) LIKE ?
+          OR SOUNDEX(LOWER(first_name)) = SOUNDEX(?)
+          OR SOUNDEX(LOWER(other_names)) = SOUNDEX(?)
+          OR LOWER(CONCAT(first_name, ' ', other_names)) LIKE ?
+          OR SOUNDEX(LOWER(CONCAT(first_name, ' ', other_names))) = SOUNDEX(?)
+        )
       LIMIT ? OFFSET ?;
     `;
 
     const [results] = await db.query(query, values);
 
-    const [countResult] = await db.query(
-      `SELECT COUNT(*) AS total FROM contact_profiles 
-        WHERE favourite_status = True 
+    const countQuery = `
+      SELECT COUNT(*) AS total
+      FROM contact_profiles
+      WHERE user_id = ?
+        AND favourite_status = TRUE
         AND (
-          LOWER(first_name) LIKE ? 
-          OR LOWER(other_names) LIKE ? 
-          OR SOUNDEX(LOWER(first_name)) = SOUNDEX(?) 
-          OR SOUNDEX(LOWER(other_names)) = SOUNDEX(?) 
-          OR LOWER(CONCAT(first_name, ' ', other_names)) LIKE ? 
+          LOWER(first_name) LIKE ?
+          OR LOWER(other_names) LIKE ?
+          OR SOUNDEX(LOWER(first_name)) = SOUNDEX(?)
+          OR SOUNDEX(LOWER(other_names)) = SOUNDEX(?)
+          OR LOWER(CONCAT(first_name, ' ', other_names)) LIKE ?
           OR SOUNDEX(LOWER(CONCAT(first_name, ' ', other_names))) = SOUNDEX(?)
-        );`,
-      values2
-    );
+        );
+    `;
+
+    const [countResult] = await db.query(countQuery, values2);
 
     const totalContacts = countResult?.[0]?.total || 0;
     const totalPages = Math.ceil(totalContacts / limit);
@@ -98,9 +124,18 @@ const searchFavouriteContacts = async (req, res) => {
 
 const favouriteExistStatus = async (req, res) => {
   try {
+    const userId = req.user.id; // from JWT middleware
+
     const [results] = await db.query(
-      "SELECT EXISTS (SELECT 1 FROM contact_profiles WHERE favourite_status = TRUE) AS exists_status"
+      `SELECT EXISTS (
+          SELECT 1 
+          FROM contact_profiles 
+          WHERE user_id = ?
+            AND favourite_status = TRUE
+        ) AS exists_status`,
+      [userId]
     );
+
     res.status(200).json(results[0]);
   } catch (err) {
     console.error("Database query error:", err);

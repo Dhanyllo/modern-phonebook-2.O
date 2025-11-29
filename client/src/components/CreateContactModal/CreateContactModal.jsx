@@ -5,95 +5,149 @@ import { RiCloseLine } from "react-icons/ri";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import CreatableSelect from "react-select/creatable";
+import { useNavigate } from "react-router-dom";
+
 import { useUI } from "../../context/UIContext";
 import { useDarkMode } from "../../hooks/useDarkmode";
 import { darkSelectStyles } from "../../theme/select/darkSelectStyles";
 import { lightSelectStyles } from "../../theme/select/lightSelectStyles";
+import { createContact } from "../../api/createContact";
+
 import styles from "./CreateContactModal.module.css";
-
-// export async function action({ request }) {
-//   const formData = await request.formData();
-//   const occupationsString = formData.get("occupations");
-//   const occupations = occupationsString ? occupationsString.split(",") : [];
-
-//   console.log("Occupations:", occupations);
-
-//   return null;
-// }
 
 function CreateContactModal() {
   const { setActiveModal } = useUI();
   const { darkMode } = useDarkMode();
-  const [selectedFile, setSelectedFile] = useState(null);
+  const navigate = useNavigate();
+
+  /** -----------------------------
+      FORM DATA STATE
+  ------------------------------ **/
+  const [formData, setFormData] = useState({
+    first_name: "",
+    other_names: "",
+    phone_number: "",
+    email: "",
+    home_address: "",
+    occupations: [],
+    twitter: "",
+    instagram: "",
+    facebook: "",
+    whatsapp: "",
+    linkedin: "",
+    contactImage: null,
+  });
+
+  /** -----------------------------
+      PREVIEW STATE
+  ------------------------------ **/
   const [previewUrl, setPreviewUrl] = useState(null);
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    setSelectedFile(file);
-  };
 
+  /** -----------------------------
+      GENERIC HANDLE CHANGE
+  ------------------------------ **/
+  function handleChange(e) {
+    const { name, value, type, files } = e.target;
+
+    if (type === "file") {
+      const file = files?.[0] || null;
+      setFormData((prev) => ({ ...prev, [name]: file }));
+
+      if (file) {
+        const objectUrl = URL.createObjectURL(file);
+        setPreviewUrl(objectUrl);
+      } else {
+        setPreviewUrl(null);
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  }
+
+  /** -----------------------------
+      HANDLE PHONE NUMBER
+  ------------------------------ **/
+  function handlePhoneChange(value) {
+    setFormData((prev) => ({ ...prev, phone_number: value }));
+  }
+
+  /** -----------------------------
+      HANDLE SELECT (OCCUPATIONS)
+  ------------------------------ **/
+  function handleOccupationSelect(selected) {
+    setFormData((prev) => ({ ...prev, occupations: selected || [] }));
+  }
+
+  /** -----------------------------
+      SUBMIT HANDLER
+  ------------------------------ **/
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    const data = new FormData();
+
+    // Append all text fields
+    for (const key in formData) {
+      if (key === "occupations") continue;
+      data.append(key, formData[key]);
+    }
+
+    // Append occupations
+    formData.occupations.forEach((occ) =>
+      data.append("occupations[]", occ.value)
+    );
+
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const result = await createContact(apiUrl, data);
+
+      if (result.success) {
+        console.log("Contact created successfully!");
+        setActiveModal(null);
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("Create Contact Error:", err.message);
+    }
+  }
+
+  /** -----------------------------
+      CLEANUP OBJECT URL ON UNMOUNT
+  ------------------------------ **/
   useEffect(() => {
-    if (!selectedFile) return;
-
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setPreviewUrl(objectUrl);
-
     return () => {
-      URL.revokeObjectURL(objectUrl);
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
     };
-  }, [selectedFile]);
+  }, [previewUrl]);
 
-  const modalVariants = {
-    hidden: { opacity: 0, scale: 0.95, y: 20 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      transition: { duration: 0.3, ease: "easeOut" },
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.95,
-      y: 20,
-      transition: { duration: 0.3, ease: "easeIn" },
-    },
-  };
-
-  const [occupations, setOccupations] = useState([]);
-
-  const handleChange = (selected) => {
-    setOccupations(selected || []);
-  };
-
+  /** -----------------------------
+      RENDER
+  ------------------------------ **/
   return ReactDOM.createPortal(
     <motion.div
       className={styles.modalOverlay}
-      onClick={(e) => {
-        e.stopPropagation();
-        setActiveModal("null");
-      }}
+      onClick={() => setActiveModal(null)}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.25 }}
     >
       <motion.div
         className={styles.mainContainer}
         onClick={(e) => e.stopPropagation()}
-        variants={modalVariants}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        transition={{ duration: 0.3 }}
       >
+        {/* CLOSE BUTTON */}
         <button
           className={styles.modalClose}
-          onClick={(e) => {
-            e.stopPropagation();
-            setActiveModal("null");
-          }}
+          onClick={() => setActiveModal(null)}
         >
           <RiCloseLine size={24} />
         </button>
 
+        {/* HEADER */}
         <div className={styles.headerContainer}>
           <div className={styles.imgIcon}>
             <img
@@ -113,68 +167,70 @@ function CreateContactModal() {
 
         <hr />
 
+        {/* TITLE */}
         <div className={styles.title}>
-          <div className={styles.text2}>Update this Contact</div>
-          <br />
+          <div className={styles.text2}>Create Contact</div>
           <div className={styles.text6}>
-            The following are required fields to create a contact and will only
-            be shared with Mphone
+            The following are required fields to create a contact.
           </div>
         </div>
 
-        <form className={styles.updateForm}>
+        {/* FORM START */}
+        <form className={styles.updateForm} onSubmit={handleSubmit}>
+          {/* BASIC FIELDS */}
           <div className={styles.layer1}>
             <div className={styles.formLayer1}>
               <label htmlFor="first_name">First Name</label>
               <input
                 placeholder="Enter your first name"
-                type="text"
                 name="first_name"
-                id="first_name"
+                value={formData.first_name}
+                onChange={handleChange}
+                required
               />
             </div>
 
             <div className={styles.formLayer1}>
-              <label htmlFor="other_name">Other Names</label>
+              <label htmlFor="other_names">Other Names</label>
               <input
                 placeholder="Enter your other names"
-                type="text"
-                name="other_name"
-                id="other_name"
+                name="other_names"
+                value={formData.other_names}
+                onChange={handleChange}
+                required
               />
             </div>
 
             <div className={styles.formLayer1}>
-              <label htmlFor="phone_number" className={styles.phoneLabel}>
-                Phone Number
-              </label>
+              <label>Phone Number</label>
               <PhoneInput
-                id="phone_number"
                 defaultCountry="gh"
+                value={formData.phone_number}
+                onChange={handlePhoneChange}
                 inputClassName={styles.phoneInput}
-                menuClassName={styles.darkMenuClass}
                 className={styles.phoneContainer}
                 placeholder="Enter your phone number"
+                required
               />
             </div>
 
             <div className={styles.formLayer1}>
-              <label htmlFor="email">Email Address (Optional)</label>
+              <label>Email (optional)</label>
               <input
-                placeholder="Enter your email address"
-                type="text"
                 name="email"
-                id="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter your email address"
               />
             </div>
 
             <div className={styles.formLayer1}>
-              <label htmlFor="home_address">Home Address (Optional)</label>
+              <label>Home Address (optional)</label>
               <input
                 placeholder="Enter your home address"
-                type="text"
                 name="home_address"
-                id="home_address"
+                value={formData.home_address}
+                onChange={handleChange}
               />
             </div>
 
@@ -182,22 +238,15 @@ function CreateContactModal() {
               <label htmlFor="occupations" className={styles.label}>
                 Current or Previous job title (Optional)
               </label>
-
               <CreatableSelect
                 id="occupations"
                 isMulti
                 isClearable
                 placeholder="Type and press Enter..."
-                onChange={handleChange}
+                onChange={handleOccupationSelect}
                 styles={
                   darkMode ? { ...darkSelectStyles } : { ...lightSelectStyles }
                 }
-              />
-
-              <input
-                type="hidden"
-                name="occupations"
-                value={occupations.map((occ) => occ.value).join(",")}
               />
             </div>
           </div>
@@ -206,6 +255,7 @@ function CreateContactModal() {
           <hr />
           <br />
 
+          {/* LINKS */}
           <div className={styles.text7}>
             LINKS <span className={styles.optionalTag}>(Optional)</span>
           </div>
@@ -213,61 +263,24 @@ function CreateContactModal() {
           <br />
 
           <div className={styles.layer2}>
-            <div className={styles.formLayer1}>
-              <label htmlFor="twitter">Link to Twitter - URL</label>
-              <input
-                placeholder="Enter your Twitter URL"
-                type="text"
-                name="twitter"
-                id="twitter"
-              />
-            </div>
-
-            <div className={styles.formLayer1}>
-              <label htmlFor="instagram">Link to Instagram - URL</label>
-              <input
-                placeholder="Link to Instagram URL"
-                type="text"
-                name="instagram"
-                id="instagram"
-              />
-            </div>
-
-            <div className={styles.formLayer1}>
-              <label htmlFor="facebook">Link to Facebook - URL</label>
-              <input
-                placeholder="Link to Facebook URL"
-                type="text"
-                name="facebook"
-                id="facebook"
-              />
-            </div>
-
-            <div className={styles.formLayer1}>
-              <label htmlFor="whatsapp">Link to Whatsapp - URL</label>
-              <input
-                placeholder="eg. https://wa.me/<Person's Number>"
-                type="text"
-                name="whatsapp"
-                id="whatsapp"
-              />
-            </div>
-
-            <div className={styles.formLayer1}>
-              <label htmlFor="linkedin">Link to LinkedIn - URL</label>
-              <input
-                placeholder="Link to LinkedIn URL"
-                type="text"
-                name="linkedin"
-                id="linkedin"
-              />
-            </div>
+            {["twitter", "instagram", "facebook", "whatsapp", "linkedin"].map(
+              (field) => (
+                <div className={styles.formLayer1} key={field}>
+                  <label>{`Link to ${field} - URL`}</label>
+                  <input
+                    placeholder={`Link to ${field} URL`}
+                    name={field}
+                    value={formData[field]}
+                    onChange={handleChange}
+                  />
+                </div>
+              )
+            )}
           </div>
 
-          <br />
           <hr />
-          <br />
 
+          {/* IMAGE */}
           <div className={`${styles.formLayer1} ${styles.contactImage}`}>
             <div className={styles.text4}>Attach an image for contact</div>
             <label className={styles.contactImageStyle} htmlFor="contactImage">
@@ -280,10 +293,11 @@ function CreateContactModal() {
               name="contactImage"
               id="contactImage"
               accept=".jpg,.jpeg,.png,.webp"
-              onChange={handleFileChange}
+              onChange={handleChange}
             />
           </div>
-          {selectedFile && (
+
+          {previewUrl && (
             <div className={styles.previewContainer}>
               <img
                 src={previewUrl}
@@ -291,20 +305,18 @@ function CreateContactModal() {
                 className={styles.previewImage}
               />
               <div className={styles.fileInfo}>
-                <strong>{selectedFile.name}</strong>
-                <span>{(selectedFile.size / 1024).toFixed(1)} KB</span>
-                {/* <span>{(selectedFile.size / (1024 * 1024)).toFixed(2)} MB</span> */}
+                <strong>{formData.contactImage.name}</strong>
+                <span>{(formData.contactImage.size / 1024).toFixed(1)} KB</span>
+                <span>
+                  {(formData.contactImage.size / (1024 * 1024)).toFixed(2)} MB
+                </span>
               </div>
             </div>
           )}
 
-          <br />
           <hr />
-          <br />
 
-          <button type="submit" className={styles.formButton}>
-            Create Contact
-          </button>
+          <button className={styles.formButton}>Create Contact</button>
         </form>
       </motion.div>
     </motion.div>,

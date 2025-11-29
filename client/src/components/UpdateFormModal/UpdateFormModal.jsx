@@ -12,16 +12,6 @@ import { darkSelectStyles } from "../../theme/select/darkSelectStyles";
 import { lightSelectStyles } from "../../theme/select/lightSelectStyles";
 import styles from "./UpdateFormModal.module.css";
 
-// export async function action({ request }) {
-//   const formData = await request.formData();
-//   const occupationsString = formData.get("occupations");
-//   const occupations = occupationsString ? occupationsString.split(",") : [];
-
-//   console.log("Occupations:", occupations);
-
-//   return null;
-// }
-
 function UpdateFormModal() {
   const { setActiveModal } = useUI();
   const { darkMode } = useDarkMode();
@@ -142,6 +132,7 @@ function UpdateFormModal() {
                 type="text"
                 name="first_name"
                 id="first_name"
+                required
               />
             </div>
 
@@ -150,8 +141,9 @@ function UpdateFormModal() {
               <input
                 placeholder="Enter your other names"
                 type="text"
-                name="other_name"
+                name="other_names"
                 id="other_name"
+                required
               />
             </div>
 
@@ -161,10 +153,12 @@ function UpdateFormModal() {
               </label>
               <PhoneInput
                 id="phone_number"
+                name="phone_number"
                 defaultCountry="gh"
                 inputClassName={styles.phoneInput}
                 className={styles.phoneContainer}
                 placeholder="Enter your phone number"
+                required
               />
             </div>
 
@@ -204,11 +198,14 @@ function UpdateFormModal() {
                 }
               />
 
-              <input
-                type="hidden"
-                name="occupations"
-                value={occupations.map((occ) => occ.value).join(",")}
-              />
+              {occupations.map((occ, idx) => (
+                <input
+                  key={idx}
+                  type="hidden"
+                  name="occupations[]"
+                  value={occ.value}
+                />
+              ))}
             </div>
           </div>
 

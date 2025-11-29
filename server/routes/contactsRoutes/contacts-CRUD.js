@@ -1,4 +1,5 @@
 const express = require("express");
+const upload = require("../../middleware/upload");
 const {
   createContact,
   updateContact,
@@ -7,7 +8,7 @@ const {
 
 const router = express.Router();
 
-router.post("/contacts", createContact); // Create contact
-router.put("/contacts/:id", updateContact); // Update contact
+router.post("/contacts", upload.single("contactImage"), createContact); // Create contact
+router.put("/contacts/:id", upload.single("contactImage"), updateContact); // Update contact
 router.delete("/contacts/:id", deleteContact);
 module.exports = router;

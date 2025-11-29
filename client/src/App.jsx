@@ -15,6 +15,7 @@ import Header from "./components/Header/Header";
 import Error from "./pages/Error";
 import NotFound from "./pages/NotFound";
 import Home, { loader as homeLoader } from "./pages/Home/Home";
+
 import Favourites, {
   loader as favouritesLoader,
 } from "./pages/Favourites/Favourites";
@@ -45,6 +46,7 @@ export default function App() {
       >
         <Route element={<Header />}>
           <Route path="/" element={<Home />} loader={homeLoader} />
+
           <Route
             path="/favourites"
             element={<Favourites />}

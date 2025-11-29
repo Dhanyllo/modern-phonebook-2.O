@@ -1,4 +1,6 @@
 const DatabaseConnection = require("../config/config.js");
+const processAndSaveImage = require("../utils/processImage.js");
+const path = require("path");
 const db = DatabaseConnection();
 
 const createContact = async (req, res) => {
@@ -11,15 +13,32 @@ const createContact = async (req, res) => {
       email,
       home_address,
       favourite_status,
-      image_url,
-      media_handles,
       occupations,
+      twitter,
+      instagram,
+      facebook,
+      whatsapp,
+      linkedin,
     } = req.body;
-    const userId = req.user.id; //comes from JWT middleware
+
+    const media_handles = { twitter, instagram, facebook, whatsapp, linkedin };
+
+    const userId = req.user.id;
+
+    let image_url = null;
+
+    // If file was uploaded, process it
+    if (req.file) {
+      const uploadDir = path.join(__dirname, "../uploads/contacts");
+      image_url = await processAndSaveImage(req.file.buffer, uploadDir);
+
+      // Optional: convert absolute path to a clean URL
+      image_url = image_url.replace(/\\/g, "/");
+    }
 
     await connection.beginTransaction();
 
-    // Insert into contact_profiles
+    // Insert contact
     const [contactResult] = await connection.query(
       `INSERT INTO contact_profiles 
         (first_name, other_names, phone_number, email, home_address, favourite_status, image_url, user_id) 
@@ -38,11 +57,11 @@ const createContact = async (req, res) => {
 
     const contactId = contactResult.insertId;
 
-    // Insert into media_handles (if provided)
+    // Insert media handles
     if (media_handles) {
       await connection.query(
-        `INSERT INTO media_handles (twitter, instagram, facebook, whatsapp, linkedin, contact_id) 
-         VALUES (?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO media_handles (twitter, instagram, facebook, whatsapp, linkedin, contact_id, user_id) 
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
           media_handles.twitter || null,
           media_handles.instagram || null,
@@ -50,16 +69,17 @@ const createContact = async (req, res) => {
           media_handles.whatsapp || null,
           media_handles.linkedin || null,
           contactId,
+          userId,
         ]
       );
     }
 
-    // Insert into occupations (if provided)
+    // Insert occupations
     if (occupations && occupations.length > 0) {
       for (const occupation of occupations) {
         await connection.query(
-          `INSERT INTO occupations (occupation, contact_id) VALUES (?, ?)`,
-          [occupation, contactId]
+          `INSERT INTO occupations (occupation, contact_id, user_id) VALUES (?, ?, ?)`,
+          [occupation, contactId, userId]
         );
       }
     }

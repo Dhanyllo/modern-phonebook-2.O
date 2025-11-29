@@ -31,6 +31,32 @@ import { fetchFavStatus } from "../../api/fetchFavStatus";
 import { fetchSearchResults } from "../../api/fetchHomeSearchResults";
 import { updateFavouriteStatus } from "../../api/updateFavouriteStatus";
 
+//Actions helper function
+// const handleSubmit = async (apiUrl, formData) => {
+//   try {
+//     const result = await createContact(apiUrl, formData);
+//     if (result.success) {
+//       console.log("data added successfully");
+//       return redirect("/");
+//     }
+
+//     return { success: false, message: result.message };
+//   } catch (err) {
+//     return { success: false, message: err.message };
+//   }
+// };
+
+// // =========
+// // Actions
+// // =========
+
+// export async function action({ request }) {
+//   const apiUrl = import.meta.env.VITE_API_URL;
+//   const formData = await request.formData();
+
+//   return await handleSubmit(apiUrl, formData);
+// }
+
 // ==============================
 // Loader with React Query hydration
 // ==============================
