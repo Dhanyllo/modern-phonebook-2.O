@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateContact } from "../../api/updateContact";
+import { useNavigate } from "react-router-dom";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 import { RiCloseLine } from "react-icons/ri";
@@ -11,50 +14,126 @@ import { useDarkMode } from "../../hooks/useDarkmode";
 import { darkSelectStyles } from "../../theme/select/darkSelectStyles";
 import { lightSelectStyles } from "../../theme/select/lightSelectStyles";
 import styles from "./UpdateFormModal.module.css";
+import axiosClient from "../../api/axiosClient";
 
-function UpdateFormModal() {
+export default function UpdateContactModal({ contactId, contactData }) {
   const { setActiveModal } = useUI();
   const { darkMode } = useDarkMode();
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
   const closeModal = () => setActiveModal(null);
   const backToDetail = () => setActiveModal("detail");
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    setSelectedFile(file);
-  };
-
-  useEffect(() => {
-    if (!selectedFile) return;
-
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setPreviewUrl(objectUrl);
-
-    return () => {
-      URL.revokeObjectURL(objectUrl); // Cleanup old preview when file changes or component unmounts
-    };
-  }, [selectedFile]);
 
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.95, y: 20 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      transition: { duration: 0.3, ease: "easeOut" },
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.95,
-      y: 20,
-      transition: { duration: 0.3, ease: "easeIn" },
-    },
+    visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.3 } },
+    exit: { opacity: 0, scale: 0.95, y: 20, transition: { duration: 0.3 } },
   };
 
-  const [occupations, setOccupations] = useState([]);
+  const [formData, setFormData] = useState(() => ({
+    first_name: contactData?.first_name || "",
+    other_names: contactData?.other_names || "",
+    phone_number: contactData?.phone_number || "",
+    email: contactData?.email || "",
+    home_address: contactData?.home_address || "",
+    occupations: (contactData?.occupations || []).map((o) => ({
+      value: o,
+      label: o,
+    })),
+    twitter: contactData?.twitter || "",
+    instagram: contactData?.instagram || "",
+    facebook: contactData?.facebook || "",
+    whatsapp: contactData?.whatsapp || "",
+    linkedin: contactData?.linkedin || "",
+    contactImage: null,
+  }));
 
-  const handleChange = (selected) => {
-    setOccupations(selected || []);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [serverImageInfo, setServerImageInfo] = useState(null);
+
+  useEffect(() => {
+    const loadImageMetadata = async () => {
+      if (!contactData?.image_url) return;
+
+      const imagePath = contactData.image_url.startsWith("/")
+        ? contactData.image_url
+        : `/${contactData.image_url}`;
+
+      const fullUrl = `${apiUrl}${imagePath}`;
+      setPreviewUrl(fullUrl);
+
+      try {
+        const headRes = await axiosClient.head(fullUrl);
+        const size = headRes.headers["content-length"];
+
+        if (size) {
+          setServerImageInfo({
+            size: Number(size),
+          });
+        }
+      } catch (metaErr) {
+        console.warn("Failed to fetch image metadata", metaErr);
+      }
+    };
+
+    loadImageMetadata();
+  }, [contactData, apiUrl]);
+
+  // Handle text input changes
+  const handleChange = (e) => {
+    const { name, value, files, type } = e.target;
+    if (type === "file") {
+      const file = files?.[0] || null;
+      setFormData((prev) => ({ ...prev, contactImage: file }));
+      setPreviewUrl(file ? URL.createObjectURL(file) : null);
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  // Phone input
+  const handlePhoneChange = (value) =>
+    setFormData((prev) => ({ ...prev, phone_number: value }));
+
+  // Occupations select
+  const handleOccupationSelect = (selected) =>
+    setFormData((prev) => ({ ...prev, occupations: selected || [] }));
+
+  // Mutation
+  const mutation = useMutation({
+    mutationFn: async ({ data }) =>
+      await updateContact(apiUrl, data, contactId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["contacts"]);
+      setActiveModal(null);
+      navigate("/");
+    },
+    onError: (error) => {
+      if (error.status === 401) {
+        window.location.href = "/login";
+      }
+      console.error("Update Contact Error:", error.message);
+    },
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const data = new FormData();
+
+    // Append all text fields
+    for (const [key, value] of Object.entries(formData)) {
+      if (key === "occupations") continue;
+      data.append(key, value);
+    }
+
+    // Append occupations
+    formData.occupations.forEach((occ) =>
+      data.append("occupations[]", occ.value)
+    );
+
+    mutation.mutate({ data });
   };
 
   return ReactDOM.createPortal(
@@ -74,6 +153,7 @@ function UpdateFormModal() {
         animate="visible"
         exit="exit"
       >
+        {/* Header Buttons */}
         <div className={styles.btnContainer}>
           <button
             className={styles.backBtn}
@@ -95,6 +175,7 @@ function UpdateFormModal() {
           </button>
         </div>
 
+        {/* Branding */}
         <div className={styles.headerContainer}>
           <div className={styles.imgIcon}>
             <img
@@ -106,55 +187,44 @@ function UpdateFormModal() {
           <div className={styles.imgSideText}>
             <div className={styles.text2}>Modern Phonebook 2.O</div>
             <div className={styles.text3}>
-              Easy &nbsp; &#8226; &nbsp; Convenient&nbsp; &#8226; &nbsp;
-              Flexible
+              Easy &#8226; Convenient &#8226; Flexible
             </div>
           </div>
         </div>
 
         <hr />
 
-        <div className={styles.title}>
-          <div className={styles.text1}>Update this Contact</div>
-          <br />
-          <div className={styles.text6}>
-            The following are required fields to create or update a contact and
-            will only be shared with Mphone
-          </div>
-        </div>
-
-        <form className={styles.updateForm}>
+        <form className={styles.updateForm} onSubmit={handleSubmit}>
+          {/* Basic Info */}
           <div className={styles.layer1}>
             <div className={styles.formLayer1}>
-              <label htmlFor="first_name">First Name</label>
+              <label>First Name</label>
               <input
                 placeholder="Enter your first name"
-                type="text"
                 name="first_name"
-                id="first_name"
+                value={formData.first_name}
+                onChange={handleChange}
                 required
               />
             </div>
 
             <div className={styles.formLayer1}>
-              <label htmlFor="other_name">Other Names</label>
+              <label>Other Names</label>
               <input
                 placeholder="Enter your other names"
-                type="text"
                 name="other_names"
-                id="other_name"
+                value={formData.other_names}
+                onChange={handleChange}
                 required
               />
             </div>
 
             <div className={styles.formLayer1}>
-              <label htmlFor="phone_number" className={styles.phoneLabel}>
-                Phone Number
-              </label>
+              <label>Phone Number</label>
               <PhoneInput
-                id="phone_number"
-                name="phone_number"
                 defaultCountry="gh"
+                value={formData.phone_number}
+                onChange={handlePhoneChange}
                 inputClassName={styles.phoneInput}
                 className={styles.phoneContainer}
                 placeholder="Enter your phone number"
@@ -163,118 +233,60 @@ function UpdateFormModal() {
             </div>
 
             <div className={styles.formLayer1}>
-              <label htmlFor="email">Email Address (Optional)</label>
+              <label>Email (optional)</label>
               <input
-                placeholder="Enter your email address"
-                type="text"
+                placeholder="Enter your email"
                 name="email"
-                id="email"
+                value={formData.email}
+                onChange={handleChange}
               />
             </div>
 
             <div className={styles.formLayer1}>
-              <label htmlFor="home_address">Home Address (Optional)</label>
+              <label>Home Address (optional)</label>
               <input
                 placeholder="Enter your home address"
-                type="text"
                 name="home_address"
-                id="home_address"
+                value={formData.home_address}
+                onChange={handleChange}
               />
             </div>
 
             <div className={styles.formLayer1}>
-              <label htmlFor="occupations" className={styles.label}>
-                Current or Previous job title (Optional)
-              </label>
-
+              <label>Current or Previous Job Title (optional)</label>
               <CreatableSelect
-                id="occupations"
                 isMulti
                 isClearable
+                value={formData.occupations}
+                onChange={handleOccupationSelect}
                 placeholder="Type and press Enter..."
-                onChange={handleChange}
-                styles={
-                  darkMode ? { ...darkSelectStyles } : { ...lightSelectStyles }
-                }
+                styles={darkMode ? darkSelectStyles : lightSelectStyles}
               />
-
-              {occupations.map((occ, idx) => (
-                <input
-                  key={idx}
-                  type="hidden"
-                  name="occupations[]"
-                  value={occ.value}
-                />
-              ))}
             </div>
           </div>
 
-          <br />
           <hr />
-          <br />
 
-          <div className={styles.text7}>
-            LINKS <span className={styles.optionalTag}>(Optional)</span>
-          </div>
-
-          <br />
-
+          {/* Social Links */}
           <div className={styles.layer2}>
-            <div className={styles.formLayer1}>
-              <label htmlFor="twitter">Link to Twitter - URL</label>
-              <input
-                placeholder="Enter your Twitter URL"
-                type="text"
-                name="twitter"
-                id="twitter"
-              />
-            </div>
-
-            <div className={styles.formLayer1}>
-              <label htmlFor="instagram">Link to Instagram - URL</label>
-              <input
-                placeholder="Link to Instagram URL"
-                type="text"
-                name="instagram"
-                id="instagram"
-              />
-            </div>
-
-            <div className={styles.formLayer1}>
-              <label htmlFor="facebook">Link to Facebook - URL</label>
-              <input
-                placeholder="Link to Facebook URL"
-                type="text"
-                name="facebook"
-                id="facebook"
-              />
-            </div>
-
-            <div className={styles.formLayer1}>
-              <label htmlFor="whatsapp">Link to Whatsapp - URL</label>
-              <input
-                placeholder="eg. https://wa.me/<Person's Number>"
-                type="text"
-                name="whatsapp"
-                id="whatsapp"
-              />
-            </div>
-
-            <div className={styles.formLayer1}>
-              <label htmlFor="linkedin">Link to LinkedIn - URL</label>
-              <input
-                placeholder="Link to LinkedIn URL"
-                type="text"
-                name="linkedin"
-                id="linkedin"
-              />
-            </div>
+            {["twitter", "instagram", "facebook", "whatsapp", "linkedin"].map(
+              (field) => (
+                <div className={styles.formLayer1} key={field}>
+                  <label>{`Link to ${field} - URL`}</label>
+                  <input
+                    placeholder={`Link to ${field} URL`}
+                    name={field}
+                    value={formData[field]}
+                    onChange={handleChange}
+                  />
+                </div>
+              )
+            )}
           </div>
 
-          <br />
           <hr />
-          <br />
 
+          {/* Image Upload */}
           <div className={`${styles.formLayer1} ${styles.contactImage}`}>
             <div className={styles.text4}>Attach an image for contact</div>
             <label className={styles.contactImageStyle} htmlFor="contactImage">
@@ -287,30 +299,47 @@ function UpdateFormModal() {
               name="contactImage"
               id="contactImage"
               accept=".jpg,.jpeg,.png,.webp"
-              onChange={handleFileChange}
+              onChange={handleChange}
             />
           </div>
 
-          {selectedFile && (
+          {previewUrl && (
             <div className={styles.previewContainer}>
               <img
                 src={previewUrl}
                 alt="Preview"
                 className={styles.previewImage}
               />
-              <div className={styles.fileInfo}>
-                <strong>{selectedFile.name}</strong>
-                <span>{(selectedFile.size / 1024).toFixed(1)} KB</span>
-              </div>
+
+              {formData.contactImage && (
+                <div className={styles.fileInfo}>
+                  <strong>{formData.contactImage.name}</strong>
+                  <span>
+                    {(formData.contactImage.size / 1024).toFixed(1)} KB
+                  </span>
+                  <span>
+                    {(formData.contactImage.size / (1024 * 1024)).toFixed(2)} MB
+                  </span>
+                </div>
+              )}
+
+              {!formData.contactImage && serverImageInfo && (
+                <div className={styles.fileInfo}>
+                  <strong>Saved Image</strong>
+                  <span>{(serverImageInfo.size / 1024).toFixed(1)} KB</span>
+                  <span>
+                    {(serverImageInfo.size / (1024 * 1024)).toFixed(2)} MB
+                  </span>
+                </div>
+              )}
             </div>
           )}
+          <div>❗Attached image size should not exceed 5MB</div>
 
-          <br />
           <hr />
-          <br />
 
           <button type="submit" className={styles.formButton}>
-            Create Contact
+            Update Contact
           </button>
         </form>
       </motion.div>
@@ -318,5 +347,3 @@ function UpdateFormModal() {
     document.getElementById("modal-root")
   );
 }
-
-export default UpdateFormModal;

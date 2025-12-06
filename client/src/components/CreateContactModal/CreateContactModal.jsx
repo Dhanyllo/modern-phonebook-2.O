@@ -313,7 +313,7 @@ function CreateContactModal() {
               </div>
             </div>
           )}
-
+          <div>❗Attached image size should not exceed 5MB</div>
           <hr />
 
           <button className={styles.formButton}>Create Contact</button>

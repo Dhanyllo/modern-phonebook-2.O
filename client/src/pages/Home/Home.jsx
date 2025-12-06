@@ -31,32 +31,6 @@ import { fetchFavStatus } from "../../api/fetchFavStatus";
 import { fetchSearchResults } from "../../api/fetchHomeSearchResults";
 import { updateFavouriteStatus } from "../../api/updateFavouriteStatus";
 
-//Actions helper function
-// const handleSubmit = async (apiUrl, formData) => {
-//   try {
-//     const result = await createContact(apiUrl, formData);
-//     if (result.success) {
-//       console.log("data added successfully");
-//       return redirect("/");
-//     }
-
-//     return { success: false, message: result.message };
-//   } catch (err) {
-//     return { success: false, message: err.message };
-//   }
-// };
-
-// // =========
-// // Actions
-// // =========
-
-// export async function action({ request }) {
-//   const apiUrl = import.meta.env.VITE_API_URL;
-//   const formData = await request.formData();
-
-//   return await handleSubmit(apiUrl, formData);
-// }
-
 // ==============================
 // Loader with React Query hydration
 // ==============================
@@ -105,6 +79,7 @@ function Home() {
   const { activeModal, setActiveModal } = useUI();
   const [showSkeleton, setShowSkeleton] = useState(false);
   const [selectedContact, setSelectedContact] = useState("");
+  const [selectedContactData, setSelectedContactData] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const currentPage = parseInt(searchParams.get("page")) || 1;
@@ -339,10 +314,16 @@ function Home() {
           {/* ==================== Modals ==================== */}
           <AnimatePresence>
             {activeModal === "detail" && (
-              <DetailCardModal contactId={selectedContact} />
+              <DetailCardModal
+                contactId={selectedContact}
+                onContactLoad={(data) => setSelectedContactData(data)}
+              />
             )}
             {activeModal === "update" && (
-              <UpdateFormModal contactId={selectedContact} />
+              <UpdateFormModal
+                contactId={selectedContact}
+                contactData={selectedContactData}
+              />
             )}
             {activeModal === "mobilesidebar" && (
               <MobileSidebarModal favStatus={favStatus?.exists_status} />

@@ -6,10 +6,9 @@ import styles from "./DetailCardModal.module.css";
 import { useUI } from "../../context/UIContext";
 import { useDarkMode } from "../../hooks/useDarkmode";
 import { updateFavouriteStatus } from "../../api/updateFavouriteStatus";
-import { fetchContactDetails } from "../../api/fetchContactDetails";
-import { fetchOccupations } from "../../api/fetchOccupations";
+import { fetchContactById } from "../../api/fetchContactById";
 
-function DetailCardModal({ contactId }) {
+function DetailCardModal({ contactId, onContactLoad }) {
   const darkMode = useDarkMode();
   const apiUrl = import.meta.env.VITE_API_URL;
   const queryClient = useQueryClient();
@@ -26,9 +25,9 @@ function DetailCardModal({ contactId }) {
   } = useQuery({
     queryKey: ["contactDetail", contactId],
     queryFn: async () => {
-      const contactDetails = await fetchContactDetails(apiUrl, contactId);
-      const occupations = await fetchOccupations(apiUrl, contactId);
-      return { contactDetails, occupations };
+      const result = await fetchContactById(apiUrl, contactId);
+      onContactLoad(result);
+      return result;
     },
     retry: false,
     enabled: !!contactId,
@@ -110,9 +109,8 @@ function DetailCardModal({ contactId }) {
         <div className={styles.errorMessage}>Failed to load details.</div>
       ) : detailData ? (
         <DetailCard
-          key={detailData.contactDetails.id}
-          {...detailData.contactDetails}
-          occupations={detailData.occupations}
+          key={detailData.id}
+          {...detailData}
           darkMode={darkMode}
           handleUpdateFormOpen={onEdit}
           handleDelete={onDelete}

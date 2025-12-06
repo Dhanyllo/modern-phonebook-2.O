@@ -79,7 +79,7 @@ function Favourites() {
   const { activeModal, setActiveModal } = useUI();
   const [showSkeleton, setShowSkeleton] = useState(false);
   const [selectedContact, setSelectedContact] = useState("");
-
+  const [selectedContactData, setSelectedContactData] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
 
@@ -329,17 +329,23 @@ function Favourites() {
           {/* ==================== Modals ==================== */}
           <AnimatePresence>
             {activeModal === "detail" && (
-              <DetailCardModal contactId={selectedContact} />
+              <DetailCardModal
+                contactId={selectedContact}
+                onContactLoad={(data) => setSelectedContactData(data)}
+              />
             )}
             {activeModal === "update" && (
-              <UpdateFormModal contactId={selectedContact} />
+              <UpdateFormModal
+                contactId={selectedContact}
+                contactData={selectedContactData}
+              />
+            )}
+            {activeModal === "mobilesidebar" && (
+              <MobileSidebarModal favStatus={favStatus?.exists_status} />
             )}
             {activeModal === "delete" && <DeleteConfirmModal />}
             {activeModal === "logout" && <LogoutConfirmModal />}
             {activeModal === "create" && <CreateContactModal />}
-            {activeModal === "mobilesidebar" && (
-              <MobileSidebarModal favStatus={favStatus?.exists_status} />
-            )}
             {activeModal === "mobileprofile" && <MobileProfileModal />}
             {activeModal === "mobileNotification" && (
               <MobileNotificationModal />

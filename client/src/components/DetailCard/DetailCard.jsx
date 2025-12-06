@@ -49,7 +49,7 @@ TEL:${props.phone_number}
 EMAIL:${props.email}
 ${
   props.occupations && props.occupations.length > 0
-    ? `TITLE:${props.occupations.map((item) => item.occupation).join(", ")}`
+    ? `TITLE:${props.occupations.map((item) => item).join(", ")}`
     : ""
 }
 END:VCARD
@@ -120,7 +120,7 @@ END:VCARD
 
   const occupationTags = props.occupations.map((item, index, array) => (
     <React.Fragment key={item.id || index}>
-      <div className={styles.occupation1}>{`#${item.occupation}`}</div>
+      <div className={styles.occupation1}>{`#${item}`}</div>
       {index !== array.length - 1 && (
         <div className={styles.verticalLine}></div>
       )}
@@ -140,7 +140,11 @@ END:VCARD
         <div className={styles.detailedCardImageContainer}>
           <img
             className={styles.detailedCardImage}
-            src="/images/profile.jpg"
+            src={
+              props?.image_url
+                ? `${apiUrl}${props.image_url}`
+                : "/images/profile.jpg"
+            }
             alt="profile-image"
           />
         </div>
@@ -219,14 +223,16 @@ END:VCARD
 
             <div className={styles.emailDetail}>
               <div className={styles.personalEmail}>Personal-email</div>
-              <div className={styles.email}>{props.email}</div>
+              <div className={styles.email}>{props.email || "N/A"}</div>
             </div>
 
             <hr />
 
             <div className={styles.homeDetail}>
               <div className={styles.home}>Home</div>
-              <div className={styles.homeAddress}>{props.home_address}</div>
+              <div className={styles.homeAddress}>
+                {props.home_address || "N/A"}
+              </div>
             </div>
           </div>
         </div>
@@ -234,55 +240,79 @@ END:VCARD
 
       <div className={styles.socialLinks}>
         <a
+          aria-disabled={props.email ? "false" : "true"}
           className={styles.emailLink}
-          href={`mailto:${props.email}`}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={props.email ? `mailto:${props.email}` : undefined}
+          onClick={(e) => {
+            if (!props.email) e.preventDefault();
+          }}
+          target={props.email ? "_blank" : undefined}
+          rel={props.email ? "noopener noreferrer" : undefined}
         >
           <SiGmail className={styles.emailIcon} />
         </a>
 
         <a
+          aria-disabled={props.twitter ? "false" : "true"}
           className={styles.twitterLink}
-          href={props.twitter}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={props.twitter || undefined}
+          onClick={(e) => {
+            if (!props.twitter) e.preventDefault();
+          }}
+          target={props.twitter ? "_blank" : undefined}
+          rel={props.twitter ? "noopener noreferrer" : undefined}
         >
           <SiX className={styles.twitterIcon} />
         </a>
 
         <a
+          aria-disabled={props.instagram ? "false" : "true"}
           className={styles.instagramLink}
-          href={props.instagram}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={props.instagram || undefined}
+          onClick={(e) => {
+            if (!props.instagram) e.preventDefault();
+          }}
+          target={props.instagram ? "_blank" : undefined}
+          rel={props.instagram ? "noopener noreferrer" : undefined}
         >
           <SiInstagram className={styles.instagramIcon} />
         </a>
 
         <a
+          aria-disabled={props.facebook ? "false" : "true"}
           className={styles.facebookLink}
-          href={props.facebook}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={props.facebook || undefined}
+          onClick={(e) => {
+            if (!props.facebook) e.preventDefault();
+          }}
+          target={props.facebook ? "_blank" : undefined}
+          rel={props.facebook ? "noopener noreferrer" : undefined}
         >
           <FaFacebookF className={styles.facebookIcon} />
         </a>
 
         <a
+          aria-disabled={props.whatsapp ? "false" : "true"}
           className={styles.whatsappLink}
-          href={props.whatsapp}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={props.whatsapp || undefined}
+          onClick={(e) => {
+            if (!props.whatsapp) e.preventDefault();
+          }}
+          target={props.whatsapp ? "_blank" : undefined}
+          rel={props.whatsapp ? "noopener noreferrer" : undefined}
         >
           <SiWhatsapp className={styles.whatsappIcon} />
         </a>
 
         <a
+          aria-disabled={props.linkedin ? "false" : "true"}
           className={styles.linkedinLink}
-          href={props.linkedin}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={props.linkedin || undefined}
+          onClick={(e) => {
+            if (!props.linkedin) e.preventDefault();
+          }}
+          target={props.linkedin ? "_blank" : undefined}
+          rel={props.linkedin ? "noopener noreferrer" : undefined}
         >
           <SiLinkedin className={styles.linkedinIcon} />
         </a>

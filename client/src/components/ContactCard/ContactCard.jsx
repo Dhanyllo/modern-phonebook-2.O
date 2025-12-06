@@ -10,6 +10,7 @@ function ContactCard({
   phoneNumber,
   favouriteStatus,
   id,
+  imageURL,
   onUpdate,
   onViewClick,
 }) {
@@ -53,10 +54,19 @@ function ContactCard({
 
       <div className={styles.cardImageWrap}>
         <div className={styles.cardImage}>
-          <img src="" alt="" />
-          <div className={styles.alpha}>{firstLetter}</div>
+          {imageURL ? (
+            <img
+              className={styles.contactImage}
+              src={`${apiUrl}${imageURL}`}
+              alt="image"
+            />
+          ) : (
+            <div className={styles.alpha}>{firstLetter}</div>
+          )}
         </div>
       </div>
+
+      {console.log(`${apiUrl}${imageURL}`)}
 
       <div className={styles.cardDesc}>
         <div className={styles.contactName}>{`${firstName} ${otherNames}`}</div>
