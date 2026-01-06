@@ -16,7 +16,7 @@ function ContactCard({
 }) {
   const { darkMode } = useDarkMode();
   const apiUrl = import.meta.env.VITE_API_URL;
-  const { isMobile, isTablet, isDesktop } = useBreakpoint();
+  const { isMobile } = useBreakpoint();
 
   const firstLetter = firstName.charAt(0);
 
@@ -65,8 +65,6 @@ function ContactCard({
           )}
         </div>
       </div>
-
-      {console.log(`${apiUrl}${imageURL}`)}
 
       <div className={styles.cardDesc}>
         <div className={styles.contactName}>{`${firstName} ${otherNames}`}</div>

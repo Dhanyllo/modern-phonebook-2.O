@@ -48,7 +48,13 @@ const refreshToken = async (req, res) => {
 
     // Issue a new access token
     const newAccessToken = jwt.sign(
-      { id: verified.id, email: verified.email },
+      {
+        id: verified.id,
+        email: verified.email,
+        first_name: verified.first_name,
+        other_names: verified.other_names,
+      },
+
       process.env.JWT_SECRET,
       { expiresIn: "15m" }
     );

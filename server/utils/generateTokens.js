@@ -6,7 +6,7 @@ const generateTokens = (user) => {
       id: user.id,
       email: user.email,
       first_name: user.first_name,
-      other_name: user.other_names,
+      other_names: user.other_names,
     },
     process.env.JWT_SECRET,
     { expiresIn: "15m" }
@@ -17,7 +17,7 @@ const generateTokens = (user) => {
       id: user.id,
       email: user.email,
       first_name: user.first_name,
-      other_name: user.other_names,
+      other_names: user.other_names,
     },
     process.env.JWT_REFRESH_SECRET,
     { expiresIn: "7d" }

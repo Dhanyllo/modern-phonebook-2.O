@@ -8,11 +8,14 @@ import { FiFlag, FiLogOut } from "react-icons/fi";
 import { GrUpdate, GrDocumentVerified } from "react-icons/gr";
 import { useUI } from "../../context/UIContext";
 import { useDarkMode } from "../../hooks/useDarkmode";
+import { fetchMyProfile } from "../../api/fetchMyProfile";
+import { useQuery } from "@tanstack/react-query";
 import styles from "./TabletProfileModal.module.css";
 
 function TabletProfileModal() {
   const { darkMode, setDarkMode } = useDarkMode();
   const { activeModal, setActiveModal } = useUI();
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     if (activeModal === "tabletProfile") {
@@ -42,6 +45,15 @@ function TabletProfileModal() {
     },
   };
 
+  const { data: profile } = useQuery({
+    queryKey: ["myProfile"], // unique query key
+    queryFn: () => fetchMyProfile(apiUrl),
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    staleTime: 1000 * 60 * 60, // 1 hour
+  });
+
   return ReactDOM.createPortal(
     <motion.div
       className={styles.modalOverlay}
@@ -70,25 +82,58 @@ function TabletProfileModal() {
               alt="profile-icon"
             />
           </div>
-          <div className={styles.profileName}>Daniel Otchere</div>
+          <div className={styles.profileName}>
+            {profile?.first_name}&nbsp;{profile?.other_names}
+          </div>
         </div>
 
         <hr className={styles.profileHr1} />
 
         <div className={styles.profileFieldLayer2}>
-          <Link to="" className={styles.profileLayer2Link}>
+          <Link
+            to=""
+            className={styles.profileLayer2Link}
+            onClick={(e) => {
+              e.preventDefault();
+              alert("Coming soon!");
+            }}
+          >
             <GrUpdate size={15} />
             <div>Profile Update</div>
           </Link>
-          <Link to="" className={styles.profileLayer2Link}>
+
+          <Link
+            to=""
+            className={styles.profileLayer2Link}
+            onClick={(e) => {
+              e.preventDefault();
+              alert("Coming soon!");
+            }}
+          >
             <TfiHelpAlt size={18} />
             <div>Help Center</div>
           </Link>
-          <Link to="" className={styles.profileLayer2Link}>
+
+          <Link
+            to=""
+            className={styles.profileLayer2Link}
+            onClick={(e) => {
+              e.preventDefault();
+              alert("Coming soon!");
+            }}
+          >
             <FiFlag />
             <div>Report Bug</div>
           </Link>
-          <Link to="" className={styles.profileLayer2Link}>
+
+          <Link
+            to=""
+            className={styles.profileLayer2Link}
+            onClick={(e) => {
+              e.preventDefault();
+              alert("Coming soon!");
+            }}
+          >
             <GrDocumentVerified />
             <div>Terms & Policies</div>
           </Link>

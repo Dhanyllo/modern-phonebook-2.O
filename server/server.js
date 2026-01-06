@@ -19,6 +19,7 @@ const favourite = require("./routes/contactsRoutes/favourites.js");
 const card_details = require("./routes/contactsRoutes/card-details.js");
 const contacts_CRUD = require("./routes/contactsRoutes/contacts-CRUD.js");
 const profile_update = require("./routes/profile-update.js");
+const profile_fetch = require("./routes/profile-fetch.js");
 const auth_check = require("./routes/auth-check.js");
 const verifyJWT = require("./middleware/verifyJWT.js");
 const corsOptions = require("./config/corsConfig.js");
@@ -50,6 +51,7 @@ app.use("/", change_password);
 app.use("/", favourite);
 app.use("/", card_details);
 app.use("/", profile_update);
+app.use("/", profile_fetch);
 app.use("/", auth_check);
 app.use("/", contacts_CRUD);
 
