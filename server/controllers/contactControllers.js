@@ -308,6 +308,7 @@ const getContactById = async (req, res) => {
         contact_profiles.email,
         contact_profiles.home_address,
         contact_profiles.image_url,
+        contact_profiles.favourite_status,
         media_handles.twitter,
         media_handles.instagram,
         media_handles.facebook,

@@ -328,7 +328,9 @@ function Home() {
             {activeModal === "mobilesidebar" && (
               <MobileSidebarModal favStatus={favStatus?.exists_status} />
             )}
-            {activeModal === "delete" && <DeleteConfirmModal />}
+            {activeModal === "delete" && (
+              <DeleteConfirmModal contactId={selectedContact} />
+            )}
             {activeModal === "logout" && <LogoutConfirmModal />}
             {activeModal === "create" && <CreateContactModal />}
             {activeModal === "mobileprofile" && <MobileProfileModal />}

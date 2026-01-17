@@ -160,7 +160,6 @@ END:VCARD
             >
               <CiEdit className={styles.edit} />
             </button>
-
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -170,7 +169,6 @@ END:VCARD
             >
               <MdDeleteOutline className={styles.delete} />
             </button>
-
             <button
               className={styles.favouriteBtn}
               onClick={(e) => {
@@ -184,7 +182,6 @@ END:VCARD
             >
               <FaHeart style={favouriteStyle} className={styles.favIcon} />
             </button>
-
             <button onClick={handleNativeShare} className={styles.shareBtn}>
               <FaShareAlt className={styles.share} />
             </button>

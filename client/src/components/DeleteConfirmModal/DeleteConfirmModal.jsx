@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 import { useUI } from "../../context/UIContext";
 import { useDarkMode } from "../../hooks/useDarkmode";
+import { deleteContact } from "../../api/deleteContact";
+import { useNavigate } from "react-router-dom";
 import styles from "./DeleteConfirmModal.module.css";
 
 const modalVariants = {
@@ -21,12 +23,39 @@ const modalVariants = {
   },
 };
 
-const DeleteConfirmModal = () => {
+const DeleteConfirmModal = ({ contactId }) => {
   const { activeModal, setActiveModal } = useUI();
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const darkMode = useDarkMode();
-
+  const navigate = useNavigate();
   const closeModal = () => setActiveModal(null);
-  const onConfirm = () => setActiveModal(null);
+  // const onConfirm = () => setActiveModal(null);
+
+  console.log(contactId);
+
+  const handleDelete = async (contactId) => {
+    try {
+      const result = await deleteContact(apiUrl, contactId);
+
+      if (result?.success === false) {
+        throw new Error("Delete failed");
+      }
+
+      // setContacts((prev) => prev.filter((contact) => contact.id !== contactId));
+
+      // reset active modal on successful delete
+      setActiveModal(null);
+    } catch (error) {
+      if (error.status === 401) {
+        navigate("/login");
+        return;
+      }
+
+      console.error(error.message);
+      // showToast(error.message);
+    }
+  };
+
   const backToDetail = () => setActiveModal("detail");
 
   useEffect(() => {
@@ -77,7 +106,7 @@ const DeleteConfirmModal = () => {
             className={styles.deleteBtn}
             onClick={(e) => {
               e.stopPropagation();
-              onConfirm();
+              handleDelete(contactId);
             }}
           >
             Delete

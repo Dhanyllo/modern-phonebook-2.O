@@ -24,7 +24,6 @@ const verifyJWT = (req, res, next) => {
       other_names: decoded.other_names,
     };
 
-    console.log("done verifying");
     next();
   });
 };
