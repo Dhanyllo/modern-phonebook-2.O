@@ -1,43 +1,49 @@
 import AuthSidePanel from "../../components/AuthSidePanel/AuthSidePanel";
+import { Form, Link, useNavigation, useActionData } from "react-router-dom";
 import { useState } from "react";
-import { Form, Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { GoogleButton } from "../../components/GoogleButton/GoogleButton";
 import styles from "./Login.module.css";
 import { useDarkMode } from "../../hooks/useDarkmode";
+import { loginUser } from "../../api/LoginUser";
+import { redirect } from "react-router-dom";
 
 // --- Action function for the form ---
 export async function action({ request }) {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const formData = await request.formData();
-
-  // Grab fields by their "name" attribute
-  const firstName = formData.get("firstName");
-  const otherNames = formData.get("otherNames");
   const email = formData.get("email");
   const password = formData.get("password");
-  const confirmPassword = formData.get("confirmPassword");
 
-  // Example basic validation
-  if (!firstName || otherNames || !email || !password) {
-    return { error: "All fields are required." };
+  const payload = {
+    email,
+    password,
+  };
+
+  try {
+    const result = await loginUser(apiUrl, payload);
+
+    return redirect("/", { replace: true });
+  } catch (error) {
+    if (error.status === 401) {
+      return {
+        error: "Invalid email or password.",
+      };
+    }
+
+    return {
+      error: error.message,
+    };
   }
-
-  if (password !== confirmPassword) {
-    return { error: "Passwords do not match." };
-  }
-
-  // TODO: Replace with backend API call
-  console.log("Form submitted:", { firstName, otherNames, email, password });
-
-  // Redirect or return data
-  return { success: true };
 }
 
 const Login = () => {
   const { darkMode } = useDarkMode();
   const apiUrl = import.meta.env.VITE_API_URL;
   const [showPassword, setShowPassword] = useState(false);
-  const [isPending, setIsPending] = useState(false);
+  const navigation = useNavigation();
+  const actionData = useActionData();
+  const isPending = navigation.state === "submitting";
 
   const handleGoogleLogin = () => {
     window.location.href = `${apiUrl}/google`;
@@ -68,11 +74,7 @@ const Login = () => {
           </div>
 
           <div className={styles.formWrapper}>
-            <Form
-              method="post"
-              className={styles.form}
-              onSubmit={() => setIsPending(true)}
-            >
+            <Form method="post" className={styles.form}>
               <div className={styles.inputWrapper}>
                 <label htmlFor="email" className={styles.label}>
                   Email Address
@@ -115,6 +117,10 @@ const Login = () => {
                 </div>
               </div>
 
+              {actionData?.error && (
+                <div className={styles.errorMessage}>{actionData.error}</div>
+              )}
+
               <button
                 type="submit"
                 className={styles.submitButton}
@@ -123,7 +129,7 @@ const Login = () => {
                 {isPending ? (
                   <div className={styles.loadingWrapper}>
                     <Loader2 className={styles.loadingIcon} />
-                    Creating Account...
+                    Signing In...
                   </div>
                 ) : (
                   <div className={styles.buttonContent}>

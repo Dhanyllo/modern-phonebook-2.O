@@ -21,7 +21,7 @@ const login = async (req, res) => {
     // Find user
     const [rows] = await db.query(
       "SELECT id, email, user_password, is_verified, provider FROM users WHERE email = ?",
-      [email]
+      [email],
     );
 
     if (rows.length === 0) {
@@ -59,13 +59,13 @@ const login = async (req, res) => {
     const accessToken = jwt.sign(
       { id: user.id, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "15m" },
     );
 
     const refreshToken = jwt.sign(
       { id: user.id, email: user.email },
       process.env.JWT_REFRESH_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);

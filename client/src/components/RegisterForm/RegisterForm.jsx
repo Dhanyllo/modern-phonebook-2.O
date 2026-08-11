@@ -5,13 +5,12 @@ import { GoogleButton } from "../../components/GoogleButton/GoogleButton";
 import { useDarkMode } from "../../hooks/useDarkmode";
 import styles from "./RegisterForm.module.css";
 
-const RegisterForm = () => {
+const RegisterForm = ({ error }) => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const { darkMode } = useDarkMode();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigation = useNavigation();
-  const actionData = useActionData();
   const isPending = navigation.state === "submitting";
 
   const handleGoogleLogin = () => {
@@ -119,8 +118,10 @@ const RegisterForm = () => {
           </div>
         </div>
 
-        {actionData?.error && (
-          <div className={styles.errorMessage}>{actionData.error}</div>
+        {error && (
+          <div className={styles.errorMessage} role="alert">
+            {error}
+          </div>
         )}
 
         {/* Submit Button */}

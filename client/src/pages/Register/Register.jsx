@@ -37,7 +37,21 @@ export async function action({ request }) {
     // redirect (no back to register)
     return redirect("/verify-otp", { replace: true });
   } catch (error) {
-    return { error: error.message };
+    if (error.status === 400) {
+      return {
+        error: error.message,
+      };
+    }
+
+    if (error.status === 409) {
+      return {
+        error: "An account with this email already exists.",
+      };
+    }
+
+    return {
+      error: "Unable to create your account. Please try again.",
+    };
   }
 }
 
@@ -71,7 +85,7 @@ const Register = () => {
             </div>
           </div>
 
-          <RegisterForm />
+          <RegisterForm error={actionData?.error} />
         </div>
       </div>
     </div>

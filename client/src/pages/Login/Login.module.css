@@ -139,9 +139,13 @@
   background-color: #ffffff;
   border-radius: 16px;
   padding: 2rem 2rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05), 0 8px 18px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.05),
+    0 8px 18px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(0, 0, 0, 0.04);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .pageContainer[data-darkmode="true"] .formWrapper {
@@ -384,6 +388,21 @@ input:-webkit-autofill {
 .pageContainer[data-darkmode="true"] .orDividerText {
   background-color: #2a2a2a;
   color: #cfcfcf;
+}
+
+.errorMessage {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 @keyframes shine {

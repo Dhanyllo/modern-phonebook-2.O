@@ -98,11 +98,6 @@ input:-webkit-autofill {
   row-gap: 10px;
 }
 
-.error {
-  font-size: 0.875rem;
-  color: var(--color-error);
-}
-
 .passwordWrapper {
   position: relative;
 }

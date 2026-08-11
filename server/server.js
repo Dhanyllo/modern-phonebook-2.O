@@ -38,7 +38,7 @@ app.use("/auth", verify_otp);
 app.use("/", reset_otp);
 app.use("/", refresh_token);
 app.use("/", googleAuth);
-app.use("/", login);
+app.use("/auth", login);
 app.use("/api/auth", logout);
 app.use("/", forgot_password);
 
