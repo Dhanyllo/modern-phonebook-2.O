@@ -157,15 +157,15 @@ function Home() {
       // Optimistically update contacts
       queryClient.setQueryData(["contacts"], (old) =>
         old?.map((contact) =>
-          contact.id === id ? { ...contact, favourite: newStatus } : contact
-        )
+          contact.id === id ? { ...contact, favourite: newStatus } : contact,
+        ),
       );
 
       // Optimistically update search results, if needed
       queryClient.setQueryData(["search"], (old) =>
         old?.map((contact) =>
-          contact.id === id ? { ...contact, favourite: newStatus } : contact
-        )
+          contact.id === id ? { ...contact, favourite: newStatus } : contact,
+        ),
       );
 
       return { previousContacts, previousSearch };
@@ -237,7 +237,7 @@ function Home() {
 
     document.body.classList.remove(
       "body1-style-darkmode",
-      "body1-style-lightmode"
+      "body1-style-lightmode",
     );
 
     document.body.classList.add(BodyBgStyle);
@@ -245,7 +245,7 @@ function Home() {
     return () => {
       document.body.classList.remove(
         "body1-style-darkmode",
-        "body1-style-lightmode"
+        "body1-style-lightmode",
       );
     };
   }, [darkMode]);

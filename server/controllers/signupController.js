@@ -1,11 +1,13 @@
 const DatabaseConnection = require("../config/config.js");
 const bcrypt = require("bcrypt");
 const transporter = require("../config/nodemailer.js");
+const crypto = require("crypto");
 
 db = DatabaseConnection();
 
 const signUp = async (req, res) => {
   try {
+    const otpSessionToken = crypto.randomBytes(32).toString("hex");
     let { first_name, other_names, email, password } = req.body;
 
     // Normalize inputs
@@ -27,7 +29,7 @@ const signUp = async (req, res) => {
     // Check if email already exists
     const [existingUser] = await db.query(
       "SELECT id, provider, is_verified FROM users WHERE email = ?",
-      [email]
+      [email],
     );
 
     if (existingUser.length > 0) {
@@ -51,9 +53,16 @@ const signUp = async (req, res) => {
 
       await db.query(
         `UPDATE users
-         SET first_name = ?, other_names = ?, password = ?, otp_code = ?, otp_expires_at = NOW() + INTERVAL 10 MINUTE, is_verified = FALSE
+         SET first_name = ?, other_names = ?, user_password = ?, otp_code = ?, otp_expires_at = NOW() + INTERVAL 10 MINUTE, otp_session_token = ?, is_verified = FALSE
          WHERE id = ?`,
-        [first_name, other_names, hashedPassword, otp, user.id]
+        [
+          first_name,
+          other_names,
+          hashedPassword,
+          otp,
+          otpSessionToken,
+          user.id,
+        ],
       );
 
       await transporter.sendMail({
@@ -74,9 +83,9 @@ const signUp = async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     await db.query(
-      `INSERT INTO users (first_name, other_names, email, password, provider, otp_code, otp_expires_at, is_verified)
-       VALUES (?, ?, ?, ?, 'local', ?, NOW() + INTERVAL 10 MINUTE, FALSE)`,
-      [first_name, other_names, email, hashedPassword, otp]
+      `INSERT INTO users (first_name, other_names, email, user_password, provider, otp_code, otp_expires_at, otp_session_token, is_verified)
+       VALUES (?, ?, ?, ?, 'local', ?, NOW() + INTERVAL 10 MINUTE, ? , FALSE)`,
+      [first_name, other_names, email, hashedPassword, otp, otpSessionToken],
     );
 
     await transporter.sendMail({
@@ -89,7 +98,10 @@ const signUp = async (req, res) => {
       text: `Your OTP is: ${otp}`,
     });
 
-    res.json({ message: "OTP sent. Please verify your email." });
+    return res.status(200).json({
+      message: "OTP sent. Please verify your email.",
+      otpSessionToken,
+    });
   } catch (err) {
     console.error("Error in signup:", err);
     res.status(500).json({ message: "Server error" });

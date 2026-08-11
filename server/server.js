@@ -33,8 +33,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Public routes (no JWT required)
-app.use("/", signup);
-app.use("/", verify_otp);
+app.use("/auth", signup);
+app.use("/auth", verify_otp);
 app.use("/", reset_otp);
 app.use("/", refresh_token);
 app.use("/", googleAuth);

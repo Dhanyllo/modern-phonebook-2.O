@@ -6,49 +6,72 @@ db = DatabaseConnection();
 
 const verifyOtp = async (req, res) => {
   try {
-    const { email, otp } = req.body;
+    const { otpSessionToken, otp } = req.body;
 
-    // Find user with valid OTP (local users only)
+    if (!otpSessionToken || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: "OTP and verification session are required",
+      });
+    }
+
+    // Find the local user associated with this OTP session
+    // and make sure the OTP is still valid.
     const [rows] = await db.query(
-      `SELECT id FROM users 
-       WHERE email = ? 
+      `SELECT id, email
+       FROM users
+       WHERE otp_session_token = ?
          AND provider = 'local'
-         AND otp_code = ? 
+         AND otp_code = ?
          AND otp_expires_at > NOW()`,
-      [email, otp]
+      [otpSessionToken, otp],
     );
 
     const user = rows[0];
+
     if (!user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid or expired OTP" });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired OTP",
+      });
     }
 
-    // Generate tokens
+    // Generate authentication tokens using the identity
+    // retrieved from the database.
     const accessToken = jwt.sign(
-      { id: user.id, email, provider: "local" },
+      {
+        id: user.id,
+        email: user.email,
+        provider: "local",
+      },
       process.env.JWT_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "15m" },
     );
 
     const refreshToken = jwt.sign(
-      { id: user.id, email, provider: "local" },
+      {
+        id: user.id,
+        email: user.email,
+        provider: "local",
+      },
       process.env.JWT_REFRESH_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
 
-    // Mark verified + clear OTP + save refresh token
+    // Mark the account as verified and invalidate the
+    // OTP verification credentials.
     await db.query(
-      `UPDATE users 
-       SET is_verified = TRUE, 
-           otp_code = NULL, 
-           otp_expires_at = NULL, 
-           refresh_token = ? 
-       WHERE email = ? AND provider = 'local'`,
-      [hashedRefreshToken, email]
+      `UPDATE users
+       SET is_verified = TRUE,
+           otp_code = NULL,
+           otp_expires_at = NULL,
+           otp_session_token = NULL,
+           refresh_token = ?
+       WHERE id = ?
+         AND provider = 'local'`,
+      [hashedRefreshToken, user.id],
     );
 
     // Store access token in HttpOnly cookie
@@ -56,7 +79,7 @@ const verifyOtp = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 15 * 60 * 1000, // 15 min
+      maxAge: 15 * 60 * 1000,
     });
 
     // Store refresh token in HttpOnly cookie
@@ -64,13 +87,20 @@ const verifyOtp = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.json({ success: true, message: "Account verified and logged in" });
+    return res.json({
+      success: true,
+      message: "Account verified and logged in",
+    });
   } catch (err) {
     console.error("Error in verify-otp:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 
@@ -95,7 +125,7 @@ const verifyPendingEmail = async (req, res) => {
       `SELECT id, email, pending_email, pending_email_otp, pending_email_expires_at, is_verified 
        FROM users 
        WHERE id = ?`,
-      [userId]
+      [userId],
     );
     if (rows.length === 0) {
       return res
@@ -124,7 +154,7 @@ const verifyPendingEmail = async (req, res) => {
     // Ensure email is still unique
     const [emailCheck] = await db.query(
       "SELECT id FROM users WHERE email = ?",
-      [user.pending_email]
+      [user.pending_email],
     );
     if (emailCheck.length > 0) {
       return res
@@ -140,7 +170,7 @@ const verifyPendingEmail = async (req, res) => {
            pending_email_otp = NULL, 
            pending_email_expires_at = NULL
        WHERE id = ?`,
-      [user.pending_email, userId]
+      [user.pending_email, userId],
     );
 
     res.json({

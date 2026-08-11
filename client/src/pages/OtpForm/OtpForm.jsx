@@ -1,25 +1,58 @@
 import { useState, useEffect } from "react";
-import { Form } from "react-router-dom";
+import { Form, useActionData, useNavigation } from "react-router-dom";
 import OtpInput from "../../components/OtpInput/OtpInput";
 import styles from "./OtpForm.module.css";
 import { useDarkMode } from "../../hooks/useDarkmode";
+import { redirect } from "react-router-dom";
+import { verifyOtp } from "../../api/verifyOtp";
+import { resendOtp } from "../../api/resendOtp";
 
-export const otpAction = async ({ request }) => {
+export const action = async ({ request }) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const otpSessionToken = sessionStorage.getItem("otpSessionToken");
   const formData = await request.formData();
   const otp = formData.get("otp");
-  console.log("Submit OTP:", otp);
+  console.log(otp);
 
-  // Example: send to backend
-  // await fetch('/api/verify-otp', { method: 'POST', body: JSON.stringify({ otp }) });
+  if (!otpSessionToken) {
+    return {
+      error: "Your verification session has expired. Please register again.",
+    };
+  }
 
-  return null; // could also return redirect("/success")
+  if (!otp || otp.length !== 6) {
+    return {
+      error: "Please enter a valid 6-digit OTP.",
+    };
+  }
+
+  const payload = {
+    otp,
+    otpSessionToken,
+  };
+
+  try {
+    await verifyOtp(apiUrl, payload);
+
+    sessionStorage.removeItem("otpSessionToken");
+
+    return redirect("/", { replace: true });
+  } catch (error) {
+    return {
+      error: error.message,
+    };
+  }
 };
 
 const RESEND_DELAY = 60;
 
 const OtpForm = () => {
+  const actionData = useActionData();
+  const navigation = useNavigation();
+  const isPending = navigation.state === "submitting";
   const [otpValue, setOtpValue] = useState("");
   const [timeLeft, setTimeLeft] = useState(0);
+
   const { darkMode } = useDarkMode();
 
   const handleOtpChange = (value) => {
@@ -35,13 +68,15 @@ const OtpForm = () => {
   }, [timeLeft]);
 
   const handleResend = async () => {
-    // await fetch('/api/resend-otp', { method: 'POST' });
-
-    console.log("OTP resent!");
-    setTimeLeft(RESEND_DELAY);
+    try {
+      console.log("working");
+      await resendOtp();
+      setTimeLeft(RESEND_DELAY);
+    } catch (error) {
+      console.log("not working");
+      console.error(error.message);
+    }
   };
-
-  console.log(darkMode);
 
   return (
     <div data-darkmode={darkMode} className={styles.page}>
@@ -51,13 +86,21 @@ const OtpForm = () => {
           Enter the 6-digit code we sent to your email
         </p>
 
+        {actionData?.error && (
+          <div className={styles.errorMessage}>{actionData.error}</div>
+        )}
+
         <Form method="post" id="otp-form" className={styles.form}>
           <input type="hidden" name="otp" value={otpValue} />
 
           <OtpInput length={6} onChange={handleOtpChange} />
 
-          <button type="submit" className={styles.button}>
-            Verify
+          <button
+            type="submit"
+            className={styles.verifyButton}
+            disabled={isPending || otpValue.length !== 6}
+          >
+            {isPending ? "Verifying..." : "Verify"}
           </button>
         </Form>
 

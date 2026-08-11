@@ -19,10 +19,10 @@ import Home, { loader as homeLoader } from "./pages/Home/Home";
 import Favourites, {
   loader as favouritesLoader,
 } from "./pages/Favourites/Favourites";
-import Login from "./pages/Login/Login";
 import Register, { action as registerAction } from "./pages/Register/Register";
+import Login, { action as loginAction } from "./pages/Login/Login";
 import ProfilePage, { profileAction } from "./pages/ProfilePage/ProfilePage";
-import OtpForm from "./pages/OtpForm/OtpForm";
+import OtpForm, { action as otpAction } from "./pages/OtpForm/OtpForm";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import ChangePassword, {
@@ -54,7 +54,7 @@ export default function App() {
           />
         </Route>
 
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login />} action={loginAction} />
         <Route
           path="/register"
           element={<Register />}
@@ -65,7 +65,7 @@ export default function App() {
           element={<ProfilePage />}
           action={profileAction}
         />
-        <Route path="/verify-otp" element={<OtpForm />} />
+        <Route path="/verify-otp" element={<OtpForm />} action={otpAction} />
         <Route path="/resetPassword" element={<ResetPassword />} />
         <Route
           path="/changePassword"
@@ -74,8 +74,8 @@ export default function App() {
         />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="*" element={<NotFound />} />
-      </Route>
-    )
+      </Route>,
+    ),
   );
 
   return (

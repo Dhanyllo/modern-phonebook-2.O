@@ -70,7 +70,6 @@ const Login = () => {
           <div className={styles.formWrapper}>
             <Form
               method="post"
-              action="/register"
               className={styles.form}
               onSubmit={() => setIsPending(true)}
             >
@@ -161,13 +160,13 @@ const Login = () => {
 
               <div className={styles.signInText}>
                 Don't have an account?{" "}
-                <Link to="/login" className={styles.signInLink}>
+                <Link to="/register" className={styles.signInLink}>
                   Create Account
                 </Link>
               </div>
 
               <div className={styles.signInText}>
-                <Link to="/login" className={styles.signInLink}>
+                <Link to="/forgotPassword" className={styles.signInLink}>
                   Forgot your password?
                 </Link>
               </div>

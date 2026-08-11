@@ -8,7 +8,7 @@ router.get(
   passport.authenticate("google", {
     scope: ["profile", "email"],
     prompt: "select_account",
-  })
+  }),
 );
 
 router.get(
@@ -17,7 +17,7 @@ router.get(
     session: false,
     failureRedirect: "/login",
   }),
-  googleAuth
+  googleAuth,
 );
 
 module.exports = router;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, Link } from "react-router-dom";
+import { Form, Link, useNavigation, useActionData } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { GoogleButton } from "../../components/GoogleButton/GoogleButton";
 import { useDarkMode } from "../../hooks/useDarkmode";
@@ -10,7 +10,9 @@ const RegisterForm = () => {
   const { darkMode } = useDarkMode();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isPending, setIsPending] = useState(false);
+  const navigation = useNavigation();
+  const actionData = useActionData();
+  const isPending = navigation.state === "submitting";
 
   const handleGoogleLogin = () => {
     window.location.href = `${apiUrl}/google`;
@@ -18,12 +20,7 @@ const RegisterForm = () => {
 
   return (
     <div data-darkmode={darkMode} className={styles.formWrapper}>
-      <Form
-        method="post"
-        action="/register"
-        className={styles.form}
-        onSubmit={() => setIsPending(true)}
-      >
+      <Form method="post" action="/register" className={styles.form}>
         <div className={styles.inputWrapper}>
           <label htmlFor="firstName" className={styles.label}>
             First Name
@@ -43,8 +40,8 @@ const RegisterForm = () => {
             Other Names
           </label>
           <input
-            id="OtherNames"
-            name="OtherNames"
+            id="otherNames"
+            name="otherNames"
             type="text"
             placeholder="Asante Otchere"
             className={styles.inputField}
@@ -121,6 +118,10 @@ const RegisterForm = () => {
             </button>
           </div>
         </div>
+
+        {actionData?.error && (
+          <div className={styles.errorMessage}>{actionData.error}</div>
+        )}
 
         {/* Submit Button */}
         <button
