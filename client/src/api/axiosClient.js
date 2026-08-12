@@ -2,31 +2,52 @@ import axios from "axios";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-axios.defaults.withCredentials = true;
+/**
+ * Main API client.
+ *
+ * All normal API requests should use this client.
+ */
+const axiosClient = axios.create({
+  baseURL: apiUrl,
+  withCredentials: true,
+});
 
-// A separate client that DOES NOT use interceptors.
-// Used ONLY for refresh.
+/**
+ * Separate client for refreshing the access token.
+ *
+ * IMPORTANT:
+ * This client intentionally has NO response interceptor.
+ * Otherwise a failed refresh could trigger another refresh request
+ * and create an infinite loop.
+ */
 const refreshClient = axios.create({
+  baseURL: apiUrl,
   withCredentials: true,
 });
 
 let isRefreshing = false;
 let failedQueue = [];
 
-const processQueue = (error, token = null) => {
-  failedQueue.forEach((p) => {
+/**
+ * Resolve or reject requests that were waiting for
+ * the access-token refresh to complete.
+ */
+const processQueue = (error = null) => {
+  failedQueue.forEach(({ resolve, reject }) => {
     if (error) {
-      p.reject(error);
+      reject(error);
     } else {
-      p.resolve(token);
+      resolve();
     }
   });
 
   failedQueue = [];
 };
 
-// Authentication endpoints should NOT trigger
-// automatic access-token refresh.
+/**
+ * Requests that should NEVER trigger automatic
+ * access-token refreshing.
+ */
 const authEndpoints = [
   "/auth/login",
   "/auth/signup",
@@ -35,59 +56,96 @@ const authEndpoints = [
   "/api/refresh-token",
 ];
 
-const isAuthEndpoint = (url = "") => {
-  return authEndpoints.some((endpoint) => url.includes(endpoint));
-};
+const isAuthEndpoint = (url = "") =>
+  authEndpoints.some((endpoint) => url.includes(endpoint));
 
-axios.interceptors.response.use(
+/**
+ * Response interceptor.
+ *
+ * If an authenticated request returns 401:
+ *
+ * 1. Attempt to refresh the access token.
+ * 2. If another refresh is already running, queue the request.
+ * 3. Once refresh succeeds, retry the failed requests.
+ * 4. If refresh fails, reject them all.
+ */
+axiosClient.interceptors.response.use(
   (response) => response,
 
   async (error) => {
     const originalRequest = error.config;
 
+    // No response or request configuration.
     if (!error.response || !originalRequest) {
       return Promise.reject(error);
     }
 
-    // Don't attempt token refresh for authentication endpoints.
+    // Authentication endpoints must handle their own 401 responses.
     if (isAuthEndpoint(originalRequest.url)) {
       return Promise.reject(error);
     }
 
-    // Handle 401 only ONCE per request.
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      // If refresh is already happening → queue the request.
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        }).then(() => axios(originalRequest));
-      }
-
-      isRefreshing = true;
-
-      try {
-        // Refresh client has no response interceptor.
-        await refreshClient.post(`${apiUrl}/api/refresh-token`);
-
-        processQueue(null);
-
-        // Retry the original request.
-        return axios(originalRequest);
-      } catch (refreshErr) {
-        // Refresh failed → reject everything waiting.
-        processQueue(refreshErr);
-
-        return Promise.reject(refreshErr);
-      } finally {
-        isRefreshing = false;
-      }
+    // Only handle unauthorized requests.
+    if (error.response.status !== 401) {
+      return Promise.reject(error);
     }
 
-    // Any other error → bubble up normally.
-    return Promise.reject(error);
+    // Prevent the same request from triggering refresh repeatedly.
+    if (originalRequest._retry) {
+      return Promise.reject(error);
+    }
+
+    originalRequest._retry = true;
+
+    /**
+     * A refresh request is already in progress.
+     *
+     * Wait for it to finish instead of starting another refresh.
+     */
+    if (isRefreshing) {
+      return new Promise((resolve, reject) => {
+        failedQueue.push({
+          resolve: () => resolve(axiosClient(originalRequest)),
+          reject,
+        });
+      });
+    }
+
+    isRefreshing = true;
+
+    try {
+      /**
+       * Attempt to refresh the access token.
+       *
+       * The refresh token is automatically sent through
+       * the HttpOnly cookie because withCredentials is enabled.
+       */
+      await refreshClient.post("/api/refresh-token");
+
+      /**
+       * Refresh succeeded.
+       *
+       * Retry all requests that were waiting.
+       */
+      processQueue();
+
+      /**
+       * Retry the request that originally caused the refresh.
+       */
+      return axiosClient(originalRequest);
+    } catch (refreshError) {
+      /**
+       * Refresh failed.
+       *
+       * Every queued request should fail as well.
+       */
+      processQueue(refreshError);
+
+      return Promise.reject(refreshError);
+    } finally {
+      isRefreshing = false;
+    }
   },
 );
 
-export default axios;
+export default axiosClient;

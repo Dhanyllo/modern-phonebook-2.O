@@ -1,7 +1,7 @@
 import AuthSidePanel from "../../components/AuthSidePanel/AuthSidePanel";
 import RegisterForm from "../../components/RegisterForm/RegisterForm";
 import { useDarkMode } from "../../hooks/useDarkmode";
-import { redirect } from "react-router-dom";
+import { redirect, useActionData } from "react-router-dom";
 import { registerUser } from "../../api/registerUser";
 import styles from "./Register.module.css";
 
@@ -57,6 +57,8 @@ export async function action({ request }) {
 
 const Register = () => {
   const { darkMode } = useDarkMode();
+  const actionData = useActionData();
+
   return (
     <div data-darkmode={darkMode} className={styles.pageContainer}>
       <AuthSidePanel />
