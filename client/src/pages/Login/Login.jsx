@@ -21,7 +21,7 @@ export async function action({ request }) {
   };
 
   try {
-    const result = await loginUser(apiUrl, payload);
+    await loginUser(apiUrl, payload);
 
     return redirect("/", { replace: true });
   } catch (error) {

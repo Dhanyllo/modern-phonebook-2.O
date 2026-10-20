@@ -30,6 +30,7 @@ import ChangePassword, {
 } from "./pages/ChangePassword/ChangePassword";
 // import MicroSplashLoader from "./components/MicroSplashLoader/MicroSplashLoader";
 import NavigationProgress from "./components/NavigationProgressBar/NavigationProgress";
+import { authRedirectLoader } from "./authRedirectLoader";
 
 export default function App() {
   // Define routes here
@@ -54,18 +55,27 @@ export default function App() {
           />
         </Route>
 
-        <Route path="/login" element={<Login />} action={loginAction} />
+        <Route 
+          path="/login" element={<Login />} 
+          action={loginAction}    
+          loader= {authRedirectLoader} 
+        />
         <Route
           path="/register"
           element={<Register />}
           action={registerAction}
+          loader={authRedirectLoader}
         />
         <Route
           path="/profile"
           element={<ProfilePage />}
           action={profileAction}
         />
-        <Route path="/verify-otp" element={<OtpForm />} action={otpAction} />
+        <Route path="/verify-otp" 
+          element={<OtpForm />} 
+          action={otpAction} 
+          loader= {authRedirectLoader}  
+        />
         <Route path="/resetPassword" element={<ResetPassword />} />
         <Route
           path="/changePassword"
