@@ -5,7 +5,6 @@ export async function authRedirectLoader() {
   try {
     const apiUrl = import.meta.env.VITE_API_URL;
     const authData = await checkAuthStatus(apiUrl);
-    // const res = await axiosClient.get("/api/auth/me");
 
     if (authData.authenticated) {
       return redirect("/", { replace: true });
@@ -18,8 +17,6 @@ export async function authRedirectLoader() {
       return null;
     }
 
-    // Don't treat network errors or server errors
-    // as proof that the user is unauthenticated.
     throw error;
   }
 }

@@ -21,6 +21,7 @@ const signUp = async (req, res) => {
       .replace(/\b\w/g, (c) => c.toUpperCase());
     email = email.trim().toLowerCase();
 
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ message: "Invalid email format" });
@@ -31,6 +32,7 @@ const signUp = async (req, res) => {
       "SELECT id, provider, is_verified FROM users WHERE email = ?",
       [email],
     );
+
 
     if (existingUser.length > 0) {
       const user = existingUser[0];
@@ -65,6 +67,7 @@ const signUp = async (req, res) => {
         ],
       );
 
+      console.log(email);
       await transporter.sendMail({
         from: {
           name: "Modern Phonebook",
@@ -82,13 +85,14 @@ const signUp = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
+
     await db.query(
       `INSERT INTO users (first_name, other_names, email, user_password, provider, otp_code, otp_expires_at, otp_session_token, is_verified)
        VALUES (?, ?, ?, ?, 'local', ?, NOW() + INTERVAL 10 MINUTE, ? , FALSE)`,
       [first_name, other_names, email, hashedPassword, otp, otpSessionToken],
     );
 
-    await transporter.sendMail({
+   await transporter.sendMail({
       from: {
         name: "Modern Phonebook",
         address: process.env.NODEMAILER_EMAIL_ADDRESS,
@@ -97,6 +101,8 @@ const signUp = async (req, res) => {
       subject: "Your OTP Code",
       text: `Your OTP is: ${otp}`,
     });
+
+
 
     return res.status(200).json({
       message: "OTP sent. Please verify your email.",

@@ -28,10 +28,16 @@ const LogoutConfirmModal = () => {
   const navigate = useNavigate();
   const closeModal = () => setActiveModal(null);
 
-  const handleLogout = async (apiUrl) => {
-    const result = await logoutUser(apiUrl);
-    if (result.success) {
-      navigate("/login");
+  const handleLogout = async () => {
+    try {
+      const result = await logoutUser(apiUrl);
+
+      if (result.success) {
+        setActiveModal(null);
+        navigate("/login", { replace: true });
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
     }
   };
 
@@ -91,7 +97,7 @@ const LogoutConfirmModal = () => {
         </div>
       </motion.div>
     </div>,
-    document.getElementById("modal-root")
+    document.getElementById("modal-root"),
   );
 };
 
