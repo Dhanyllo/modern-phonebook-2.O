@@ -20,7 +20,7 @@ const login = async (req, res) => {
 
     // Find user
     const [rows] = await db.query(
-      "SELECT id, email, user_password, is_verified, provider FROM users WHERE email = ?",
+      "SELECT id, email, first_name, other_names, user_password, is_verified, provider FROM users WHERE email = ?",
       [email],
     );
 
@@ -57,13 +57,23 @@ const login = async (req, res) => {
 
     // Generate tokens
     const accessToken = jwt.sign(
-      { id: user.id, email: user.email },
+      {
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        other_names: user.other_names,
+      },
       process.env.JWT_SECRET,
       { expiresIn: "15m" },
     );
 
     const refreshToken = jwt.sign(
-      { id: user.id, email: user.email },
+      {
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        other_names: user.other_names,
+      },
       process.env.JWT_REFRESH_SECRET,
       { expiresIn: "7d" },
     );

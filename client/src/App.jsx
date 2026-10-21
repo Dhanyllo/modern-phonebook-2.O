@@ -55,10 +55,11 @@ export default function App() {
           />
         </Route>
 
-        <Route 
-          path="/login" element={<Login />} 
-          action={loginAction}    
-          loader= {authRedirectLoader} 
+        <Route
+          path="/login"
+          element={<Login />}
+          action={loginAction}
+          loader={authRedirectLoader}
         />
         <Route
           path="/register"
@@ -71,10 +72,11 @@ export default function App() {
           element={<ProfilePage />}
           action={profileAction}
         />
-        <Route path="/verify-otp" 
-          element={<OtpForm />} 
-          action={otpAction} 
-          loader= {authRedirectLoader}  
+        <Route
+          path="/verify-otp"
+          element={<OtpForm />}
+          action={otpAction}
+          loader={authRedirectLoader}
         />
         <Route path="/resetPassword" element={<ResetPassword />} />
         <Route

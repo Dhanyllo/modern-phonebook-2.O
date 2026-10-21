@@ -18,7 +18,7 @@ const verifyOtp = async (req, res) => {
     // Find the local user associated with this OTP session
     // and make sure the OTP is still valid.
     const [rows] = await db.query(
-      `SELECT id, email
+      `SELECT id, email, first_name, other_names
        FROM users
        WHERE otp_session_token = ?
          AND provider = 'local'
@@ -42,6 +42,8 @@ const verifyOtp = async (req, res) => {
       {
         id: user.id,
         email: user.email,
+        first_name: user.first_name,
+        other_names: user.other_names,
         provider: "local",
       },
       process.env.JWT_SECRET,
@@ -52,6 +54,8 @@ const verifyOtp = async (req, res) => {
       {
         id: user.id,
         email: user.email,
+        first_name: user.first_name,
+        other_names: user.other_names,
         provider: "local",
       },
       process.env.JWT_REFRESH_SECRET,

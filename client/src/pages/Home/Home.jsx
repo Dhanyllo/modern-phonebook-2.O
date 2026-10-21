@@ -22,7 +22,6 @@ import {
 } from "@tanstack/react-query";
 import { queryClient as globalQueryClient } from "../../queryClient";
 import { checkAuthStatus } from "../../api/checkAuthStatus";
-import styles from "./Home.module.css";
 import { useDarkMode } from "../../hooks/useDarkmode";
 import { useUI } from "../../context/UIContext";
 import SkeletonContactCard from "../../components/SkeletonContactCard/SkeletonContactCard";
@@ -30,6 +29,8 @@ import { fetchContacts } from "../../api/fetchContacts";
 import { fetchFavStatus } from "../../api/fetchFavStatus";
 import { fetchSearchResults } from "../../api/fetchHomeSearchResults";
 import { updateFavouriteStatus } from "../../api/updateFavouriteStatus";
+import { UserRoundPlus } from "lucide-react";
+import styles from "./Home.module.css";
 
 // ==============================
 // Loader with React Query hydration
@@ -224,6 +225,34 @@ function Home() {
           {index !== array.length - 1 && <hr className={styles.Hr1} />}
         </React.Fragment>
       ));
+    } else {
+      // Cards = (
+      //   <div
+      //     className={
+      //       darkMode
+      //         ? styles.emptyDirectoryContainerDarkmode
+      //         : styles.emptyDirectoryContainerLightmode
+      //     }
+      //   >
+      //     No Contact Added.
+      //   </div>
+      // );
+
+      Cards = (
+        <div
+          className={`${styles.emptyDirectoryContainer} ${
+            darkMode ? styles.darkMode : styles.lightMode
+          }`}
+        >
+          <div className={styles.emptyStateIcon}>
+            <UserRoundPlus size={44} strokeWidth={1.6} />
+          </div>
+
+          <h3>No contacts yet</h3>
+
+          <p>Your directory is empty. Add a contact to get started.</p>
+        </div>
+      );
     }
   }
 
@@ -259,7 +288,13 @@ function Home() {
         <Sidebar favStatus={favStatus?.exists_status} />
 
         <main className={styles.mainContainer}>
-          <section className={styles.cardGrid}>
+          <section
+            className={`${styles.cardGrid} ${
+              !showSkeleton && contacts?.data?.length === 0
+                ? styles.emptyCardGrid
+                : ""
+            }`}
+          >
             {showSkeleton
               ? Array.from({ length: 15 }).map((_, i) => (
                   <SkeletonContactCard key={i} />

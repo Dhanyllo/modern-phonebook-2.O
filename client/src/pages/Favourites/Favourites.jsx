@@ -30,6 +30,7 @@ import { fetchFavourites } from "../../api/fetchFavourites";
 import { fetchFavStatus } from "../../api/fetchFavStatus";
 import { fetchSearchResults } from "../../api/fetchFavSearchResults";
 import { updateFavouriteStatus } from "../../api/updateFavouriteStatus";
+import { Heart } from "lucide-react";
 import styles from "./Favourites.module.css";
 
 // ==============================
@@ -158,15 +159,15 @@ function Favourites() {
       // Optimistically update contacts
       queryClient.setQueryData(["contacts"], (old) =>
         old?.map((contact) =>
-          contact.id === id ? { ...contact, favourite: newStatus } : contact
-        )
+          contact.id === id ? { ...contact, favourite: newStatus } : contact,
+        ),
       );
 
       // Optimistically update search results, if needed
       queryClient.setQueryData(["search"], (old) =>
         old?.map((contact) =>
-          contact.id === id ? { ...contact, favourite: newStatus } : contact
-        )
+          contact.id === id ? { ...contact, favourite: newStatus } : contact,
+        ),
       );
 
       return { previousContacts, previousSearch };
@@ -228,16 +229,32 @@ function Favourites() {
         </React.Fragment>
       ));
     } else {
+      // Cards = (
+      //   <div
+      //     className={
+      //       darkMode
+      //         ? styles.emptyDirectoryContainerDarkmode
+      //         : styles.emptyDirectoryContainerLightmode
+      //     }
+      //   >
+      //     No favourites yet.
+      //   </div>
+      // );
+
       Cards = (
-        <p
-          className={
-            darkMode
-              ? styles.emptyDirectoryContainerDarkmode
-              : styles.emptyDirectoryContainerLightmode
-          }
+        <div
+          className={`${styles.emptyDirectoryContainer} ${
+            darkMode ? styles.darkMode : styles.lightMode
+          }`}
         >
-          No favourites yet.
-        </p>
+          <div className={`${styles.emptyStateIcon} ${styles.favouriteIcon}`}>
+            <Heart size={44} strokeWidth={1.6} />
+          </div>
+
+          <h3>No favourites yet</h3>
+
+          <p>Contacts you mark as favourites will appear here.</p>
+        </div>
       );
     }
   }
@@ -252,7 +269,7 @@ function Favourites() {
 
     document.body.classList.remove(
       "body1-style-darkmode",
-      "body1-style-lightmode"
+      "body1-style-lightmode",
     );
 
     document.body.classList.add(BodyBgStyle);
@@ -260,7 +277,7 @@ function Favourites() {
     return () => {
       document.body.classList.remove(
         "body1-style-darkmode",
-        "body1-style-lightmode"
+        "body1-style-lightmode",
       );
     };
   }, [darkMode]);
@@ -274,7 +291,13 @@ function Favourites() {
         <Sidebar favStatus={favStatus?.exists_status} />
 
         <main className={styles.mainContainer}>
-          <section className={styles.cardGrid}>
+          <section
+            className={`${styles.cardGrid} ${
+              !showSkeleton && favourites?.data?.length === 0
+                ? styles.emptyCardGrid
+                : ""
+            }`}
+          >
             {showSkeleton
               ? Array.from({ length: 15 }).map((_, i) => (
                   <SkeletonContactCard key={i} />

@@ -51,7 +51,7 @@ function HeaderNormal() {
   const handleNotificationMouseLeave = () => {
     notificationTimer.current = setTimeout(
       () => setNotificationToggle(false),
-      100
+      100,
     );
   };
 
