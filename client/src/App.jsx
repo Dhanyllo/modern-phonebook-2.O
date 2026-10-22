@@ -28,68 +28,65 @@ import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import ChangePassword, {
   changePasswordAction,
 } from "./pages/ChangePassword/ChangePassword";
-// import MicroSplashLoader from "./components/MicroSplashLoader/MicroSplashLoader";
 import NavigationProgress from "./components/NavigationProgressBar/NavigationProgress";
+import RevalidateOnPageShow from "./components/RevalidateOnPageShow";
 import { authRedirectLoader } from "./authRedirectLoader";
 
-export default function App() {
-  // Define routes here
-  const router = createBrowserRouter(
-    createRoutesFromElements(
+// Define routes here
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route
+      errorElement={<Error />}
+      element={
+        <>
+          <NavigationProgress />
+          <RevalidateOnPageShow />
+          <Outlet />
+        </>
+      }
+    >
+      <Route element={<Header />}>
+        <Route path="/" element={<Home />} loader={homeLoader} />
+
+        <Route
+          path="/favourites"
+          element={<Favourites />}
+          loader={favouritesLoader}
+        />
+      </Route>
+
       <Route
-        errorElement={<Error />}
-        element={
-          <>
-            <NavigationProgress />
-            <Outlet />
-          </>
-        }
-      >
-        <Route element={<Header />}>
-          <Route path="/" element={<Home />} loader={homeLoader} />
+        path="/login"
+        element={<Login />}
+        action={loginAction}
+        loader={authRedirectLoader}
+      />
+      <Route
+        path="/register"
+        element={<Register />}
+        action={registerAction}
+        loader={authRedirectLoader}
+      />
+      <Route path="/profile" element={<ProfilePage />} action={profileAction} />
+      <Route
+        path="/verify-otp"
+        element={<OtpForm />}
+        action={otpAction}
+        loader={authRedirectLoader}
+      />
+      <Route path="/resetPassword" element={<ResetPassword />} />
+      <Route
+        path="/changePassword"
+        element={<ChangePassword />}
+        action={changePasswordAction}
+      />
+      <Route path="/forgotPassword" element={<ForgotPassword />} />
+      <Route path="*" element={<NotFound />} />
+    </Route>,
+  ),
+);
 
-          <Route
-            path="/favourites"
-            element={<Favourites />}
-            loader={favouritesLoader}
-          />
-        </Route>
-
-        <Route
-          path="/login"
-          element={<Login />}
-          action={loginAction}
-          loader={authRedirectLoader}
-        />
-        <Route
-          path="/register"
-          element={<Register />}
-          action={registerAction}
-          loader={authRedirectLoader}
-        />
-        <Route
-          path="/profile"
-          element={<ProfilePage />}
-          action={profileAction}
-        />
-        <Route
-          path="/verify-otp"
-          element={<OtpForm />}
-          action={otpAction}
-          loader={authRedirectLoader}
-        />
-        <Route path="/resetPassword" element={<ResetPassword />} />
-        <Route
-          path="/changePassword"
-          element={<ChangePassword />}
-          action={changePasswordAction}
-        />
-        <Route path="/forgotPassword" element={<ForgotPassword />} />
-        <Route path="*" element={<NotFound />} />
-      </Route>,
-    ),
-  );
-
+export default function App() {
   return (
     <DarkModeProvider>
       <UIProvider>
