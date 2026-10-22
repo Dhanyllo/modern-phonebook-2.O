@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigation } from "react-router-dom";
+import { useLocation, useNavigation } from "react-router-dom";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 
@@ -13,14 +13,19 @@ NProgress.configure({
 
 export default function NavigationProgress() {
   const navigation = useNavigation();
+  const location = useLocation();
+
+  const isRouteNavigation =
+    navigation.state === "loading" &&
+    navigation.location?.pathname !== location.pathname;
 
   useEffect(() => {
-    if (navigation.state === "loading") {
+    if (isRouteNavigation) {
       NProgress.start();
     } else {
       NProgress.done();
     }
-  }, [navigation.state]);
+  }, [isRouteNavigation]);
 
   return null;
 }

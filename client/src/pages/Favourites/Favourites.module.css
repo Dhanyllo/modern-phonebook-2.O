@@ -145,15 +145,10 @@
   justify-content: center;
   width: 88px;
   height: 88px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   border-radius: 50%;
   color: #0369a1;
   background-color: #e0f2fe;
-}
-
-.favouriteIcon {
-  color: #be185d;
-  background-color: #fce7f3;
 }
 
 .emptyDirectoryContainer h3 {

@@ -1,0 +1,80 @@
+.emptyDirectoryContainer {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 280px;
+  padding: 32px 20px;
+  box-sizing: border-box;
+  text-align: center;
+  border-radius: 16px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.lightMode {
+  color: #334155;
+}
+
+.darkMode {
+  color: #e2e8f0;
+}
+
+.emptyDirectoryContainer h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.emptyDirectoryContainer p {
+  max-width: 340px;
+  margin: 0;
+  font-size: 0.925rem;
+  line-height: 1.4;
+  color: #64748b;
+  /* color: red; */
+}
+
+.darkMode p {
+  max-width: 340px;
+  margin: 0;
+  font-size: 0.925rem;
+  line-height: 1.4;
+  color: #94a3b8;
+}
+
+.emptyStateIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  margin-bottom: 5px;
+  border-radius: 50%;
+}
+
+.searchEmptyIcon {
+  color: #0369a1;
+  background-color: #e0f2fe;
+}
+
+.darkMode .searchEmptyIcon {
+  color: #a3e635;
+  background-color: #19351d;
+}
+
+.searchHint {
+  max-width: 340px;
+  margin-top: 2px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #64748b;
+}
+
+.darkMode .searchHint {
+  color: #94a3b8;
+}

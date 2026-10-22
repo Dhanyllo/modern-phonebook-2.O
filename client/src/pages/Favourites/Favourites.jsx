@@ -30,6 +30,7 @@ import { fetchFavourites } from "../../api/fetchFavourites";
 import { fetchFavStatus } from "../../api/fetchFavStatus";
 import { fetchSearchResults } from "../../api/fetchFavSearchResults";
 import { updateFavouriteStatus } from "../../api/updateFavouriteStatus";
+import NoSearchResults from "../../components/NoSearchResults/NoSearchResults";
 import { Heart } from "lucide-react";
 import styles from "./Favourites.module.css";
 
@@ -86,7 +87,7 @@ function Favourites() {
 
   const currentPage = parseInt(searchParams.get("page")) || 1;
   const limit = 15;
-  const searchTerm = searchParams.get("searchParams") || "";
+  const searchTerm = searchParams.get("search") || "";
   const hasSearchTerm = Boolean(searchTerm);
 
   // ==============================
@@ -130,13 +131,19 @@ function Favourites() {
   });
 
   useEffect(() => {
-    if (!favLoading) {
-      const timer = setTimeout(() => setShowSkeleton(false), 500); // minimum display time
-      return () => clearTimeout(timer);
-    } else {
+    if (
+      favLoading ||
+      favFetching ||
+      (hasSearchTerm && (searchLoading || searchFetching))
+    ) {
       setShowSkeleton(true);
+      return;
     }
-  }, [favLoading]);
+
+    const timer = setTimeout(() => setShowSkeleton(false), 500);
+
+    return () => clearTimeout(timer);
+  }, [favLoading, favFetching, hasSearchTerm, searchLoading, searchFetching]);
 
   // ==============================
   // Favourite Update
@@ -200,15 +207,23 @@ function Favourites() {
   // ==============================
   // Render contacts
   // ==============================
+
   const results = hasSearchTerm ? search?.data : favourites?.data;
+
   const totalPages = hasSearchTerm
     ? search?.totalPages
     : favourites?.totalPages;
 
+  const hasFavourites = (favourites?.data?.length ?? 0) > 0;
+  const hasResults = (results?.length ?? 0) > 0;
+
+  const isResultsLoading =
+    favLoading || (hasSearchTerm && (searchLoading || searchFetching));
+
   let Cards = null;
 
-  if (!favLoading) {
-    if (results && results.length > 0) {
+  if (!isResultsLoading) {
+    if (hasResults) {
       Cards = results.map((item, index, array) => (
         <React.Fragment key={item.id || index}>
           <ContactCard
@@ -225,22 +240,11 @@ function Favourites() {
               setActiveModal("detail");
             }}
           />
+
           {index !== array.length - 1 && <hr className={styles.Hr1} />}
         </React.Fragment>
       ));
-    } else {
-      // Cards = (
-      //   <div
-      //     className={
-      //       darkMode
-      //         ? styles.emptyDirectoryContainerDarkmode
-      //         : styles.emptyDirectoryContainerLightmode
-      //     }
-      //   >
-      //     No favourites yet.
-      //   </div>
-      // );
-
+    } else if (!hasFavourites) {
       Cards = (
         <div
           className={`${styles.emptyDirectoryContainer} ${
@@ -252,10 +256,11 @@ function Favourites() {
           </div>
 
           <h3>No favourites yet</h3>
-
           <p>Contacts you mark as favourites will appear here.</p>
         </div>
       );
+    } else if (hasSearchTerm) {
+      Cards = <NoSearchResults searchQuery={searchTerm} darkMode={darkMode} />;
     }
   }
 

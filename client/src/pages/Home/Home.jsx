@@ -30,6 +30,7 @@ import { fetchFavStatus } from "../../api/fetchFavStatus";
 import { fetchSearchResults } from "../../api/fetchHomeSearchResults";
 import { updateFavouriteStatus } from "../../api/updateFavouriteStatus";
 import { UserRoundPlus } from "lucide-react";
+import NoSearchResults from "../../components/NoSearchResults/NoSearchResults";
 import styles from "./Home.module.css";
 
 // ==============================
@@ -85,7 +86,7 @@ function Home() {
   const queryClient = useQueryClient();
   const currentPage = parseInt(searchParams.get("page")) || 1;
   const limit = 15;
-  const searchTerm = searchParams.get("searchParams") || "";
+  const searchTerm = searchParams.get("search") || "";
   const hasSearchTerm = Boolean(searchTerm);
 
   // ==============================
@@ -129,13 +130,25 @@ function Home() {
   });
 
   useEffect(() => {
-    if (!contactsLoading) {
-      const timer = setTimeout(() => setShowSkeleton(false), 500); // minimum display time
-      return () => clearTimeout(timer);
-    } else {
+    if (
+      contactsLoading ||
+      contactsFetching ||
+      (hasSearchTerm && (searchLoading || searchFetching))
+    ) {
       setShowSkeleton(true);
+      return;
     }
-  }, [contactsLoading]);
+
+    const timer = setTimeout(() => setShowSkeleton(false), 500); // minimum display time
+
+    return () => clearTimeout(timer);
+  }, [
+    contactsLoading,
+    contactsFetching,
+    hasSearchTerm,
+    searchLoading,
+    searchFetching,
+  ]);
 
   // ==============================
   // Favourite Update
@@ -199,13 +212,20 @@ function Home() {
   // ==============================
   // Contacts Rendering
   // ==============================
+
   const results = hasSearchTerm ? search?.data : contacts?.data;
   const totalPages = hasSearchTerm ? search?.totalPages : contacts?.totalPages;
 
+  const hasContacts = (contacts?.data?.length ?? 0) > 0;
+  const hasResults = (results?.length ?? 0) > 0;
+
+  const isResultsLoading =
+    contactsLoading || (hasSearchTerm && (searchLoading || searchFetching));
+
   let Cards = null;
 
-  if (!contactsLoading) {
-    if (results && results.length > 0) {
+  if (!isResultsLoading) {
+    if (hasResults) {
       Cards = results.map((item, index, array) => (
         <React.Fragment key={item.id || index}>
           <ContactCard
@@ -222,22 +242,11 @@ function Home() {
               setActiveModal("detail");
             }}
           />
+
           {index !== array.length - 1 && <hr className={styles.Hr1} />}
         </React.Fragment>
       ));
-    } else {
-      // Cards = (
-      //   <div
-      //     className={
-      //       darkMode
-      //         ? styles.emptyDirectoryContainerDarkmode
-      //         : styles.emptyDirectoryContainerLightmode
-      //     }
-      //   >
-      //     No Contact Added.
-      //   </div>
-      // );
-
+    } else if (!hasContacts) {
       Cards = (
         <div
           className={`${styles.emptyDirectoryContainer} ${
@@ -249,16 +258,14 @@ function Home() {
           </div>
 
           <h3>No contacts yet</h3>
-
           <p>Your directory is empty. Add a contact to get started.</p>
         </div>
       );
+    } else if (hasSearchTerm) {
+      Cards = <NoSearchResults searchQuery={searchTerm} darkMode={darkMode} />;
     }
   }
 
-  // ==============================
-  // Background Mode
-  // ==============================
   useEffect(() => {
     const BodyBgStyle = darkMode
       ? "body1-style-darkmode"

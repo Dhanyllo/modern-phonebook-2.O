@@ -10,11 +10,17 @@ function HeaderSearch() {
   const { darkMode } = useDarkMode();
   const { setIsSearchMode } = useUI();
   const [searchParams, setSearchParams] = useSearchParams();
-  const searchQuery = searchParams.get("searchParams") || "";
+  const searchQuery = searchParams.get("search") || "";
   const inputRef = useRef(null);
 
   const handleChange = (event) => {
-    setSearchParams({ searchParams: event.target.value });
+    setSearchParams(
+      { search: event.target.value },
+      {
+        replace: true,
+        preventScrollReset: true,
+      },
+    );
   };
 
   useEffect(() => {

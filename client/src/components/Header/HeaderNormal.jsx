@@ -23,7 +23,7 @@ function HeaderNormal() {
   const { setActiveModal, activeModal, setIsSearchMode } = useUI();
   const { isMobile, isTablet } = useBreakpoint();
   const [searchParams, setSearchParams] = useSearchParams();
-  const searchQuery = searchParams.get("searchParams") || "";
+  const searchQuery = searchParams.get("search") || "";
   const inputRef = useRef(null);
   const [profileToggle, setProfileToggle] = useState(false);
   const [notificationToggle, setNotificationToggle] = useState(false);
@@ -31,7 +31,13 @@ function HeaderNormal() {
   const notificationTimer = useRef();
 
   const handleChange = (event) => {
-    setSearchParams({ searchParams: event.target.value });
+    setSearchParams(
+      { search: event.target.value },
+      {
+        replace: true,
+        preventScrollReset: true,
+      },
+    );
   };
 
   const handleProfileMouseEnter = () => {
