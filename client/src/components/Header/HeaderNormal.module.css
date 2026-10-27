@@ -369,7 +369,7 @@ html[data-darkmode="true"] .notificationContainer {
   content: "";
   position: absolute;
   top: -10px;
-  left: 164px;
+  left: var(--triangle-left, 164px);
   width: 0;
   height: 0;
   border-left: 10px solid transparent;
@@ -448,12 +448,13 @@ html[data-darkmode="true"] .profileContainer {
   content: "";
   position: absolute;
   top: -10px;
-  left: 31px;
+  left: var(--triangle-left, 31px);
   width: 0;
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-bottom: 10px solid rgb(248, 248, 248);
+  background-color: red;
 }
 
 html[data-darkmode="true"] .profileContainer::before {
@@ -748,10 +749,11 @@ html[data-darkmode="true"] .profileLayer2Link2:hover {
     display: flex;
   }
 
-  .profileContainer::before {
+  /* .profileContainer::before {
     top: -10px;
     left: 178px;
-  }
+    background-color: yellow;
+  } */
 
   .hamburgerButtonWrap {
     display: flex;
@@ -890,10 +892,11 @@ html[data-darkmode="true"] .profileLayer2Link2:hover {
     display: flex;
   }
 
-  .profileContainer::before {
+  /* .profileContainer::before {
     top: -10px;
     left: 148px;
-  }
+    background-color: pink;
+  } */
 
   .hamburgerButtonWrap {
     display: flex;
@@ -984,13 +987,14 @@ html[data-darkmode="true"] .profileLayer2Link2:hover {
 
   .notificationContainer::before {
     top: -10px;
-    left: 180px;
+    left: var(--triangle-left, 180px);
   }
 
-  .profileContainer::before {
+  /* .profileContainer::before {
     top: -10px;
     left: 68px;
-  }
+    background-color: orange;
+  } */
 }
 
 @media (min-width: 601px) and (max-width: 1045px) {

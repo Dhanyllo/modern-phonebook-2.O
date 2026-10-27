@@ -25,6 +25,12 @@ function HeaderNormal() {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
   const inputRef = useRef(null);
+  const notificationButtonRef = useRef(null);
+  const notificationPanelRef = useRef(null);
+  const [triangleLeft, setTriangleLeft] = useState(164);
+  const profileButtonRef = useRef(null);
+  const profilePanelRef = useRef(null);
+  const [profileTriangleLeft, setProfileTriangleLeft] = useState(31);
   const [profileToggle, setProfileToggle] = useState(false);
   const [notificationToggle, setNotificationToggle] = useState(false);
   const profileTimer = useRef();
@@ -83,6 +89,62 @@ function HeaderNormal() {
       setActiveModal(null);
     }
   }, [isMobile, isTablet, activeModal, setActiveModal]);
+
+  useEffect(() => {
+    if (!notificationToggle) return;
+
+    const updateTrianglePosition = () => {
+      const button = notificationButtonRef.current;
+      const panel = notificationPanelRef.current;
+
+      if (!button || !panel) return;
+
+      const buttonRect = button.getBoundingClientRect();
+      const panelRect = panel.getBoundingClientRect();
+
+      const buttonCenter = buttonRect.left + buttonRect.width / 2;
+
+      // Position the triangle's center on the button's center.
+      const nextLeft = buttonCenter - panelRect.left - 10;
+
+      setTriangleLeft(nextLeft);
+    };
+
+    updateTrianglePosition();
+
+    window.addEventListener("resize", updateTrianglePosition);
+
+    return () => {
+      window.removeEventListener("resize", updateTrianglePosition);
+    };
+  }, [notificationToggle]);
+
+  useEffect(() => {
+    if (!profileToggle) return;
+
+    const updateProfileTrianglePosition = () => {
+      const button = profileButtonRef.current;
+      const panel = profilePanelRef.current;
+
+      if (!button || !panel) return;
+
+      const buttonRect = button.getBoundingClientRect();
+      const panelRect = panel.getBoundingClientRect();
+
+      const buttonCenter = buttonRect.left + buttonRect.width / 2;
+      const nextLeft = buttonCenter - panelRect.left - 10;
+
+      setProfileTriangleLeft(nextLeft);
+    };
+
+    updateProfileTrianglePosition();
+
+    window.addEventListener("resize", updateProfileTrianglePosition);
+
+    return () => {
+      window.removeEventListener("resize", updateProfileTrianglePosition);
+    };
+  }, [profileToggle]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -192,7 +254,7 @@ function HeaderNormal() {
             <IoSearch className={styles.searchButtonIcon} />
           </button>
 
-          <div className={styles.profile}>
+          <div ref={profileButtonRef} className={styles.profile}>
             <FaRegUserCircle
               onMouseEnter={handleProfileMouseEnter}
               onMouseLeave={handleProfileMouseLeave}
@@ -232,6 +294,7 @@ function HeaderNormal() {
           </div>
 
           <div
+            ref={notificationButtonRef}
             className={styles.notificationsIconContainer}
             onMouseEnter={!isMobile ? handleNotificationMouseEnter : undefined}
             onMouseLeave={!isMobile ? handleNotificationMouseLeave : undefined}
@@ -269,6 +332,8 @@ function HeaderNormal() {
         </div>
 
         <div
+          ref={notificationPanelRef}
+          style={{ "--triangle-left": `${triangleLeft}px` }}
           className={
             notificationToggle
               ? styles.notificationContainer
@@ -283,7 +348,12 @@ function HeaderNormal() {
             <div>COMING SOON</div>
           </div>
         </div>
+
         <div
+          ref={profilePanelRef}
+          style={{
+            "--triangle-left": `${profileTriangleLeft}px`,
+          }}
           className={
             profileToggle
               ? styles.profileContainer
