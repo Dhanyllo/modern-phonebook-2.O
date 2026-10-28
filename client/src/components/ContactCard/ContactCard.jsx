@@ -1,8 +1,8 @@
 import { FaHeart } from "react-icons/fa6";
-import styles from "./ContactCard.module.css";
 import { useDarkMode } from "../../hooks/useDarkmode";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { RiArrowRightSLine } from "react-icons/ri";
+import styles from "./ContactCard.module.css";
 
 function ContactCard({
   firstName,

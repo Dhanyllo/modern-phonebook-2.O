@@ -22,7 +22,25 @@ function MobileSidebarModal({ favStatus }) {
   const isNavigatingToFavourites =
     navigation.location?.pathname === "/favourites";
 
+  const handleFavouritesNavigation = (event) => {
+    if (isNavigatingToFavourites) {
+      event.preventDefault();
+      return;
+    }
+
+    closeModal();
+  };
+
   const isNavigatingToHome = navigation.location?.pathname === "/";
+
+  const handleHomeNavigation = (event) => {
+    if (isNavigatingToHome) {
+      event.preventDefault();
+      return;
+    }
+
+    closeModal();
+  };
 
   const modalVariants = {
     hidden: {
@@ -92,6 +110,7 @@ function MobileSidebarModal({ favStatus }) {
           aria-disabled={isNavigatingToHome}
           className={({ isActive }) => (isActive ? styles.active : "")}
           to="/"
+          onClick={handleHomeNavigation}
         >
           <RiContactsBookFill className={styles.contactsIcon} />
           <div className={styles.linkText}>All Contacts</div>
@@ -101,13 +120,14 @@ function MobileSidebarModal({ favStatus }) {
           aria-disabled={isNavigatingToFavourites}
           className={({ isActive }) => (isActive ? styles.active : "")}
           to="/favourites"
+          onClick={handleFavouritesNavigation}
         >
           <FaHeart style={heartIcon} className={styles.heartIcon} />
           <div className={styles.linkText}>Favourites</div>
         </NavLink>
       </motion.div>
     </motion.div>,
-    document.getElementById("modal-root")
+    document.getElementById("modal-root"),
   );
 }
 

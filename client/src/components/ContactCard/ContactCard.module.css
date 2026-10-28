@@ -8,12 +8,15 @@
   border-style: none;
   padding: 15px 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .cardWrapDarkmode:hover {
   transform: translateY(-10px) scale(1.05);
-  box-shadow: 0 15px 40px rgba(0, 255, 150, 0.2),
+  box-shadow:
+    0 15px 40px rgba(0, 255, 150, 0.2),
     0 4px 10px rgba(0, 255, 150, 0.3);
   background: linear-gradient(
     to top,
@@ -38,7 +41,9 @@
   border-style: none;
   padding: 15px 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .cardWrapLightmode:hover {
@@ -113,7 +118,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: -7px;
+  margin-top: -5px;
   margin-bottom: 15px;
   overflow: hidden;
 }
@@ -184,7 +189,8 @@
 
   .cardWrapDarkmode:hover {
     transform: none;
-    box-shadow: 0 15px 40px rgba(0, 255, 150, 0.2),
+    box-shadow:
+      0 15px 40px rgba(0, 255, 150, 0.2),
       0 4px 10px rgba(0, 255, 150, 0.3);
     box-shadow: none;
     background: linear-gradient(
@@ -218,7 +224,8 @@
   }
 
   .cardImage {
-    height: 55px;
+    width: 50px;
+    height: 50px;
     margin-left: 10px;
     margin-right: 20px;
   }

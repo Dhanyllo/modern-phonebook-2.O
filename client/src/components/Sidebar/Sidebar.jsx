@@ -16,7 +16,21 @@ function Sidebar({ favStatus }) {
   const isNavigatingToFavourites =
     navigation.location?.pathname === "/favourites";
 
+  const handleFavouritesNavigation = (event) => {
+    if (isNavigatingToFavourites) {
+      event.preventDefault();
+      return;
+    }
+  };
+
   const isNavigatingToHome = navigation.location?.pathname === "/";
+
+  const handleHomeNavigation = (event) => {
+    if (isNavigatingToHome) {
+      event.preventDefault();
+      return;
+    }
+  };
 
   return (
     <nav
@@ -26,6 +40,7 @@ function Sidebar({ favStatus }) {
         aria-disabled={isNavigatingToHome}
         className={({ isActive }) => (isActive ? styles.active : "")}
         to="/"
+        onClick={handleHomeNavigation}
       >
         <RiContactsBookFill className={styles.contactsIcon} />
         <div className={styles.linkText}>All Contacts</div>
@@ -35,6 +50,7 @@ function Sidebar({ favStatus }) {
         aria-disabled={isNavigatingToFavourites}
         className={({ isActive }) => (isActive ? styles.active : "")}
         to="/favourites"
+        onClick={handleFavouritesNavigation}
       >
         <FaHeart style={heartIcon} className={styles.heartIcon} />
         <div className={styles.linkText}>Favourites</div>

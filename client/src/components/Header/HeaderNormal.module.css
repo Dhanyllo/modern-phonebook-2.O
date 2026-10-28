@@ -454,7 +454,6 @@ html[data-darkmode="true"] .profileContainer {
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-bottom: 10px solid rgb(248, 248, 248);
-  background-color: red;
 }
 
 html[data-darkmode="true"] .profileContainer::before {
