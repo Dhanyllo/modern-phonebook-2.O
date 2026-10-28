@@ -8,7 +8,7 @@ const createContact = async (req, res) => {
   const connection = await db.getConnection();
 
   try {
-    const {
+    let {
       first_name,
       other_names,
       phone_number,
@@ -22,6 +22,18 @@ const createContact = async (req, res) => {
       whatsapp,
       linkedin,
     } = req.body;
+
+    const normalizeName = (name) => {
+      if (typeof name !== "string") return name;
+
+      return name
+        .trim()
+        .toLowerCase()
+        .replace(/\b\p{L}/gu, (letter) => letter.toUpperCase());
+    };
+
+    first_name = normalizeName(first_name);
+    other_names = normalizeName(other_names);
 
     const media_handles = { twitter, instagram, facebook, whatsapp, linkedin };
     const userId = req.user.id;
@@ -48,7 +60,7 @@ const createContact = async (req, res) => {
         favourite_status,
         image_url, // already relative
         userId,
-      ]
+      ],
     );
 
     const contactId = contactResult.insertId;
@@ -66,7 +78,7 @@ const createContact = async (req, res) => {
         media_handles.linkedin || null,
         contactId,
         userId,
-      ]
+      ],
     );
 
     // Insert occupations
@@ -74,7 +86,7 @@ const createContact = async (req, res) => {
       for (const occupation of occupations) {
         await connection.query(
           `INSERT INTO occupations (occupation, contact_id, user_id) VALUES (?, ?, ?)`,
-          [occupation, contactId, userId]
+          [occupation, contactId, userId],
         );
       }
     }
@@ -105,7 +117,7 @@ const updateContact = async (req, res) => {
 
   try {
     const { id } = req.params;
-    const {
+    let {
       first_name,
       other_names,
       phone_number,
@@ -119,6 +131,18 @@ const updateContact = async (req, res) => {
       linkedin,
       occupations,
     } = req.body;
+
+    const normalizeName = (name) => {
+      if (typeof name !== "string") return name;
+
+      return name
+        .trim()
+        .toLowerCase()
+        .replace(/\b\p{L}/gu, (letter) => letter.toUpperCase());
+    };
+
+    first_name = normalizeName(first_name);
+    other_names = normalizeName(other_names);
 
     const userId = req.user.id;
 
@@ -134,7 +158,7 @@ const updateContact = async (req, res) => {
     // Check existing contact + image
     const [existing] = await connection.query(
       `SELECT image_url FROM contact_profiles WHERE id = ? AND user_id = ?`,
-      [id, userId]
+      [id, userId],
     );
 
     if (existing.length === 0) {
@@ -171,7 +195,7 @@ const updateContact = async (req, res) => {
         finalImageUrl,
         id,
         userId,
-      ]
+      ],
     );
 
     // Update media handles
@@ -187,13 +211,13 @@ const updateContact = async (req, res) => {
         linkedin || null,
         id,
         userId,
-      ]
+      ],
     );
 
     // Refresh occupations
     await connection.query(
       `DELETE FROM occupations WHERE contact_id = ? AND user_id = ?`,
-      [id, userId]
+      [id, userId],
     );
 
     if (occupations && occupations.length > 0) {
@@ -201,7 +225,7 @@ const updateContact = async (req, res) => {
         await connection.query(
           `INSERT INTO occupations (occupation, contact_id, user_id)
            VALUES (?, ?, ?)`,
-          [occupation, id, userId]
+          [occupation, id, userId],
         );
       }
     }
@@ -215,7 +239,7 @@ const updateContact = async (req, res) => {
       const oldImagePath = path.join(
         __dirname,
         "..",
-        oldImageUrl.replace(/^\//, "")
+        oldImageUrl.replace(/^\//, ""),
       );
 
       fs.unlink(oldImagePath, (err) => {
@@ -253,7 +277,7 @@ const deleteContact = async (req, res) => {
     // Ensure contact belongs to the logged-in user
     const [existing] = await connection.query(
       "SELECT id FROM contact_profiles WHERE id = ? AND user_id = ?",
-      [id, userId]
+      [id, userId],
     );
 
     if (existing.length === 0) {
@@ -267,7 +291,7 @@ const deleteContact = async (req, res) => {
     // Delete the contact (cascade will handle related tables)
     await connection.query(
       "DELETE FROM contact_profiles WHERE id = ? AND user_id = ?",
-      [id, userId]
+      [id, userId],
     );
 
     await connection.commit();
@@ -319,7 +343,7 @@ const getContactById = async (req, res) => {
         ON contact_profiles.id = media_handles.contact_id
       WHERE contact_profiles.id = ?
       `,
-      [parsedId]
+      [parsedId],
     );
 
     if (!contactResults.length) {
@@ -337,7 +361,7 @@ const getContactById = async (req, res) => {
       FROM occupations
       WHERE contact_id = ?
       `,
-      [parsedId]
+      [parsedId],
     );
 
     const occupations = occupationResults.map((row) => row.occupation);
